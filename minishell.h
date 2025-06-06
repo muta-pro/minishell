@@ -1,36 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   minishell.h                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/06/06 16:26:50 by yneshev       ########   odam.nl         */
+/*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
+/*   Updated: 2025/06/06 16:26:12 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-int	main(void)
-{
-	char *input_line;
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include "libft/libft.h"
 
-	while (1)
-	{
-		input_line = readline("minishell> ");
-		if (input_line == NULL)
-		{
-			printf("\nExiting.\n");
-			break;
-		}
-		if (input_line && *input_line)
-			add_history(input_line);
-		ft_getcwd(input_line);
-		if (!(strcmp("cd test", input_line)))
-			ft_chdir(input_line, NULL, "test");
-		free(input_line);
-		input_line = NULL;
-	}
-	return (0);
-}
+void	ft_getcwd(char *input_line);
+void	ft_chdir(char	*input_line, char *abso_path, char *rltv_path);
+
+#endif

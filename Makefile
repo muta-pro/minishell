@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 NAME = minishell
 
-SRCS = main.c
+SRCS = main.c builtins.c
 
 LIBFTPATH = libft/libft.a
 
