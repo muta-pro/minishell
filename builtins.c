@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/06/06 16:33:01 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/06/06 19:54:53 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ void	ft_getcwd(char *input_line)
 	free(cwd);
 }
 
-void	ft_chdir(char	*input_line, char *abso_path, char *rltv_path)
+void	ft_chdir(char *abso_path, char *rltv_path)
 {
-	(void)input_line;
 	char	*rltv_to_full;
 	char	*current;
 

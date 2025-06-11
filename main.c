@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/06/06 16:26:50 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/06/06 19:55:08 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(void)
 			add_history(input_line);
 		ft_getcwd(input_line);
 		if (!(strcmp("cd test", input_line)))
-			ft_chdir(input_line, NULL, "test");
+			ft_chdir(NULL, "test");
 		free(input_line);
 		input_line = NULL;
 	}
