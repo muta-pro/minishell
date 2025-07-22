@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/06/24 18:24:32 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/07/22 17:38:01 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,16 @@ void	ft_exit(char *exit_status)
 	}
 	else
 		exit(0);
+}
+
+void	ft_env(t_env *env)
+{
+	t_env	*node;
+
+	node = env;
+	while (node)
+	{
+		printf("%s=%s\n", node->key, node->value);
+		node = node->next;
+	}
 }

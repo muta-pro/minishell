@@ -6,13 +6,13 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/06/24 18:29:09 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/07/22 18:07:32 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute_line(t_cmd *cmd)
+void	execute_line(t_cmd *cmd, t_env *env)
 {
 	if (!(strncmp(cmd->full_cmd[0], "cd", 2)))
 	{
@@ -24,13 +24,64 @@ void	execute_line(t_cmd *cmd)
 	{
 		ft_exit(cmd->full_cmd[0] + 5);
 	}
+	if (!(strncmp("env", cmd->full_cmd[0], 3)))
+		ft_env(env);
 }
 
-int	main(void)
+t_env	*add_new_node(void)
 {
+	t_env	*new;
+
+	new = malloc(sizeof(new));
+	if (!new)
+		return (NULL);
+	new->next = NULL;
+	return (new);
+}
+
+void	build_env(char **envp, t_env **env)
+{
+	int		i;
+	int		j;
+	int		c;
+	t_env	*temp;
+	t_env	*start;
+
+	start = *env;
+	i = 0;
+	j = 0;
+	while (envp[i])
+	{
+		j = 0;
+		while (envp[i][j] != '=')
+			j++;
+		(*env)->key = strndup(envp[i], j);
+		c = 1;
+		while (envp[i][j] && c++)
+			j++;
+		(*env)->value = strndup(envp[i] + j - c + 2, c - 2);
+		if (envp[i + 1])
+		{
+			temp = add_new_node(); // protect
+			(*env)->next = temp;
+			*env = temp;
+		}
+		i++;
+	}
+	*env = start;
+}
+
+int	main(int ac, char **av, char **envp)
+{
+	(void)ac;
+	(void)av;
 	char 	*input_line;
 	t_cmd	*cmd;
-
+	t_env	*env;
+	env = (t_env *)malloc(sizeof(*env));
+	if (!env)
+		return (0);
+	build_env(envp, &env);
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (0);
@@ -46,7 +97,7 @@ int	main(void)
 			exit(0);
 		}
 		else
-			execute_line(cmd);	
+			execute_line(cmd, env);	
 		free(input_line);
 		input_line = NULL;
 	}
