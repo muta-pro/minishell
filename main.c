@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/07/22 18:07:32 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/07/25 16:10:14 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,13 @@ void	execute_line(t_cmd *cmd, t_env *env)
 	if (!(strcmp(cmd->full_cmd[0], "pwd")))
 		ft_getcwd(cmd);
 	if (!(strncmp("exit", cmd->full_cmd[0], 4)))
-	{
 		ft_exit(cmd->full_cmd[0] + 5);
-	}
 	if (!(strncmp("env", cmd->full_cmd[0], 3)))
 		ft_env(env);
+	if (!(strncmp("export ", cmd->full_cmd[0], 7)))
+		ft_export(&env, cmd->full_cmd[0] + 7);
+	if (!(strncmp("unset ", cmd->full_cmd[0], 6)))
+		ft_unset(&env, cmd->full_cmd[0] + 6);
 }
 
 t_env	*add_new_node(void)
