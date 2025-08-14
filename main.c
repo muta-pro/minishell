@@ -17,7 +17,7 @@
 
 int	main(void)
 {
-	char *input_line;
+	char	*input_line;
 
 	while (1)
 	{
@@ -25,7 +25,7 @@ int	main(void)
 		if (input_line == NULL)
 		{
 			printf("\nExiting.\n");
-			break;
+			break ;
 		}
 		if (input_line && *input_line)
 		{

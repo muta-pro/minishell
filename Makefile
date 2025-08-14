@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 NAME = minishell
 
-SRCS = main.c
+SRCS = minishell.c
 
 LIBFTPATH = libft/libft.a
 
@@ -30,3 +30,9 @@ fclean: clean
 	make -C libft/ fclean
 
 re: fclean all
+
+test: $(NAME)
+	@echo "Running $(NAME) -- exit immediately"
+	@printf "\x04" | ./$(NAME) && echo "[ OK ]" || echo "[FAILED]"
+
+.PHONY: all clean fclean re test
