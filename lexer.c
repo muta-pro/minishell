@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/08/05 18:31:24 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/08/17 01:24:21 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -48,8 +48,6 @@ switch(g_curr_char); //single character tokens | ; < > & (>>)
 //words are identifires and flags starting with -
 //handle quotes and single quotes backticks
 //all else is an error TOKEN
-
-
 char	lexemes;
 
 {
