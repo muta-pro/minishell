@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/07/23 17:15:48 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/08/06 17:25:16 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	ft_exit(char *exit_status)
 	{
 		printf("exit\n");
 		exit(atoi(exit_status));
-
 	}
 	else
 		exit(0);

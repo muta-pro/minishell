@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/07/25 17:43:57 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/08/12 12:38:42 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_test
+{
+	char	*path;
+}	t_test;
+
 
 void	ft_getcwd(t_cmd	*cmd);
 void	ft_chdir(t_cmd *cmd);
@@ -45,6 +50,8 @@ void	ft_exit(char *exit_status);
 void	ft_env(t_env *env);
 void	ft_unset(t_env **env, char *str);
 void	ft_export(t_env **env, char *str);
+void	free_cmd(t_cmd **cmd);
+void	free_env(t_env **env);
 t_env	*add_new_node(void);
 
 #endif

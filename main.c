@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/07/25 16:10:14 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/07 17:26:21 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,13 @@ void	build_env(char **envp, t_env **env)
 		while (envp[i][j] != '=')
 			j++;
 		(*env)->key = strndup(envp[i], j);
+		// (*env)->key = ft_substr(envp[i], 0, j);
 		c = 1;
 		while (envp[i][j] && c++)
 			j++;
 		(*env)->value = strndup(envp[i] + j - c + 2, c - 2);
+		// printf("\n\nj - c: %d", j -c);                                              !!!!!!
+		// (*env)->value = ft_substr(envp[i], j - c, c);
 		if (envp[i + 1])
 		{
 			temp = add_new_node(); // protect
@@ -71,6 +74,108 @@ void	build_env(char **envp, t_env **env)
 		i++;
 	}
 	*env = start;
+}
+
+void free_cmd(t_cmd **cmd)
+{
+	t_cmd	*temp;
+	while (*cmd)
+	{
+		temp = *cmd;
+		free(temp->full_cmd);
+		free(temp->input_line);
+		free(temp);
+		*cmd = (*cmd)->next;
+	}
+}
+
+void free_env(t_env **env)
+{
+	t_env	*temp;
+	while (*env)
+	{
+		temp = *env;
+		free(temp->key);
+		free(temp->value);
+		free(temp);
+		*env = (*env)->next;
+	}
+}
+
+int	list_size(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (env)
+	{
+		i++;
+		env = env->next;
+	}
+	return (i);
+}
+
+char	**list_to_2d(t_env *env)
+{
+	char	**env_array;
+	char	*temp;
+	int		i;
+
+	env_array = malloc((list_size(env) + 1) * sizeof(char *));
+	if (!env_array)
+		return (NULL);
+	// env_array = NULL;
+	i = 0;
+	while (env)
+	{
+		temp = ft_strjoin(env->key, "=");
+		env_array[i] = ft_strjoin(temp, env->value);
+		free(temp);
+		i++;
+		env = env->next;
+	}
+	return (env_array);
+}
+
+char	*get_path(char **twoDenv, char *cmd)
+{
+	int		i = 0;
+	char	*paths;
+	char	**split_paths;
+	char	*current_path;
+	while (twoDenv[i])
+	{
+		if (!(strncmp("PATH=", twoDenv[i], 5)))
+			paths = ft_strdup(twoDenv[i] + 5);
+		i++;
+	}
+	split_paths = ft_split(paths, ':');
+	free(paths);
+	i = 0;
+	while (split_paths[i])
+	{
+		current_path = ft_strjoin(split_paths[i], "/");
+		current_path = ft_strjoin(current_path, cmd);
+		if (access(current_path, F_OK | X_OK) == 0)
+			return (free(split_paths), current_path);
+		i++;
+	}
+	return (NULL);
+}
+
+void	test_execve(t_env *env, char **envp)
+{
+	char	**twoDenv;
+	char	*path;
+	char	**cmd;
+	path = NULL;
+	cmd = malloc(sizeof(cmd));
+	cmd[0] = ft_strdup("ls");
+	cmd[1] = ft_strdup("-l");
+	twoDenv = list_to_2d(env);
+	path = get_path(twoDenv, cmd[0]);
+	execve(path, cmd, envp);
+	// printf("%s\n%s\n%s\n", path, cmd[0], cmd[1]);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -88,6 +193,7 @@ int	main(int ac, char **av, char **envp)
 	if (!cmd)
 		return (0);
 	cmd->next = NULL;
+	test_execve(env, envp);
 	while (cmd)
 	{
 		input_line = readline("minishell> ");
@@ -103,5 +209,6 @@ int	main(int ac, char **av, char **envp)
 		free(input_line);
 		input_line = NULL;
 	}
+	free_cmd(&cmd);
 	return (0);
 }
