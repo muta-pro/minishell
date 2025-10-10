@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/08/06 17:25:16 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/10 15:19:19 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,15 @@ void	ft_chdir(t_cmd *cmd)
 	char	*rltv_to_full;
 	char	*current;
 
-	if (!(strncmp(cmd->full_cmd[0], "cd /", 4)))
-		chdir(cmd->full_cmd[0] + 3);	
+	if (!(strncmp(cmd->full_cmd[1], "/", 1)))
+		chdir(cmd->full_cmd[1]);
 	else
 	{
 		current = getcwd(NULL, 0);
 		rltv_to_full = ft_strjoin(current, "/");
 		free(current);
 		current = ft_strdup(rltv_to_full);
-		rltv_to_full = ft_strjoin(current, cmd->full_cmd[0] + 3);
+		rltv_to_full = ft_strjoin(current, cmd->full_cmd[1]);
         free(current);
 		if (chdir(rltv_to_full) == -1)
 			perror(rltv_to_full);

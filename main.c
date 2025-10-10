@@ -6,28 +6,44 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/07 17:26:21 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/10 15:58:03 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	test_execve(t_env *env, char **cmd);
+
 void	execute_line(t_cmd *cmd, t_env *env)
 {
+	__pid_t	pid;
+
+
 	if (!(strncmp(cmd->full_cmd[0], "cd", 2)))
-	{
 		ft_chdir(cmd);
-	}
-	if (!(strcmp(cmd->full_cmd[0], "pwd")))
+	else if (!(strcmp(cmd->full_cmd[0], "pwd")))
 		ft_getcwd(cmd);
-	if (!(strncmp("exit", cmd->full_cmd[0], 4)))
-		ft_exit(cmd->full_cmd[0] + 5);
-	if (!(strncmp("env", cmd->full_cmd[0], 3)))
+	else if (!(strncmp("exit", cmd->full_cmd[0], 4)))
+		ft_exit(cmd->full_cmd[1]);
+	else if (!(strncmp("env", cmd->full_cmd[0], 3)))
 		ft_env(env);
-	if (!(strncmp("export ", cmd->full_cmd[0], 7)))
-		ft_export(&env, cmd->full_cmd[0] + 7);
-	if (!(strncmp("unset ", cmd->full_cmd[0], 6)))
-		ft_unset(&env, cmd->full_cmd[0] + 6);
+	else if (!(strncmp("export", cmd->full_cmd[0], 6)))
+		ft_export(&env, cmd->full_cmd[1]);
+	else if (!(strncmp("unset", cmd->full_cmd[0], 5)))
+		ft_unset(&env, cmd->full_cmd[1]);
+	else //(!(strncmp(cmd->full_cmd[0], "ls", 2)))
+	{
+		pid = fork();
+		if (!pid)
+		{
+			test_execve(env, cmd->full_cmd);
+		}
+		else
+		{
+			if (waitpid(pid, NULL, 0) == -1)
+				perror("error");
+		}
+	}
 }
 
 t_env	*add_new_node(void)
@@ -163,19 +179,18 @@ char	*get_path(char **twoDenv, char *cmd)
 	return (NULL);
 }
 
-void	test_execve(t_env *env, char **envp)
+void	test_execve(t_env *env, char **cmd)
 {
 	char	**twoDenv;
 	char	*path;
-	char	**cmd;
+
 	path = NULL;
-	cmd = malloc(sizeof(cmd));
-	cmd[0] = ft_strdup("ls");
-	cmd[1] = ft_strdup("-l");
 	twoDenv = list_to_2d(env);
 	path = get_path(twoDenv, cmd[0]);
-	execve(path, cmd, envp);
-	// printf("%s\n%s\n%s\n", path, cmd[0], cmd[1]);
+	if (execve(path, cmd, twoDenv) == -1)
+	{
+		exit(0); // handle exit
+	}
 }
 
 int	main(int ac, char **av, char **envp)
@@ -183,8 +198,13 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	char 	*input_line;
+	char	**cmnd;
 	t_cmd	*cmd;
 	t_env	*env;
+
+	cmnd = malloc(sizeof(cmd));
+	cmnd[0] = ft_strdup("ls");
+	cmnd[1] = ft_strdup("-l");
 	env = (t_env *)malloc(sizeof(*env));
 	if (!env)
 		return (0);
@@ -193,12 +213,13 @@ int	main(int ac, char **av, char **envp)
 	if (!cmd)
 		return (0);
 	cmd->next = NULL;
-	test_execve(env, envp);
+	// test_execve(env, cmnd);
 	while (cmd)
 	{
 		input_line = readline("minishell> ");
 		cmd->input_line = input_line;
-		cmd->full_cmd = &input_line;
+		// cmd->full_cmd = &input_line;
+		cmd->full_cmd = ft_split(input_line, ' ');
 		if (input_line == NULL)
 		{
 			printf("exit\n");
