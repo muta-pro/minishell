@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/08/17 01:24:21 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/11 10:29:20 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -44,7 +44,7 @@ append_char();
 
 whitespace();//drops whitespace/tabs/newlines before collecting token
 
-switch(g_curr_char); //single character tokens | ; < > & (>>)
+switch (g_curr_char); //single character tokens | ; < > & (>>)
 //words are identifires and flags starting with -
 //handle quotes and single quotes backticks
 //all else is an error TOKEN
@@ -54,16 +54,16 @@ char	lexemes;
 
 }
 
-tt scanner(const char *input_text)
+t_tok_type scanner(const char *input_text)
 {
 	while (**input_text == ' ')
 		(*input_text)++;
 	if (**input_text == '\0')
-		return (tt)
+		return (t_tok_type)
 	{T_EOF, NULL};
 }
 
-tt lexer(char *input_text)
+t_tok_type	lexer(char *input_text)
 {
 	while (whitespace(g_curr_char))
 		to_next_char();
@@ -78,7 +78,8 @@ tt lexer(char *input_text)
 	int		value = evaluator(compute numeric values);
 	char	token = produce_token(lexeme, value);
 	return (token)
-} //define categories of tokens/should split using space delimiter.
+}
+ //define categories of tokens/should split using space delimiter.
 tokenizing()
 {
 	if (inv_token())
@@ -87,11 +88,10 @@ tokenizing()
 
 void	parser(char *token)
 {
-	t_token *tok;
+	t_token	*tok;
 
 	init_lex();
 	tok = next_token();
 	pars_tok(tok)
 	free_tok(&tok);
-
 }
