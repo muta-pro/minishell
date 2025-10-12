@@ -6,13 +6,13 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/12 16:36:19 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/12 18:40:39 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	test_execve(t_env *env, char **cmd);
+void	test_execve(t_env *env, char **full_cmd, t_cmd *cmd);
 
 void	execute_line(t_cmd *cmd, t_env *env)
 {
@@ -41,7 +41,7 @@ void	execute_line(t_cmd *cmd, t_env *env)
 		}
 		if (!pid)
 		{
-			test_execve(env, cmd->full_cmd);
+			test_execve(env, cmd->full_cmd, cmd);
 		}
 		else
 		{
@@ -101,26 +101,27 @@ void	build_env(char **envp, t_env **env)
 void free_cmd(t_cmd **cmd)
 {
 	t_cmd	*temp;
+
 	while (*cmd)
 	{
 		temp = *cmd;
-		free(temp->full_cmd);
-		// free(temp->input_line);
-		free(temp);
 		*cmd = (*cmd)->next;
+		free(temp->full_cmd);
+		free(temp);
 	}
 }
 
 void free_env(t_env **env)
 {
 	t_env	*temp;
+
 	while (*env)
 	{
 		temp = *env;
+		*env = (*env)->next;
 		free(temp->key);
 		free(temp->value);
 		free(temp);
-		*env = (*env)->next;
 	}
 }
 
@@ -146,7 +147,6 @@ char	**list_to_2d(t_env *env)
 	env_array = malloc((list_size(env) + 1) * sizeof(char *));
 	if (!env_array)
 		return (NULL);
-	// env_array = NULL;
 	i = 0;
 	while (env)
 	{
@@ -160,45 +160,85 @@ char	**list_to_2d(t_env *env)
 	return (env_array);
 }
 
-char	*get_path(char **twoDenv, char *cmd)
+void	free_arr(char **arr)
 {
-	int		i = 0;
-	char	*paths;
-	char	**split_paths;
-	char	*current_path;
-	paths = NULL;
-	while (twoDenv[i])
+	int	i;
+
+	i = 0;
+	if (!arr)
+		return ;
+	while (arr[i])
 	{
-		if (!(strncmp("PATH=", twoDenv[i], 5)))
-		{
-			paths = ft_strdup(twoDenv[i] + 5);
-		}
+		free(arr[i]);
 		i++;
 	}
-	split_paths = ft_split(paths, ':');
-	free(paths);
+	free(arr);
+}
+char	*find_path(char **split_paths, char *cmd)
+{
+	int		i;
+	char	*current_path;
+	char	*temp;
+
+	if (!split_paths)
+		return (NULL);
 	i = 0;
 	while (split_paths[i])
 	{
-		current_path = ft_strjoin(split_paths[i], "/");
-		current_path = ft_strjoin(current_path, cmd);
-		if (access(current_path, F_OK | X_OK) == 0)
-			return (free(split_paths), current_path);
+		temp = ft_strjoin(split_paths[i], "/");
+		current_path = ft_strjoin(temp, cmd);
+		free(temp);
+		if (current_path && access(current_path, F_OK | X_OK) == 0)
+			return (current_path);
+		free(current_path);
 		i++;
 	}
 	return (NULL);
 }
 
-void	test_execve(t_env *env, char **cmd)	
+char	*get_path(char **twoDenv, char *cmd)
+{
+	int		i = 0;
+	char	*paths;
+	char	**split_paths;
+	char	*full_path;
+
+	paths = NULL;
+	while (twoDenv && twoDenv[i])
+	{
+		if (!(strncmp("PATH=", twoDenv[i], 5)))
+		{
+			paths = ft_strdup(twoDenv[i] + 5);
+			if (!paths)
+				return (NULL);
+			break ;
+		}
+		i++;
+	}
+	if (!paths)
+		return (NULL);
+	split_paths = ft_split(paths, ':');
+	free(paths);
+	full_path = find_path(split_paths, cmd);
+	if (!full_path)
+		return (free_arr(split_paths), NULL);
+	return (free_arr(split_paths), full_path);
+}
+
+void	test_execve(t_env *env, char **full_cmd, t_cmd *cmd)	
 {
 	char	**twoDenv;
 	char	*path;
 	
 	path = NULL;
 	twoDenv = list_to_2d(env);
-	path = get_path(twoDenv, cmd[0]);
-	if (execve(path, cmd, twoDenv) == -1)
+	path = get_path(twoDenv, full_cmd[0]);
+	if (execve(path, full_cmd, twoDenv) == -1)
 	{
+		free_arr(twoDenv);
+		free(path);
+		free_env(&env);
+		free_cmd(&cmd);
 		exit(0); // handle exit
 	}
 }
@@ -234,5 +274,6 @@ int	main(int ac, char **av, char **envp)
 		input_line = NULL;
 	}
 	free_cmd(&cmd);
-	return (0);
+	free_env(&env);
+	return (0);	
 }
