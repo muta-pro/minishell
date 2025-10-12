@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/10 15:58:03 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/12 16:36:19 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,11 @@ void	execute_line(t_cmd *cmd, t_env *env)
 	else //(!(strncmp(cmd->full_cmd[0], "ls", 2)))
 	{
 		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork fail");
+			return ;
+		}
 		if (!pid)
 		{
 			test_execve(env, cmd->full_cmd);
@@ -89,6 +94,7 @@ void	build_env(char **envp, t_env **env)
 		}
 		i++;
 	}
+	(*env)->next = NULL;
 	*env = start;
 }
 
@@ -99,7 +105,7 @@ void free_cmd(t_cmd **cmd)
 	{
 		temp = *cmd;
 		free(temp->full_cmd);
-		free(temp->input_line);
+		// free(temp->input_line);
 		free(temp);
 		*cmd = (*cmd)->next;
 	}
@@ -150,6 +156,7 @@ char	**list_to_2d(t_env *env)
 		i++;
 		env = env->next;
 	}
+	env_array[i] = NULL;
 	return (env_array);
 }
 
@@ -159,10 +166,13 @@ char	*get_path(char **twoDenv, char *cmd)
 	char	*paths;
 	char	**split_paths;
 	char	*current_path;
+	paths = NULL;
 	while (twoDenv[i])
 	{
 		if (!(strncmp("PATH=", twoDenv[i], 5)))
+		{
 			paths = ft_strdup(twoDenv[i] + 5);
+		}
 		i++;
 	}
 	split_paths = ft_split(paths, ':');
@@ -179,11 +189,11 @@ char	*get_path(char **twoDenv, char *cmd)
 	return (NULL);
 }
 
-void	test_execve(t_env *env, char **cmd)
+void	test_execve(t_env *env, char **cmd)	
 {
 	char	**twoDenv;
 	char	*path;
-
+	
 	path = NULL;
 	twoDenv = list_to_2d(env);
 	path = get_path(twoDenv, cmd[0]);
@@ -198,27 +208,20 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	char 	*input_line;
-	char	**cmnd;
 	t_cmd	*cmd;
 	t_env	*env;
 
-	cmnd = malloc(sizeof(cmd));
-	cmnd[0] = ft_strdup("ls");
-	cmnd[1] = ft_strdup("-l");
 	env = (t_env *)malloc(sizeof(*env));
 	if (!env)
 		return (0);
 	build_env(envp, &env);
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
-		return (0);
+		return (free(env), 0);
 	cmd->next = NULL;
-	// test_execve(env, cmnd);
 	while (cmd)
 	{
 		input_line = readline("minishell> ");
-		cmd->input_line = input_line;
-		// cmd->full_cmd = &input_line;
 		cmd->full_cmd = ft_split(input_line, ' ');
 		if (input_line == NULL)
 		{

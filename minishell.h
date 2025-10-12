@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/10 14:09:06 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/12 16:36:25 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,11 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 # include <string.h>
-#include <sys/wait.h>
+# include <sys/wait.h>
 
 
 typedef struct s_cmd
 {
-	char			*input_line;
 	char			**full_cmd;
 	// char			*infile;
 	// char			*outfile;
