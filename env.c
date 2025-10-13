@@ -6,12 +6,12 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 20:38:56 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/11 11:41:35 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/11 13:10:14 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
 
-char *new_env_str(char *key, char *value)
+char	*new_env_str(char *key, char *value)
 {
 	char	*result;
 	int		len;
@@ -26,7 +26,7 @@ char *new_env_str(char *key, char *value)
 	return (result);
 }
 
-int	update_env_var(char **envp, char *key, char *value)
+int	update_env_var(char ***envp, char *key, char *value)
 {
 	char	*new_var;
 	int		i;
@@ -66,9 +66,11 @@ int	init_shlvl(char **envp)
 	else
 		shlvl_value = 0;
 	shlvl_value++;
-	update_env_var(envp, "SHLVL", ft_itoa(shlvl_value));
+	update_env_var(&envp, "SHLVL", ft_itoa(shlvl_value));
 }
 
-get_env_var();
-set_env_var();
-unset_env_var();
+char	*get_env_var(char **envp, char *key);//read var value
+void	unset_env_var(char ***envp, char *key);//remove var
+char	**copy_envp(char **envp);//dup env
+void	**free_envp(char **envp);//cleanup
+int	find_env_varible(char **envp, char *key);

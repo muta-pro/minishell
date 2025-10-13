@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/11 10:29:20 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/13 17:40:33 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -19,66 +19,54 @@
 WHAT'S THE NEXT TOKEN?
 */
 #include "lexer.h"
+#include "token.h"
 #include "libft.h"
 
-static int	g_curr_char; //EOF
-static char	g_lexeme_buff[1024];
-static int	g_buff_index;
 
-char	*chop_commandline(const char *delim, char *input)
-{
-	static char	*mark = NULL;
+get_next_char();// manage the state of the lexer
+//append char to scanner's buffer
 
-	if (input != NULL)
-		mark = input;
-	if (mark == NULL || *mark == '\0')
-		return (NULL);
-	while (*mark && ft_strchr(delim, *mark) != '\0')
-		mark++;
-	return (mark);
-}
-
-get_next_char();
-
-append_char();
-
-whitespace();//drops whitespace/tabs/newlines before collecting token
-
-switch (g_curr_char); //single character tokens | ; < > & (>>)
+//single character tokens | ; < > & (>>)
 //words are identifires and flags starting with -
 //handle quotes and single quotes backticks
 //all else is an error TOKEN
-char	lexemes;
-
+void	init_scanner(t_scanner *scanner, char *input_text)
 {
-
+	scanner.input = input_text;
+	scanner.pos = 0;
+	scanner.lenght = ft_strlen(input_text);
+	scanner.head = NULL;
+	scanner.state = IN_DEADULT;
 }
 
-t_tok_type scanner(const char *input_text)
+t_token	*lexer(char *input_text)
 {
-	while (**input_text == ' ')
-		(*input_text)++;
-	if (**input_text == '\0')
-		return (t_tok_type)
-	{T_EOF, NULL};
-}
+	t_scanner	scanner;
+	t_token		*token;
 
-t_tok_type	lexer(char *input_text)
-{
-	while (whitespace(g_curr_char))
-		to_next_char();
-	int	lexeme = scanner(input_text)
+	scanner_init(scanner);
+	if (!input_text)
+		return (NULL);
+	while (1)
 	{
-		while (input_text)
+		token = scan_next_tok(&scanner);
+		if (token == NULL && scanner->pos >= scanner.lenght)
 		{
-			if (regex == input_text)
-				return (TOKEN_NAME);
+			insert_token(&scanner.head, create_token(T_EOF, NULL));
+			break ;
 		}
+		if (token == NULL || token->type == T_ERROR)
+		{
+			free_tok(scanner.head);
+			if (token)
+				free(token);
+			return (NULL);
+		}
+		insert_token(&scanner.head, token);
 	}
-	int		value = evaluator(compute numeric values);
-	char	token = produce_token(lexeme, value);
-	return (token)
+	return (scanner.head);
 }
+
  //define categories of tokens/should split using space delimiter.
 tokenizing()
 {
@@ -86,12 +74,23 @@ tokenizing()
 		return (error);
 }
 
-void	parser(char *token)
+t_token	*scan_next_tok(t_scanner *scanner)
 {
-	t_token	*tok;
+	char	c;
 
-	init_lex();
-	tok = next_token();
-	pars_tok(tok)
-	free_tok(&tok);
+	c = peek(scanner);
+	while (is_whitespace(scanner->input[scanner->pos]))
+		scanner->pos++;
+	if (scanner->pos >= scanner->lenght)
+		return (NULL);
+	if (is_quote(c))
+		return (quoted_str_scan(scanner));
+	else if (is_operator(c))
+		return (operator_scan(scanner));
+	else if (c == '$')
+		return (var_scan(scanner));
+	else if (c == '$' && peek_next(scanner) == '?')
+		return (exit_status_scan(scanner));
+	else
+		return (scan_word(scanner));
 }
