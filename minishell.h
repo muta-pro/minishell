@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/12 16:36:25 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/13 13:20:01 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@
 typedef struct s_cmd
 {
 	char			**full_cmd;
-	// char			*infile;
-	// char			*outfile;
-	// int				pipe;
+	// int			*infile;
+	// int			*outfile;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -38,11 +37,6 @@ typedef struct s_env
 	char			*value;
 	struct s_env	*next;
 }	t_env;
-
-typedef struct s_test
-{
-	char	*path;
-}	t_test;
 
 
 void	ft_getcwd(t_cmd	*cmd);

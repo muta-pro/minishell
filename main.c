@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/12 18:40:39 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/13 15:21:05 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,6 +266,8 @@ int	main(int ac, char **av, char **envp)
 		if (input_line == NULL)
 		{
 			printf("exit\n");
+			free_cmd(&cmd);
+			free_env(&env);
 			exit(0);
 		}
 		else
@@ -275,5 +277,5 @@ int	main(int ac, char **av, char **envp)
 	}
 	free_cmd(&cmd);
 	free_env(&env);
-	return (0);	
+	return (0);
 }
