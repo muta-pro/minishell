@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/13 15:21:05 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/14 16:54:14 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,36 +18,39 @@ void	execute_line(t_cmd *cmd, t_env *env)
 {
 	__pid_t	pid;
 
-
-	if (!(strncmp(cmd->full_cmd[0], "cd", 2)))
-		ft_chdir(cmd);
-	else if (!(strcmp(cmd->full_cmd[0], "pwd")))
-		ft_getcwd(cmd);
-	else if (!(strncmp("exit", cmd->full_cmd[0], 4)))
-		ft_exit(cmd->full_cmd[1]);
-	else if (!(strncmp("env", cmd->full_cmd[0], 3)))
-		ft_env(env);
-	else if (!(strncmp("export", cmd->full_cmd[0], 6)))
-		ft_export(&env, cmd->full_cmd[1]);
-	else if (!(strncmp("unset", cmd->full_cmd[0], 5)))
-		ft_unset(&env, cmd->full_cmd[1]);
-	else //(!(strncmp(cmd->full_cmd[0], "ls", 2)))
+	while(cmd)
 	{
-		pid = fork();
-		if (pid == -1)
+		if (!(strncmp(cmd->full_cmd[0], "cd", 2)))
+			ft_chdir(cmd);
+		else if (!(strcmp(cmd->full_cmd[0], "pwd")))
+			ft_getcwd(cmd);
+		else if (!(strncmp("exit", cmd->full_cmd[0], 4)))
+			ft_exit(cmd->full_cmd[1]);
+		else if (!(strncmp("env", cmd->full_cmd[0], 3)))
+			ft_env(env);
+		else if (!(strncmp("export", cmd->full_cmd[0], 6)))
+			ft_export(&env, cmd->full_cmd[1]);
+		else if (!(strncmp("unset", cmd->full_cmd[0], 5)))
+			ft_unset(&env, cmd->full_cmd[1]);
+		else //(!(strncmp(cmd->full_cmd[0], "ls", 2)))
 		{
-			perror("fork fail");
-			return ;
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("fork fail");
+				return ;
+			}
+			if (!pid)
+			{
+				test_execve(env, cmd->full_cmd, cmd);
+			}
+			else
+			{
+				if (waitpid(pid, NULL, 0) == -1)
+					perror("error");
+			}
 		}
-		if (!pid)
-		{
-			test_execve(env, cmd->full_cmd, cmd);
-		}
-		else
-		{
-			if (waitpid(pid, NULL, 0) == -1)
-				perror("error");
-		}
+		cmd = cmd->next;
 	}
 }
 
@@ -101,14 +104,18 @@ void	build_env(char **envp, t_env **env)
 void free_cmd(t_cmd **cmd)
 {
 	t_cmd	*temp;
+	t_cmd	*head;
 
+	head = *cmd;
 	while (*cmd)
 	{
 		temp = *cmd;
 		*cmd = (*cmd)->next;
 		free(temp->full_cmd);
 		free(temp);
+		temp = NULL;
 	}
+	*cmd = head;
 }
 
 void free_env(t_env **env)
@@ -243,6 +250,54 @@ void	test_execve(t_env *env, char **full_cmd, t_cmd *cmd)
 	}
 }
 
+int		check_for_pipe(char *input_line)		// test func
+{
+	int i = 0;
+
+	while (input_line[i])
+	{
+		if (input_line[i] == '|')
+			return 1;
+		else
+			i++;
+	}
+	return 0;
+}
+
+t_cmd	*add_new_cmd(void)
+{
+	t_cmd	*new;
+
+	new = malloc(sizeof(new));
+	if (!new)
+		return (NULL);
+	new->next = NULL;
+	return (new);
+}
+
+void	get_cmds(t_cmd **cmd, char *input_line)
+{
+	(void)cmd;
+	int i = 0;
+	char *cmd1;
+	char *cmd2;
+	t_cmd *t_cmd2;
+
+	if (!(*cmd))
+		*cmd = add_new_cmd();	
+	while (input_line[i] != '|')
+		i++;
+	cmd1 = ft_substr(input_line, 0, i);
+	cmd2 = ft_substr(input_line, i + 1, 100);
+	(*cmd)->full_cmd = ft_split(cmd1, ' ');
+	t_cmd2 = add_new_cmd();
+	(*cmd)->next = t_cmd2;
+	t_cmd2->next = NULL;
+	t_cmd2->full_cmd = ft_split(cmd2, ' ');
+
+	// printf("cmd1: %s\n\ncmd2: %s\n\n", cmd1, cmd2);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	(void)ac;
@@ -259,10 +314,15 @@ int	main(int ac, char **av, char **envp)
 	if (!cmd)
 		return (free(env), 0);
 	cmd->next = NULL;
-	while (cmd)
+	while (1)
 	{
 		input_line = readline("minishell> ");
-		cmd->full_cmd = ft_split(input_line, ' ');
+		if (check_for_pipe(input_line))
+		{
+			get_cmds(&cmd, input_line);
+		}
+		else
+			cmd->full_cmd = ft_split(input_line, ' ');
 		if (input_line == NULL)
 		{
 			printf("exit\n");
@@ -273,6 +333,7 @@ int	main(int ac, char **av, char **envp)
 		else
 			execute_line(cmd, env);	
 		free(input_line);
+		free_cmd(&cmd);
 		input_line = NULL;
 	}
 	free_cmd(&cmd);
