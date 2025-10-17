@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/13 17:40:33 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/17 19:04:32 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -21,7 +21,6 @@ WHAT'S THE NEXT TOKEN?
 #include "lexer.h"
 #include "token.h"
 #include "libft.h"
-
 
 get_next_char();// manage the state of the lexer
 //append char to scanner's buffer
