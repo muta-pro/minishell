@@ -6,13 +6,63 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/14 16:54:14 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/19 17:25:44 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 void	test_execve(t_env *env, char **full_cmd, t_cmd *cmd);
+void	execute_line(t_cmd *cmd, t_env *env);
+
+void	exec_pipe(t_cmd *cmd, t_env *env)
+{
+	int		pipe_fds[2];
+	int		prev_read;
+	pid_t	pid;
+
+	prev_read = STDIN_FILENO;
+	while (cmd)
+	{
+		if (cmd->next)
+		{
+			if (pipe(pipe_fds) == -1)
+				return ; //  handle exit
+		}
+		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			return ;
+		}
+		if (pid == 0)
+		{
+			if (prev_read != STDIN_FILENO)
+			{
+				dup2(prev_read, STDIN_FILENO);
+				close(prev_read);
+			}
+			if (cmd->next)
+			{
+				close(pipe_fds[0]);
+				dup2(pipe_fds[1], STDOUT_FILENO);
+				close(pipe_fds[1]);
+				execute_line(cmd, env);
+				exit(127);
+			}
+			if (prev_read != STDIN_FILENO)
+				close(prev_read);
+			if (cmd->next)
+			{
+				close(pipe_fds[1]);
+				prev_read = pipe_fds[0];
+			}
+			cmd = cmd->next;
+		}
+		int status;
+		waitpid(pid, &status, 0);
+	}
+}
 
 void	execute_line(t_cmd *cmd, t_env *env)
 {
@@ -310,12 +360,14 @@ int	main(int ac, char **av, char **envp)
 	if (!env)
 		return (0);
 	build_env(envp, &env);
-	cmd = malloc(sizeof(t_cmd));
-	if (!cmd)
-		return (free(env), 0);
-	cmd->next = NULL;
+
 	while (1)
 	{
+		cmd = NULL;
+		cmd = malloc(sizeof(t_cmd));
+		if (!cmd)
+			return (free(env), 0);
+		cmd->next = NULL;
 		input_line = readline("minishell> ");
 		if (check_for_pipe(input_line))
 		{
