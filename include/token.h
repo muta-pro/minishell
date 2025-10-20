@@ -6,13 +6,20 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:38:12 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/11 14:23:19 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/20 14:20:22 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef TOKENS_H
 # define TOKENS_H
 
-# include "lexer.h"
+typedef enum scan_state //state management for the lexer
+{
+	IN_DEFAULT,
+	IN_SNGL_QUOTE,
+	IN_DBL_QUOTE,
+	IN_ESCAPE
+} t_scan_state;
+
 
 typedef enum token_type
 {
@@ -27,10 +34,10 @@ typedef enum token_type
 	T_REDIR_OUT, //>
 	T_REDIR_APPEND, //>>
 	T_REDIR_HEREDOC, //<<
+	T_LPAREN,
+	T_RPAREN,
 	T_EOF,
 	T_ERROR
-	T_LPAREN;
-	T_RPAREN;
 }	t_tok_type;
 
 typedef struct s_token
@@ -43,13 +50,10 @@ typedef struct s_token
 int is_operator_char(char c);
 int is_whitespace(char c);
 int is_quote(char c);
-int is_spec_char(char c);
 
-t_tok_type	get_toktype(t_state state);
-void init_lex();
-t_token *create_token(t_tok_type type, char *lexeme);
-t_token *insert_tokrn(t_token **head, t_token *new_token);
-t_token lex_next_tok();
-void free_tok(t_token *tok);
+//token list management
+t_token		*create_token(t_tok_type type, const char *lexeme);
+void		insert_tokrn(t_token **head, t_token *new_token);
+void		free_tok(t_token *tok);
 
 #endif

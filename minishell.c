@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/11 11:50:01 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/18 20:04:44 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -30,7 +30,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	char		**envp_cpy;
-	t_token		*token;
+	t_token		*tokens;
 	t_ast		*ast;
 
 	(void)(argc);
@@ -38,7 +38,7 @@ int	main(int argc, char **argv, char **envp)
 	signal(SIGINT, handle_sig);
 	signal(SIGQUIT, SIG_IGN);
 	envp_cpy = copy_envp(envp);
-	init_shlvl(&envp_cpy);
+	init_shlvl(&envp_cpy); //to handle mem alloc failure
 	while (1)
 	{
 		line = readline("minishell: ");
@@ -47,22 +47,22 @@ int	main(int argc, char **argv, char **envp)
 		if (*line)
 		{
 			add_history(line);
-			token = lexer(line);//tokenize
-			if (!token)
+			tokens = lexer(line);//tokenize
+			if (!tokens)
 			{
 				free(line);
 				continue ;
 			}
-			ast = parser(token);
+			ast = parser(tokens);
 			if (!ast)
 			{
-				free_tok(token);
+				free_tok(tokens);
 				free(line);
 				continue ;
 			}
 			execute(ast, envp_cpy);
 			free_ast(ast);
-			free_tok(token);
+			free_tok(tokens);
 		}
 		free(line);
 	}

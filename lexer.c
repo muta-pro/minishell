@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/17 19:04:32 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/20 17:09:09 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -67,7 +67,13 @@ t_token	*lexer(char *input_text)
 }
 
  //define categories of tokens/should split using space delimiter.
-tokenizing()
+int tokenizing(t_token **tokens, char *input_text)
+{
+	t_size	len_str;
+	t
+
+}
+
 {
 	if (inv_token())
 		return (error);
@@ -78,18 +84,17 @@ t_token	*scan_next_tok(t_scanner *scanner)
 	char	c;
 
 	c = peek(scanner);
-	while (is_whitespace(scanner->input[scanner->pos]))
-		scanner->pos++;
-	if (scanner->pos >= scanner->lenght)
+	while (is_whitespace(peek(scanner)))
+		advance(scanner);
+	if (c == '\0')
 		return (NULL);
-	if (is_quote(c))
-		return (quoted_str_scan(scanner));
-	else if (is_operator(c))
-		return (operator_scan(scanner));
+	if (c == '\'' || c == '"')
+		return (scan_quoted_str(scanner));
+	else if (c == '|' || c == '<' || c == '>')
+		return (scan_operator(scanner));
 	else if (c == '$')
-		return (var_scan(scanner));
-	else if (c == '$' && peek_next(scanner) == '?')
-		return (exit_status_scan(scanner));
-	else
+		return (scan_var(scanner));
+	else if (!is_whitespace(c))
 		return (scan_word(scanner));
+	return (create_token(T_ERROR, "Unexpexted character"));
 }
