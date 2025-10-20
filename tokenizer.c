@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:45:03 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/13 17:40:46 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/20 18:34:08 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 //LEXICAL ANALYSIS
@@ -30,7 +30,7 @@ t_token	create_token(const char *value, t_tok_type type)
 	token->next = NULL;
 	return (token);
 }
-void insert_token(t_token **head, t_token *new_token)
+void	insert_token(t_token **head, t_token *new_token)
 {
 	t_token *curr;
 
@@ -49,5 +49,3 @@ void insert_token(t_token **head, t_token *new_token)
 
 nospace_oper();
 free_tok();
-operators();
-is_redirection();

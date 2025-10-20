@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:38:12 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/20 14:20:22 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/20 18:34:17 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef TOKENS_H
@@ -50,6 +50,12 @@ typedef struct s_token
 int is_operator_char(char c);
 int is_whitespace(char c);
 int is_quote(char c);
+int	is_redirection(char c);
+int	valid_char (char c);
+int	null_terminator(char c);
+
+t_scan_state	sngl_quote(char **buff, char curr, size_t *i);
+t_scan_state	dbl_quote(char **buff, char curr, size_t *i);
 
 //token list management
 t_token		*create_token(t_tok_type type, const char *lexeme);
