@@ -1,33 +1,48 @@
 CC = cc
-
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
+LDGLAGS = -lreadline -L/usr/local/opt/readline/lib
+CPPFLAGS = -Include -Ilibft -I/usr/local/opt/readline/include
 
 NAME = minishell
+SRCDIR = src
+OBJDIR = obj
+LIBFTDIR = libft
 
-SRCS = minishell.c
+SRCF = minishell.c \
+		lexer.c scanner.c \
+		token.c tokenizer.c \
+		utils.c quotescan.c
+SRCS = $(addprefix $(SRCDIR)/, $(SRCF))
+OBJS = $(addprefix $(OBJDIR)/, $(SRCF: .c=.o))
+INCLUDE = -I$(INCDIR) -I$(LIBFTDIR) -I.
 
-LIBFTPATH = libft/libft.a
+OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRC_FILES))
 
-OBJS = $(SRCS:.c=.o)
+LIBFT = $(LIBFTDIR)/libft.a
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFTPATH)
-	cc $(SRCS) $(LIBFTPATH) -o minishell -lreadline
+$(NAME): $(OBJS) $(LIBFT)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	@echo "$(NAME) is ready!"
 
-$(LIBFTPATH):
-	make -C libft/
+$(LIBFT):
+	make -sC $(LIBFTDIR)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
-	make -C libft/ clean
+	@rm -rf $(OBJDIR)
+	@make -sC $(LIBFTDIR) clean
+	@echo "Cleaned obj files"
 
 fclean: clean
-	rm -f $(NAME)
-	make -C libft/ fclean
+	@rm -f $(NAME)
+	@make -sC $(LIBFTDIR) fclean
+	@echo "Cleaned all"
 
 re: fclean all
 

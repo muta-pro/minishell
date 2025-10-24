@@ -6,11 +6,12 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/20 17:47:51 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/22 10:22:00 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "lexer.h"
 #include "token.h"
+#include "libft.h"
 
 t_token	*scan_word(t_scanner *scanner)
 {
@@ -18,8 +19,8 @@ t_token	*scan_word(t_scanner *scanner)
 	while (!is_whitespace(peek(scanner)) && !is_operator_char(peek(scanner))
 		&& peek(scanner) != '\0' && peek(scanner) != '$')
 	{
-		advance(scanner);
 		append_char(scanner, peek(scanner));
+		advance(scanner);
 	}
 	return (create_token(T_WORD, get_buff_lexeme(scanner)));
 }
@@ -49,16 +50,17 @@ t_token	*scan_operator(t_scanner *scanner)
 		advance(scanner);
 	}
 	lexeme = get_buff_lexeme(scanner);
-	if (ft_strncmp(lexeme, "|") == 0)
+	if (ft_strcmp(lexeme, "|") == 0)
 		return (create_token(T_PIPE, lexeme));
-	if (ft_strncmp(lexeme, "<") == 0)
+	if (ft_strcmp(lexeme, "<") == 0)
 		return (create_token(T_REDIR_IN, lexeme));
-	if (ft_strncmp(lexeme, ">") == 0)
+	if (ft_strcmp(lexeme, ">") == 0)
 		return (create_token(T_REDIR_OUT, lexeme));
-	if (ft_strncmp(lexeme, "<<") == 0)
+	if (ft_strcmp(lexeme, "<<") == 0)
 		return (create_token(T_REDIR_HEREDOC, lexeme));
-	if (ft_strncmp(lexeme, ">>") == 0)
-		return (create_token(T_REDIR_APPEND));
+	if (ft_strcmp(lexeme, ">>") == 0)
+		return (create_token(T_REDIR_APPEND, lexeme));
+	free(lexeme);
 	return (create_token(T_ERROR, "Unknown operator"));
 }
 

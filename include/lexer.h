@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 18:50:31 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/20 18:34:17 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/22 13:50:42 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LEXER_H
@@ -47,5 +47,12 @@ t_token *scan_var(t_scanner *scanner);
 t_token	*scan_operator(t_scanner *scanner);
 t_token *scan_quoted_str(t_scanner *scanner);
 void	init_scanner(t_scanner *scanner, char *input_text);
+
+void	append_char(t_scanner *scanner, char c);
+char	*get_buff_lexeme(t_scanner *scanner);
+void	advance(t_scanner *scanner);
+char	peek(t_scanner *scanner);
+char	peek_next(t_scanner *scanner);
+
 
 #endif

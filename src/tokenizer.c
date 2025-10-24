@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:45:03 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/20 18:34:08 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/22 10:07:33 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 //LEXICAL ANALYSIS
@@ -18,18 +18,22 @@
 #include <stdio.h>
 #include "token.h"
 
-t_token	create_token(const char *value, t_tok_type type)
+t_token	*create_token(const char *lexeme, t_tok_type type)
 {
 	t_token	*token;
 
 	token = (t_token *)malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
-	token->lexeme = ft_strdup(value);
+	if (lexeme)
+		token->lexeme = ft_strdup(lexeme);
+	else
+		token->lexeme = NULL;
 	token->type = type;
 	token->next = NULL;
 	return (token);
 }
+
 void	insert_token(t_token **head, t_token *new_token)
 {
 	t_token *curr;
@@ -41,11 +45,22 @@ void	insert_token(t_token **head, t_token *new_token)
 	else
 	{
 		curr = *head;
-		while (curr->next ! NULL)
-			curr = curr->next;
+		while (curr->next != NULL)
+			curr->next = new_token;
 	}
 	curr->next = new_token;
 }
 
-nospace_oper();
-free_tok();
+void	free_tok(t_token *tok)
+{
+	t_token	*tmp;
+
+	while (tok != NULL)
+	{
+		tmp = tok->next;
+		free(tok->lexeme);
+		free(tok);
+		tok = tmp;
+	}
+}
+// nospace_oper();

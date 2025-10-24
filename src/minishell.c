@@ -6,16 +6,19 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/18 20:04:44 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/22 10:30:24 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "shell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "libft.h"
+#include "lexer.h"
+
+void	print_tokens(t_token *tokens);
 
 void	handle_sig(int sig)
 {
@@ -47,27 +50,31 @@ int	main(int argc, char **argv, char **envp)
 		if (*line)
 		{
 			add_history(line);
-			tokens = lexer(line);//tokenize
+			tokens = lexer(line); // tokenize
+			if (tokens)
+				print_tokens(tokens);
+			else
+				printf("Lexer returned NULL or an error.\n");
 			if (!tokens)
 			{
 				free(line);
 				continue ;
 			}
-			ast = parser(tokens);
-			if (!ast)
-			{
-				free_tok(tokens);
-				free(line);
-				continue ;
-			}
-			execute(ast, envp_cpy);
-			free_ast(ast);
+			// ast = parser(tokens);
+			// if (!ast)
+			// {
+			// 	free_tok(tokens);
+			// 	free(line);
+			// 	continue ;
+			// }
+			// execute(ast, envp_cpy);
+			// free_ast(ast);
 			free_tok(tokens);
 		}
 		free(line);
 	}
-	clear_history();
-	free_envp(envp_cpy);
+	// clear_history();
+	// free_envp(envp_cpy);
 	return (0);
 }
 
