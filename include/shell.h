@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/22 09:48:28 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 16:44:24 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef SHELL_H
@@ -18,18 +18,36 @@ Parser: identify the delimiter
 Executor: read lines until delimiter
 Expander: expand variables if delimiter wasn't quoted*/
 # include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include "libft.h"
+# include "lexer.h"
+# include "parser.h"
+# include "sgnl.h"
 
 typedef struct s_heredoc
 {
-	char *delimiter;
-	int expand;
+	char	*delimiter;
+	int		expand;
 }	t_heredoc;
 
-//FOR THE PARSER check for token type
-int is_wordT(t_token *tok);
-int is_varT(t_token *tok);
-int is_pipeT(t_token *tok);
-int is_logig_opT(t_token *tok);
-int is_redirT(t_token *tok);
+char	**copy_envp(char **envp);
+int		init_shlvl(char **envp);
+int		update_env_var(char ***envp, char *key, char *value);
+char	*new_env_str(char *key, char *value);
+void	**free_envp(char **envp);//cleanup
+int		find_env_varible(char **envp, char *key);
+char	*get_env_var(char **envp, char *key);//read var value
+void	unset_env_var(char ***envp, char *key);//remove var
+
+void	print_tokens(t_token *tokens);
+
+//check characters
+int		is_operator_char(char c);
+int		is_whitespace(char c);
+int		is_quote(char c);
+int		is_redirection(char c);
+int		valid_char(char c);
+int		null_terminator(char c);
 
 #endif

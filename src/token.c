@@ -6,10 +6,10 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 22:19:29 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/08/05 16:02:31 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 15:20:27 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "lexer.h"
+#include "shell.h"
 #include <stddef.h>
 
 int	is_pipe_token(t_token *token)

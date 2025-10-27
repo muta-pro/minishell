@@ -6,14 +6,14 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 09:59:33 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/20 14:30:45 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 15:22:00 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 //handle single quote
 //handle doubble quote
 //inside/ouside quotes
 //quote state
-#include "token.h"
+#include "shell.h"
 
 t_scan_state	sngl_quote(char **buff, char curr, size_t *i)
 {

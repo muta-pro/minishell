@@ -6,10 +6,11 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 20:38:56 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/11 13:10:14 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 15:21:33 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
+#include "shell.h"
 
 char	*new_env_str(char *key, char *value)
 {

@@ -6,15 +6,13 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 18:50:31 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/22 13:50:42 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 15:19:49 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LEXER_H
 # define LEXER_H
 
-#include <stdlib.h>
-#include <stdio.h>
-#include "libft.h"
+#include "token.h"
 
 typedef struct s_env
 {

@@ -6,27 +6,24 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/22 10:30:24 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 20:27:32 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "shell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "libft.h"
-#include "lexer.h"
 
-void	print_tokens(t_token *tokens);
+volatile sig_atomic_t	g_got_sigint = 0;
 
-void	handle_sig(int sig)
+static void	handle_sigint(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
-	rl_on_nl();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	g_got_sigint = 1;
+	write(STDOUT_FILENO, "\n", 1);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -34,19 +31,29 @@ int	main(int argc, char **argv, char **envp)
 	char		*line;
 	char		**envp_cpy;
 	t_token		*tokens;
-	t_ast		*ast;
+	// t_ast		*ast;
 
 	(void)(argc);
 	(void)(argv);
-	signal(SIGINT, handle_sig);
-	signal(SIGQUIT, SIG_IGN);
+	install_parent_handler();
 	envp_cpy = copy_envp(envp);
-	init_shlvl(&envp_cpy); //to handle mem alloc failure
+	init_shlvl(envp_cpy); //to handle mem alloc failure
 	while (1)
 	{
+		if (got_sig_int)
+		{
+			got_sig_int = 0;
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			rl_redisplay();
+			last_status = 130;
+		}
 		line = readline("minishell: ");
 		if (!line)
+		{
+			write(STDOUT_FILENO, "exit\n", 5);
 			break ;
+		}
 		if (*line)
 		{
 			add_history(line);

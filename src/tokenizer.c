@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:45:03 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/22 10:07:33 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 17:01:40 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 //LEXICAL ANALYSIS
@@ -14,11 +14,9 @@
 //cat file | grep word
 //echo hello > output.txt
 
-#include <stdlib.h>
-#include <stdio.h>
-#include "token.h"
+#include "shell.h"
 
-t_token	*create_token(const char *lexeme, t_tok_type type)
+t_token	*create_token(t_tok_type type, const char *lexeme)
 {
 	t_token	*token;
 
@@ -36,7 +34,7 @@ t_token	*create_token(const char *lexeme, t_tok_type type)
 
 void	insert_token(t_token **head, t_token *new_token)
 {
-	t_token *curr;
+	t_token	*curr;
 
 	if (!new_token)
 		return ;
@@ -46,9 +44,9 @@ void	insert_token(t_token **head, t_token *new_token)
 	{
 		curr = *head;
 		while (curr->next != NULL)
-			curr->next = new_token;
+			curr = curr->next;
+		curr->next = new_token;
 	}
-	curr->next = new_token;
 }
 
 void	free_tok(t_token *tok)

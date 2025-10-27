@@ -6,11 +6,10 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:05:05 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/22 09:59:53 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 15:21:18 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <lexer.h>
-#include <token.h>
+#include "shell.h"
 #include "libft.h"
 
 void	append_char(t_scanner *scanner, char c)

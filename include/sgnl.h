@@ -1,21 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   sgnl.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/20 13:28:22 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 11:46:41 by imutavdz         ###   ########.fr       */
+/*   Created: 2025/10/27 11:10:50 by imutavdz          #+#    #+#             */
+/*   Updated: 2025/10/27 11:16:24 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef PARSER_H
-# define PARSER_H
+#include <signal.h>
 
-
-//structure to hold info about single redir
-//struct for single cmnd
-//struct to hold entire cmnd list from a single line input
-//parser funciton
-
-#endif
+void handle_sig(int sig);
+void handle_sigint_no_newline(int num);

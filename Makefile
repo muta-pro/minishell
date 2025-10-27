@@ -1,34 +1,37 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-LDGLAGS = -lreadline -L/usr/local/opt/readline/lib
-CPPFLAGS = -Include -Ilibft -I/usr/local/opt/readline/include
+
+LDFLAGS = -lreadline -L/usr/local/opt/readline/lib
+
+INCDIR = include
+CPPFLAGS = -I$(INCDIR) -I$(LIBFTDIR) -I/usr/local/opt/readline/include
 
 NAME = minishell
 SRCDIR = src
 OBJDIR = obj
 LIBFTDIR = libft
+LIBFT = $(LIBFTDIR)/libft.a
+
 
 SRCF = minishell.c \
 		lexer.c scanner.c \
 		token.c tokenizer.c \
-		utils.c quotescan.c
+		utils.c quotescan.c \
+		env.c signlas.c
 SRCS = $(addprefix $(SRCDIR)/, $(SRCF))
-OBJS = $(addprefix $(OBJDIR)/, $(SRCF: .c=.o))
+OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+
 INCLUDE = -I$(INCDIR) -I$(LIBFTDIR) -I.
 
-OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRC_FILES))
-
-LIBFT = $(LIBFTDIR)/libft.a
 
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
 	@echo "$(NAME) is ready!"
 
 $(LIBFT):
-	make -sC $(LIBFTDIR)
+	@make -sC $(LIBFTDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(dir $@)

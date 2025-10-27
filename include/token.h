@@ -6,13 +6,13 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:38:12 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/20 18:34:17 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 15:11:15 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef TOKENS_H
-# define TOKENS_H
+#ifndef TOKEN_H
+# define TOKEN_H
 
-typedef enum scan_state //state management for the lexer
+typedef enum e_scan_state //state management for the lexer
 {
 	IN_DEFAULT,
 	IN_SNGL_QUOTE,
@@ -23,6 +23,7 @@ typedef enum scan_state //state management for the lexer
 
 typedef enum token_type
 {
+	T_DELIMITER,
 	T_WORD, //word
 	T_STR, //quoted str
 	T_EXIT_STATUS, //$?
@@ -46,20 +47,20 @@ typedef struct s_token
 	char			*lexeme;
 	struct	s_token	*next;
 }					t_token;
-//check characters
-int is_operator_char(char c);
-int is_whitespace(char c);
-int is_quote(char c);
-int	is_redirection(char c);
-int	valid_char (char c);
-int	null_terminator(char c);
+
+//FOR THE PARSER check for token type
+int	is_string_token(t_token *token);
+int	is_variable_token(t_token *token);
+int	is_pipe_token(t_token *token);
+int	is_delimiter_token(t_token *token);
+int	is_exit_status_token(t_token *token);
 
 t_scan_state	sngl_quote(char **buff, char curr, size_t *i);
 t_scan_state	dbl_quote(char **buff, char curr, size_t *i);
 
 //token list management
 t_token		*create_token(t_tok_type type, const char *lexeme);
-void		insert_tokrn(t_token **head, t_token *new_token);
+void		insert_token(t_token **head, t_token *new_token);
 void		free_tok(t_token *tok);
 
 #endif
