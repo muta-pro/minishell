@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 20:27:32 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/10/27 20:47:02 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -19,12 +19,12 @@
 
 volatile sig_atomic_t	g_got_sigint = 0;
 
-static void	handle_sigint(int sig)
-{
-	(void)sig;
-	g_got_sigint = 1;
-	write(STDOUT_FILENO, "\n", 1);
-}
+// static void	handle_sigint(int sig)
+// {
+// 	(void)sig;
+// 	g_got_sigint = 1;
+// 	write(STDOUT_FILENO, "\n", 1);
+// }
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -35,18 +35,17 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)(argc);
 	(void)(argv);
-	install_parent_handler();
+	// install_parent_handler();
 	envp_cpy = copy_envp(envp);
 	init_shlvl(envp_cpy); //to handle mem alloc failure
 	while (1)
 	{
-		if (got_sig_int)
+		if (g_got_sigint)
 		{
-			got_sig_int = 0;
+			g_got_sigint = 0;
 			rl_on_new_line();
 			rl_replace_line("", 0);
 			rl_redisplay();
-			last_status = 130;
 		}
 		line = readline("minishell: ");
 		if (!line)
