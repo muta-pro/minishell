@@ -13,7 +13,7 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFTPATH)
-	cc $(SRCS) $(LIBFTPATH) -o minishell -lreadline
+	cc $(SRCS) -g $(LIBFTPATH) -o minishell -lreadline
 
 $(LIBFTPATH):
 	make -C libft/

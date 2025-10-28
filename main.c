@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/19 17:25:44 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/10/28 18:58:36 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,29 +47,30 @@ void	exec_pipe(t_cmd *cmd, t_env *env)
 				close(pipe_fds[0]);
 				dup2(pipe_fds[1], STDOUT_FILENO);
 				close(pipe_fds[1]);
-				execute_line(cmd, env);
-				exit(127);
 			}
-			if (prev_read != STDIN_FILENO)
-				close(prev_read);
-			if (cmd->next)
-			{
-				close(pipe_fds[1]);
-				prev_read = pipe_fds[0];
-			}
-			cmd = cmd->next;
+			execute_line(cmd, env);
+			exit(1); // !!!
 		}
+		if (prev_read != STDIN_FILENO)
+			close(prev_read);
+		if (cmd->next)
+		{
+			close(pipe_fds[1]);
+			prev_read = pipe_fds[0];
+		}
+		cmd = cmd->next;
 		int status;
-		waitpid(pid, &status, 0);
+		if (pid != -1)
+		{
+			waitpid(pid, &status, 0);
+		}
 	}
 }
 
 void	execute_line(t_cmd *cmd, t_env *env)
 {
-	__pid_t	pid;
-
-	while(cmd)
-	{
+	// while(1)
+	// {
 		if (!(strncmp(cmd->full_cmd[0], "cd", 2)))
 			ft_chdir(cmd);
 		else if (!(strcmp(cmd->full_cmd[0], "pwd")))
@@ -83,25 +84,9 @@ void	execute_line(t_cmd *cmd, t_env *env)
 		else if (!(strncmp("unset", cmd->full_cmd[0], 5)))
 			ft_unset(&env, cmd->full_cmd[1]);
 		else //(!(strncmp(cmd->full_cmd[0], "ls", 2)))
-		{
-			pid = fork();
-			if (pid == -1)
-			{
-				perror("fork fail");
-				return ;
-			}
-			if (!pid)
-			{
-				test_execve(env, cmd->full_cmd, cmd);
-			}
-			else
-			{
-				if (waitpid(pid, NULL, 0) == -1)
-					perror("error");
-			}
-		}
-		cmd = cmd->next;
-	}
+			test_execve(env, cmd->full_cmd, cmd);
+		// cmd = cmd->next;
+	// }
 }
 
 t_env	*add_new_node(void)
@@ -383,7 +368,7 @@ int	main(int ac, char **av, char **envp)
 			exit(0);
 		}
 		else
-			execute_line(cmd, env);	
+			exec_pipe(cmd, env);	
 		free(input_line);
 		free_cmd(&cmd);
 		input_line = NULL;
