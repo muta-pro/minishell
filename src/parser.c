@@ -6,126 +6,134 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:30:54 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/19 14:47:09 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/19 16:06:14 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
 implement recursive descent parser approach
 */
 #include "parser.h"
-
-build_ast(pipe, redirection, cmnd);
+#include "shell.h"
 
 t_ast_node	parser(char *tokens)
 {// Start the main parsing routine, checking for the highest precedence first
-	return (parse_pipilne(&tokens));
-	// t_token	*tok;
-
-	// init_lex();
-	// tok = next_token();
-	// pars_tok(tok)
-	// free_tok(&tok);
-	// return(ast);
+	return (parse_logic_op(&tokens));
 }
+
 t_ast_node parse_logic_op(t_token **tokens)
 {
 	t_ast_node	*node;
-	t_token		*op;
+	t_ast_node	*left;
+	t_tok_type		*type;
 
-	node = node = parse_pipilne(tokens);
-	if (!node)
+	left = parse_pipilne(tokens);
+	if (!left)
 		return (NULL);
-	while (peek(*tokens)->type = T_LOGIC_OR || peek(*tokens)->type == T_LOGIC_OR)
+	while (peek_tok(*tokens)->type = T_LOGIC_OR || peek_tok(*tokens)->type == T_LOGIC_AND
+		|| peek_tok(*tokens))
 	{
-		op = consume_tok(tokens, peek(*tokens)->type);
-		if (op->type == T_LOGIC_OR)
-			node = create_ast_nd(NODE_AND, node, NULL);
+		type = peek_tok(*tokens)->type;
+		consume_tok(tokens, type);
+		if (type == T_LOGIC_OR)
+			node = create_ast_nd(NODE_AND, left, NULL);
 		else
-			node = create_ast_nd(NODE_OR, node, NULL);
+			node = create_ast_nd(NODE_OR, left, NULL);
 		node->right = parse_pipilne(tokens);
-		if (!node->right)
-		{
-			print_sntx_err("missing cmnd afteoperator")
-			free(tree);
+		left = node;
+		if (!left->right)
 			return (NULL);
-		}
 	}
-	return (node);
+	return (left);
 }
 
-t_ast_node	parse_pipilne(t_token **tokens)
+t_ast_node	*parse_pipilne(t_token **tokens)
 {
-	t_ast_node	*left_cmnd;
-	t_ast_node	*pipe_node;
+	t_ast_node	*left;
+	t_ast_node	*node;
 
-	left_cmnd = parse_cmnd(tokens);
-	if (!left_cmnd)
+	left = parse_cmnd(tokens);
+	if (!left)
 		return (NULL);
-	if (peek_tok(*tokens)->type = T_PIPE);
+	if (peek_tok(*tokens) && peek_tok(*tokens)->type = T_PIPE);
 	{
 		consume_tok(tokens, T_PIPE);
-		pipe_node = create_ast_nd(NODE_PIPE, left_cmnd, NULL);
-		pipe_node->right = parse_pipilne(tokens);
-		if (!pipe_node->right)
-		{
+		node = create_ast_nd(NODE_PIPE, left_cmnd, NULL);
+		node->right = parse_cmnd(tokens);
+		left = node;
+		if (!left->right)
 			return (NULL);
-		}
-		return (pipe_node);
 	}
-	return (left_cmnd);
+	return (left);
 }
 
 t_ast_node	*parse_cmnd(t_token **tokens)
 {
-	t_ast_node	*cmnd_nd;
+	t_ast_node	*node;
 	char		**args; //array holding words
 	t_redir		*redirs; //LL of redirs
 
 	redirs = NULL;
 	args = NULL;
-	while (peek(*tokens)->type != T_EOF &&
-		peek(*tokens)->type != T_PIPE &&
-		peek(*tokens)->type != T_LOGIC_OR &&
-		peek(*tokens)->type != T_LOGIC_AND)
+	while (peek_tok(*tokens)->type != T_EOF &&
+		peek_tok(*tokens)->type != T_PIPE &&
+		peek_tok(*tokens)->type != T_LOGIC_OR &&
+		peek_tok(*tokens)->type != T_LOGIC_AND)
 	{
-		if (is_redir_token(peek(*tokens)))
-		{
-			redir_head = parse_redir(tokens, redir_head);
+		if (is_redir_token(peek_tok(*tokens)))
 			parse_redir(tokens, &redir_head);
+		else if (peek_tok(*tokens)->type == T_WORD || peek_tok(*tokens)->type == T_STR
+			|| peek_tok(*tokens)->type == T_VAR)
+		{
+			append_args(&args, peek_tok(*tokens)->lexeme);
+			consume_tok(tokens, peek_tok(*tokens)->type);
 		}
 		else
-		{
-			args = add_args(args, consume_tok(tokens, ...)->lexeme);
-			consume_tok(tokens, peek(*tokens)->type);
-		}
+			consume_tok(tokens, peek_tok(*tokens)->type);
 	}
-	if (!args && !cmnd_nd)
+	if (!args && !node)
 		return (print_sntx_err("just redir"));
-	cmnd_nd = create_ast_nd(NODE_CMND, NULL, NULL);
-	cmnd_nd->args = args;
-	cmnd_nd->redir_list = redir_head;
-	return (cmnd_nd);
+	node = create_ast_nd(NODE_CMND, NULL, NULL);
+	node->args = args;
+	node->redir_list = redirs;
+	return (node);
 }
+
+void parse_redir(t_token tokens **tokens, t_redir **redir_head)
+{
+	t_redir *new_node;
+	t_redir *last;
+	t_token *op;
+	t_token *file;
+
+	op = consume_tok(tokens, peek_tok(*tokens)->type);
+	file = consume_tok(tokens, T_WORD);
+	if (!file)
+		file = consume_tok(tokens, T_STR);
+	if (!file)
+	{
+		printf("syntax error near unexpected token\n");
+		return ;
+	}
+	new_node = malloc(sizeof(t_redir));
+	new_node->type = op->type;
+	new_node->file_name = strdup(file->lexeme);
+	new_node->next = NULL;
+	if (!*redir_head)
+		*redir_head = new_node;
+	else
+	{
+		last = *redir_head;
+		while (last->next)
+			last = last->next;
+		last->next = new_node;
+	}
+}
+
 
 //malloc and init new ast_nd
-t_ast_node	*create_ast_nd(t_node_t type, t_ast_node *l, t_ast_node *r); 
-t_redir		*parse_redir(t_token **tokens);
-//manage token list
-t_token		*peek_tok(t_token *head)
-{
-	return (curr_tok);
-}
 
-t_token		*consume_tok(t_token **head, t_tok_type expected)
-{
-	//check match
-	if (curr_tok != expected)
-		return (print syntax error)
 
-	tokens = (*tokens)->next;
-	return (tok);
 
-}
 
 
 

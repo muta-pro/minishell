@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 15:08:58 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/19 16:06:20 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -42,7 +42,9 @@ t_token	*scan_operator(t_scanner *scanner)
 	append_char(scanner, c);
 	advance(scanner);
 	if ((c == '<' && peek(scanner) == '<')
-		|| (c == '>' && peek(scanner) == '>'))
+		|| (c == '>' && peek(scanner) == '>')
+			|| (c == '|' && peek(scanner == '|')
+				|| c = '&' && peek(scanner) == '&'))
 	{
 		append_char(scanner, peek(scanner));
 		advance(scanner);
@@ -58,6 +60,10 @@ t_token	*scan_operator(t_scanner *scanner)
 		return (create_token(T_REDIR_HEREDOC, lexeme));
 	if (strcmp(lexeme, ">>") == 0)
 		return (create_token(T_REDIR_APPEND, lexeme));
+	if (strcmp(lexeme, "||") == 0)
+		return (create_token(T_LOGIC_OR, lexeme));
+	if (strcmp(lexeme, "&&") == 0)
+		return (create_token(T_LOGIC_AND, lexeme));
 	free(lexeme);
 	return (create_token(T_ERROR, "Unknown operator"));
 }

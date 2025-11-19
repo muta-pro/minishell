@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:28:22 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/19 13:55:55 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/19 16:06:18 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -21,6 +21,7 @@ core AST node structure. It is recursive:
 # define PARSER_H
 
 # include "token.h"
+# include "libft.h"
 
 typedef enum e_node_type
 {
@@ -48,15 +49,16 @@ typedef struct s_ast_node
 }	t_ast_node;
 
 //main parser entry point
-t_ast_node *paser(t_token *token);
+t_ast_node	*paser(t_token *token);
 
-t_ast_node  *build_ast(t_token *token_list);
-t_ast_node parse_pipilne(t_token **tokens);
-t_ast_node *parse_cmnd(t_token **tokens);
+t_ast_node	*parse_logic_op(t_token *token_list);
+t_ast_node	*parse_pipilne(t_token **tokens);
+t_ast_node	*parse_cmnd(t_token **tokens);
 t_redir *parse_redir(t_token **tokens);
 
-t_token *peek_tok(t_token *head);
-
-t_token *consume_tok(t_token **head, t_tok_type expected);
+t_token		*peek_tok(t_token *head);
+t_token		*consume_tok(t_token **head, t_tok_type expected);
+void		append_arg(char ***args, char *new_arg);
+int			is_redir_tok(t_token *token);
 
 #endif
