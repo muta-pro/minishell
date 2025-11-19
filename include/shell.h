@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 20:39:10 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:10:24 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef SHELL_H
@@ -20,10 +20,15 @@ Expander: expand variables if delimiter wasn't quoted*/
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <errno.h>
+# include <signal.h>
+# include <unistd.h>
+# include <stdbool.h>
+# include <dirent.h>
+# include <fcntl.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 # include "libft.h"
-# include "lexer.h"
-# include "parser.h"
-# include "sgnl.h"
 
 typedef struct s_heredoc
 {

@@ -6,16 +6,51 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:28:22 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 11:46:41 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:10:27 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+/*
+recursive node structure that can represent either an operator or a command.
+Define the type of node in the AST
+A structure to hold information about a single redirection.
+core AST node structure. It is recursive:
+	- The command and its arguments (argv-style array).
+	- All redirections for this command.
+*/
 #ifndef PARSER_H
 # define PARSER_H
 
+# include "token.h"
 
-//structure to hold info about single redir
-//struct for single cmnd
-//struct to hold entire cmnd list from a single line input
-//parser funciton
+typedef enum e_node_type
+{
+	NODE_CMND,
+	NODE_PIPE,
+	NODE_AND,
+	NODE_OR
+	NODE_REDIR,
+	NODE_MERR,
+	NODE_ARG
+}	t_node_t;
+
+typedef struct s_redir
+{
+	t_tok_type		type;
+	char			*file_name;
+	struct s_redir	*next;	
+}					t_redir;
+
+typedef struct s_ast_node
+{
+	t_node_t			type;
+	struct s_ast_node	*left;
+	struct s_ast_node	*right;
+	char				**args;
+	t_redir				*redir_list;
+
+}	t_ast_node;
+
+//main parser entry point
+t_ast_node  *build_ast(t_token *token_list);
 
 #endif

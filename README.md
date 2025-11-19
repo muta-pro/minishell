@@ -1,8 +1,12 @@
-# minishell
+# minishell 2025
 
-> > > > > > > > > > Rice-cooker team collab > Yo/Iv-an
+> > > > > > > > > > > > > > > >>>>>>>>>>> Rice-cooker team collab > Yo/Iv-an
 
-$$$ ABOUT THE SHELL $$$
+$$$ 	ABOUT THE SHELL 	$$$ 
+
+**SKIP GOTO USAGE**
+
+>++ PARSING ++<
 
 # ======Redirection Operators
 > (Great): Redirects standard output (stdout) to a file. If the file doesn't exist, it's created. If it does exist, its contents are overwritten.
@@ -37,9 +41,45 @@ Single Quotes ('): These quotes are for literal strings. The shell treats everyt
 
 \> Example: echo '$USER' will print the literal string $USER and not your username.
 
-__GRAMMAR:
+__GRAMMAR: syntax validation__
+
 - read POSIX standard, specifically the section on "Shell Command Language." : details command structure, variable expansion rules, redirection syntax, and how operators like |, &, &&, and || are processed.
 
-- build a State machine.
+\> Example:
+\+ redirection token (<, >, >>) must be followed by a STRING token (the file name).
+\+ pipe token (|) :
+	[lexical analysis] - recognise pipe token
+	[syntatic analysis] - rule require that pipe tok must be followed by cmnd. if missing:
+	[multiline state] - shell prompts for more input: pipe> (visual cue)
+	[combining the cmnd] - two lines of input into single cmnd
+
+- build a State machine : By moving between different states, your parser can correctly 		handle complex sequences of characters.
+	Default State: The initial state where the parser is looking for commands, arguments, pipes, and redirections. Spaces and tabs act as delimiters.
+
+	Single-Quote State: Entered when a single quote (') is encountered. In this state, all 	characters are treated literally until the matching closing quote is found. Variable 	expansion is disabled.
+	
+	Double-Quote State: Entered when a double quote (") is encountered. In this state, characters 	are also treated literally, but with key exceptions. Variable expansion ($) and command 	substitution (``` ` ``) are still enabled. The parser must look for and process these special 	characters even while inside double quotes.
+	
+	Escape State: Some shells, including Bash, have an escape state entered after a backslash (\)	. This tells the parser to treat the very next character as a literal character, even if it 	would normally have a special meaning (e.g., \$ prints a literal $ instead of expanding a 	variable).
+
+- ID tokens & token linked list
+- Syntax analysis : cmnd sequence logic
+- Handle Error & Status Message: report outcome of executions
+	ex: syntax error near unexpected token 'newline'
+	ex: exit status SUCCESS 0 or ERROR != 0 : manage exit status variable 
+	ex: empty files and output : but still exit status 0.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

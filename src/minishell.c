@@ -6,16 +6,14 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 20:47:02 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:10:25 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include "lexer.h"
+#include "token.h"
+#include "parser.h"
+#include "sgnl.h"
 
 volatile sig_atomic_t	g_got_sigint = 0;
 

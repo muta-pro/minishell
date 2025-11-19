@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 14:57:07 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:10:25 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -26,6 +26,7 @@ WHAT'S THE NEXT TOKEN?
 //single character tokens | ; < > & (>>)
 //words are identifires and flags starting with -
 //handle quotes and single quotes backticks
+//add a  condition statements for determing if change of state
 //all else is an error TOKEN
 void	init_scanner(t_scanner *scanner, char *input_text)
 {
