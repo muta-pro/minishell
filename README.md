@@ -1,8 +1,6 @@
 # minishell 2025
-
 > > > > > > > > > > > > > > > >>>>>>>>>>> Rice-cooker team collab > Yo/Iv-an
-
-$$$ 	ABOUT THE SHELL 	$$$ 
+$$$ ABOUT THE SHELL $$$ 
 
 **SKIP GOTO USAGE**
 
