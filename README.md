@@ -2,7 +2,7 @@
 
 > > > > > > > > > > > > > > > >>>>>>>>>>> Rice-cooker team collab > Yo/Iv-an
 
-$$$ 	ABOUT THE SHELL 	$$$ 
+$$$ ABOUT THE SHELL $$$ 
 
 **SKIP GOTO USAGE**
 
