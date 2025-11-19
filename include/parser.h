@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:28:22 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/19 13:10:27 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:55:55 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -28,9 +28,6 @@ typedef enum e_node_type
 	NODE_PIPE,
 	NODE_AND,
 	NODE_OR
-	NODE_REDIR,
-	NODE_MERR,
-	NODE_ARG
 }	t_node_t;
 
 typedef struct s_redir
@@ -51,6 +48,15 @@ typedef struct s_ast_node
 }	t_ast_node;
 
 //main parser entry point
+t_ast_node *paser(t_token *token);
+
 t_ast_node  *build_ast(t_token *token_list);
+t_ast_node parse_pipilne(t_token **tokens);
+t_ast_node *parse_cmnd(t_token **tokens);
+t_redir *parse_redir(t_token **tokens);
+
+t_token *peek_tok(t_token *head);
+
+t_token *consume_tok(t_token **head, t_tok_type expected);
 
 #endif
