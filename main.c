@@ -6,14 +6,13 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/10/28 18:58:36 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/11/28 18:54:06 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	test_execve(t_env *env, char **full_cmd, t_cmd *cmd);
-void	execute_line(t_cmd *cmd, t_env *env);
+// #include "ast.h"
+#include "includes/parser.h"
 
 void	exec_pipe(t_cmd *cmd, t_env *env)
 {
@@ -67,27 +66,27 @@ void	exec_pipe(t_cmd *cmd, t_env *env)
 	}
 }
 
-void	execute_line(t_cmd *cmd, t_env *env)
-{
-	// while(1)
-	// {
-		if (!(strncmp(cmd->full_cmd[0], "cd", 2)))
-			ft_chdir(cmd);
-		else if (!(strcmp(cmd->full_cmd[0], "pwd")))
-			ft_getcwd(cmd);
-		else if (!(strncmp("exit", cmd->full_cmd[0], 4)))
-			ft_exit(cmd->full_cmd[1]);
-		else if (!(strncmp("env", cmd->full_cmd[0], 3)))
-			ft_env(env);
-		else if (!(strncmp("export", cmd->full_cmd[0], 6)))
-			ft_export(&env, cmd->full_cmd[1]);
-		else if (!(strncmp("unset", cmd->full_cmd[0], 5)))
-			ft_unset(&env, cmd->full_cmd[1]);
-		else //(!(strncmp(cmd->full_cmd[0], "ls", 2)))
-			test_execve(env, cmd->full_cmd, cmd);
-		// cmd = cmd->next;
-	// }
-}
+// void	execute_line(t_cmd *cmd, t_env *env)
+// {
+// 	// while(1)
+// 	// {
+// 		if (!(strncmp(cmd->full_cmd[0], "cd", 2)))
+// 			ft_chdir(cmd);
+// 		else if (!(strcmp(cmd->full_cmd[0], "pwd")))
+// 			ft_getcwd(cmd);
+// 		else if (!(strncmp("exit", cmd->full_cmd[0], 4)))
+// 			ft_exit(cmd->full_cmd[1]);
+// 		else if (!(strncmp("env", cmd->full_cmd[0], 3)))
+// 			ft_env(env);
+// 		else if (!(strncmp("export", cmd->full_cmd[0], 6)))
+// 			ft_export(&env, cmd->full_cmd[1]);
+// 		else if (!(strncmp("unset", cmd->full_cmd[0], 5)))
+// 			ft_unset(&env, cmd->full_cmd[1]);
+// 		else //(!(strncmp(cmd->full_cmd[0], "ls", 2)))
+// 			test_execve(env, cmd->full_cmd, cmd);
+// 		// cmd = cmd->next;
+// 	// }
+// }
 
 t_env	*add_new_node(void)
 {
@@ -136,22 +135,21 @@ void	build_env(char **envp, t_env **env)
 	*env = start;
 }
 
-void free_cmd(t_cmd **cmd)
-{
-	t_cmd	*temp;
-	t_cmd	*head;
-
-	head = *cmd;
-	while (*cmd)
-	{
-		temp = *cmd;
-		*cmd = (*cmd)->next;
-		free(temp->full_cmd);
-		free(temp);
-		temp = NULL;
-	}
-	*cmd = head;
-}
+// void free_cmd(t_cmd **cmd)
+// {
+// 	t_cmd	*temp;
+// 	t_cmd	*head;
+// 	head = *cmd;
+// 	while (*cmd)
+// 	{
+// 		temp = *cmd;
+// 		*cmd = (*cmd)->next;
+// 		free(temp->full_cmd);
+// 		free(temp);
+// 		temp = NULL;
+// 	}
+// 	*cmd = head;
+// }
 
 void free_env(t_env **env)
 {
@@ -267,37 +265,53 @@ char	*get_path(char **twoDenv, char *cmd)
 	return (free_arr(split_paths), full_path);
 }
 
-void	test_execve(t_env *env, char **full_cmd, t_cmd *cmd)	
+// void	test_execve(t_env *env, char **full_cmd, t_cmd *cmd)	
+// {
+// 	char	**twoDenv;
+// 	char	*path;
+// 	path = NULL;
+// 	twoDenv = list_to_2d(env);
+// 	path = get_path(twoDenv, full_cmd[0]);
+// 	if (execve(path, full_cmd, twoDenv) == -1)
+// 	{
+// 		free_arr(twoDenv);
+// 		free(path);
+// 		free_env(&env);
+// 		free_cmd(&cmd);
+// 		exit(0); // handle exit
+// 	}
+// }
+
+void	execute_external(t_env *env, t_ast_node* cmd)	
 {
 	char	**twoDenv;
 	char	*path;
 	
 	path = NULL;
 	twoDenv = list_to_2d(env);
-	path = get_path(twoDenv, full_cmd[0]);
-	if (execve(path, full_cmd, twoDenv) == -1)
+	path = get_path(twoDenv, cmd->args[0]);
+	if (execve(path, cmd->args, twoDenv) == -1)
 	{
-		free_arr(twoDenv);
-		free(path);
-		free_env(&env);
-		free_cmd(&cmd);
+		// free_arr(twoDenv);
+		// free(path);
+		// free_env(&env);
+		// free_cmd(&cmd);
 		exit(0); // handle exit
 	}
 }
 
-int		check_for_pipe(char *input_line)		// test func
-{
-	int i = 0;
-
-	while (input_line[i])
-	{
-		if (input_line[i] == '|')
-			return 1;
-		else
-			i++;
-	}
-	return 0;
-}
+// int		check_for_pipe(char *input_line)		// test func
+// {
+// 	int i = 0;
+// 	while (input_line[i])
+// 	{
+// 		if (input_line[i] == '|')
+// 			return 1;
+// 		else
+// 			i++;
+// 	}
+// 	return 0;
+// }
 
 t_cmd	*add_new_cmd(void)
 {
@@ -333,12 +347,204 @@ void	get_cmds(t_cmd **cmd, char *input_line)
 	// printf("cmd1: %s\n\ncmd2: %s\n\n", cmd1, cmd2);
 }
 
+void	ft_getcwd2()
+{
+	char	*cwd;
+	cwd = getcwd(NULL, 0);
+	printf("%s\n", cwd);
+	free(cwd);
+}
+
+void	ft_chdir2(t_ast_node *cmd, t_env *env)
+{
+	char	*rltv_to_full;
+	char	*current;
+
+	if (cmd->args[1] == NULL || !(strncmp(cmd->args[1], "~", 1)))
+	{
+		while (strcmp(env->key, "HOME"))
+			env = env->next;
+		chdir(env->value);
+	}
+	else if (!(strncmp(cmd->args[1], "/", 1)))
+		chdir(cmd->args[1]);
+	else
+	{
+		current = getcwd(NULL, 0);
+		rltv_to_full = ft_strjoin(current, "/");
+		free(current);
+		current = ft_strdup(rltv_to_full);
+		rltv_to_full = ft_strjoin(current, cmd->args[1]);
+        free(current);
+		if (chdir(rltv_to_full) == -1)
+			perror(rltv_to_full);
+		free(rltv_to_full);
+	}
+	ft_getcwd2();
+}
+
+void	execute_builtin(t_ast_node *cmd, t_env *env)
+{
+	(void)env;
+	if (!strcmp(cmd->args[0], "pwd"))
+		ft_getcwd2();
+	if (!strcmp(cmd->args[0], "cd"))
+		ft_chdir2(cmd, env);
+	if (!strcmp(cmd->args[0], "env"))
+		ft_env(env);
+	if (!strcmp(cmd->args[0], "export"))
+		ft_export(&env, cmd->args[1]);
+	if (!strcmp(cmd->args[0], "unset"))
+	{
+		ft_env(env);
+		printf("\n\n\n");
+		ft_unset(&env, cmd->args[1]);
+		ft_env(env);
+	}
+
+}
+
+void	execute_single_cmd(t_ast_node *cmd, t_env *env)
+{
+	int	i = 0;
+	const char *builtins[] = {"cd", "pwd", "exit", "env", "export", "unset", NULL};
+	while (builtins[i])
+	{
+		if (!strcmp(cmd->args[0], builtins[i]))
+		{
+			execute_builtin(cmd, env);
+			break ;
+		}
+		else
+			execute_external(env, cmd);
+		i++;
+	}
+}
+
+void add_pid(t_pids **pids, int pid)
+{
+	t_pids	*new;
+	t_pids	*current_node;
+
+	current_node = *pids;
+
+	new = malloc(sizeof(t_pids));
+	if (!new)
+		printf("fix"); // fix
+	new->pid = pid;
+	new->next = NULL;
+	if (*pids == NULL)
+		*pids = new;
+	else
+	{
+		while (current_node->next)
+			current_node = current_node->next;
+		current_node->next = new;
+	}
+	
+}
+
+void	wait_children(t_pids *pids, pid_t pid)
+{
+	int		status;
+	t_pids *curr;
+
+	status = 0;
+	curr = pids;
+	while (curr)
+	{
+		if (curr->pid == pid)
+			waitpid(curr->pid, &status, 0);
+		else
+			waitpid(curr->pid, NULL, 0);
+		curr = curr->next;
+	}
+}
+
+void	exec_pipe2(t_env *env, t_ast_node *node)
+{
+	int			pipe_fds[2];
+	int			input_fd;
+	int			last_cmd;
+	t_ast_node	*curr;
+	t_ast_node	*runcmd;
+	pid_t		pid;
+	t_pids		*all_pids;
+
+	all_pids = NULL;
+	input_fd = STDIN_FILENO;
+	curr = node;
+	while (curr)
+	{
+		last_cmd = 0;
+		if (curr->type == NODE_PIPE)
+			runcmd = curr->left;
+		else
+		{
+			runcmd = curr;
+			last_cmd = 1;
+		}
+
+		
+		if (!last_cmd)
+			if (pipe(pipe_fds) == -1)
+				printf("fix this"); // fix this
+		pid = fork();
+		if (pid == -1)
+			printf("fix tihs"); // fix this
+
+		// Child process	
+		if (pid == 0)
+		{
+			if (input_fd != STDIN_FILENO)
+			{
+				dup2(input_fd, STDIN_FILENO);
+				close(input_fd);
+			}
+			if (!last_cmd)
+			{
+				close(pipe_fds[0]);
+				dup2(pipe_fds[1], STDOUT_FILENO);
+				close(pipe_fds[1]);
+			}
+			execute_single_cmd(runcmd, env);
+		}
+		
+		// Parent process
+		add_pid(&all_pids, pid);
+		if (input_fd != STDIN_FILENO)
+			close(input_fd);
+		if (!last_cmd)
+		{
+			close(pipe_fds[1]);
+			input_fd = pipe_fds[0];
+			curr = curr->right;
+		}
+		else
+			curr = NULL;
+	}
+
+	// Wait for children
+	wait_children(all_pids, pid);
+}
+
+void	execute_AST(t_env *env, t_ast_node *node)
+{
+	while (node)
+	{
+		if (node->type == NODE_PIPE)
+			exec_pipe2(env, node);
+		else
+			execute_single_cmd(node, env);
+	}
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	(void)ac;
 	(void)av;
-	char 	*input_line;
-	t_cmd	*cmd;
+	// char 	*input_line;
+	// t_cmd	*cmd;
 	t_env	*env;
 
 	env = (t_env *)malloc(sizeof(*env));
@@ -346,34 +552,53 @@ int	main(int ac, char **av, char **envp)
 		return (0);
 	build_env(envp, &env);
 
-	while (1)
-	{
-		cmd = NULL;
-		cmd = malloc(sizeof(t_cmd));
-		if (!cmd)
-			return (free(env), 0);
-		cmd->next = NULL;
-		input_line = readline("minishell> ");
-		if (check_for_pipe(input_line))
-		{
-			get_cmds(&cmd, input_line);
-		}
-		else
-			cmd->full_cmd = ft_split(input_line, ' ');
-		if (input_line == NULL)
-		{
-			printf("exit\n");
-			free_cmd(&cmd);
-			free_env(&env);
-			exit(0);
-		}
-		else
-			exec_pipe(cmd, env);	
-		free(input_line);
-		free_cmd(&cmd);
-		input_line = NULL;
-	}
-	free_cmd(&cmd);
+	char **testargs;
+	testargs = malloc(sizeof(testargs));
+	if (!testargs)
+		return 1;
+	testargs[0] = ft_strdup("ls");
+	testargs[1] = ft_strdup("-l");
+	testargs[2] = NULL;
+	
+	t_ast_node simple_cmd = {
+    .type = NODE_CMND,
+    .left = NULL,
+    .right = NULL,
+    .args = testargs,
+	.redir_list = NULL
+	};
+	// ft_getcwd2();
+	// printf("\n\n");
+	execute_single_cmd(&simple_cmd, env);
+	
+	// while (1)
+	// {
+	// 	cmd = NULL;
+	// 	cmd = malloc(sizeof(t_cmd));
+	// 	if (!cmd)
+	// 		return (free(env), 0);
+	// 	cmd->next = NULL;
+	// 	input_line = readline("minishell> ");
+	// 	if (check_for_pipe(input_line))
+	// 	{
+	// 		get_cmds(&cmd, input_line);
+	// 	}
+	// 	else
+	// 		cmd->full_cmd = ft_split(input_line, ' ');
+	// 	if (input_line == NULL)
+	// 	{
+	// 		printf("exit\n");
+	// 		free_cmd(&cmd);
+	// 		free_env(&env);
+	// 		exit(0);
+	// 	}
+	// 	else
+	// 		exec_pipe(cmd, env);	
+	// 	free(input_line);
+	// 	free_cmd(&cmd);
+	// 	input_line = NULL;
+	// }
+	// free_cmd(&cmd);
 	free_env(&env);
 	return (0);
 }

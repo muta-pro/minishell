@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/05 17:12:21 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/05 17:12:40 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/11/19 16:24:09 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ typedef enum e_node_type
 */
 typedef struct s_options
 {
-	t_node_type		node_type;
-	t_token_type	token_type; // The executor checks this for <, >, >>
-	char			*content;   // The argument ("ls") or file ("out.txt")
-	t_options		*next;
+	t_node_type			node_type;
+	t_token_type		token_type; // The executor checks this for <, >, >>
+	char				*content;   // The argument ("ls") or file ("out.txt")
+	struct s_options	*next;
 }	t_options;
 
 
