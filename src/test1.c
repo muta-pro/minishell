@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 16:25:46 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 15:41:03 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 20:15:59 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <string.h>
@@ -107,25 +107,25 @@ int main(int argc, char **argv)
     
         // 2. Run Parser
         // parser() takes the head of the token list
-        // t_ast_node *ast = parser(tokens);
+        t_ast_node *ast = parser(tokens);
         
-        // printf("\n=== 2. PARSER OUTPUT (AST) ===\n");
-        // if (!ast)
-        //     printf("Error: Parser returned NULL (Syntax Error)\n");
-        // else
-        //     print_ast(ast, 0);
-        // printf("==============================\n");
+        printf("\n=== 2. PARSER OUTPUT (AST) ===\n");
+        if (!ast)
+            printf("Error: Parser returned NULL (Syntax Error)\n");
+        else
+            print_ast(ast, 0);
+        printf("==============================\n");
     
-        // // 3. Cleanup
-        // // Note: In your real shell, you free AST after execution. 
-        // // Since we aren't executing, we free it here.
-        // if (ast) 
-        //     free_ast(ast, NULL); 
+        // 3. Cleanup
+        // Note: In your real shell, you free AST after execution. 
+        // Since we aren't executing, we free it here.
+        if (ast) 
+            free_ast(ast, NULL); 
         
-        // // Note: Your parser might consume tokens, or your free_ast might not free 
-        // // the tokens themselves depending on implementation. 
-        // // Usually, you free tokens separately if they aren't linked into the AST.
-        // // For this test, we can let OS cleanup or call free_tok(tokens);
+        // Note: Your parser might consume tokens, or your free_ast might not free 
+        // the tokens themselves depending on implementation. 
+        // Usually, you free tokens separately if they aren't linked into the AST.
+        // For this test, we can let OS cleanup or call free_tok(tokens);
         
         return (0);
 

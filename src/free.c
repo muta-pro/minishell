@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:42:53 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 16:32:00 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 18:37:20 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "parser.h"
@@ -42,7 +42,8 @@ void	free_arr(char **args)
 
 void	free_redirs(t_redir *redirs)
 {
-	t_redir *tmp;
+	t_redir	*tmp;
+
 	while (redirs)
 	{
 		tmp = redirs;
@@ -57,4 +58,4 @@ void	free_envp(char **envp_cpy)
 	free_arr(envp_cpy);
 }
 
-void clear_history();
+void	clear_history();

@@ -6,13 +6,13 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:05:05 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 16:32:14 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 20:13:22 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
 #include "libft.h"
 
-void	append_char(t_scanner **scanner, char c)
+void	append_char(t_scanner *scanner, char c)
 {
 	if (scanner->buff_idx < 1023)
 		scanner->buffer[scanner->buff_idx++] = c;
@@ -84,20 +84,24 @@ int	null_terminator(char c)
 	return (0);
 }
 
-t_scan_state	*curr_state(char *input_text)
+t_scan_state	curr_state(char *input_char)
 {
-	t_scan_state state;
+	t_scan_state	state;
 
-	if (!input_text)
+	if (!input_char)
 		return (IN_DEFAULT);
-	if (*input_text == 39)
+	if (*input_char == 39)
 		state = IN_SNGL_QUOTE;
-	else if (*input_text == 34)
+	else if (*input_char == 34)
 		state = IN_DBL_QUOTE;
-	else if (*input_text == 92)
+	else if (*input_char == 92)
 		state = IN_ESCAPE;
 	else
 		state = IN_DEFAULT;
 	return (state);
 }
 
+void	print_err(char *type, const char *msg)
+{
+	printf("%s %s", type, msg);
+}

@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 10:42:05 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 15:53:53 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 18:39:56 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -16,7 +16,7 @@ t_token	*peek_tok(t_token *tokens)
 	return (tokens);
 }
 
-t_token		*consume_tok(t_token **tokens, t_tok_type expected)
+t_token	*consume_tok(t_token **tokens, t_tok_type expected)
 {
 	t_token	*curr;
 
@@ -29,7 +29,7 @@ t_token		*consume_tok(t_token **tokens, t_tok_type expected)
 
 t_ast_node	*create_ast_nd(t_node_t type, t_ast_node *l, t_ast_node *r)
 {
-	t_ast_node	 *node;
+	t_ast_node	*node;
 
 	node = malloc(sizeof(t_ast_node));
 	if (!node)
@@ -42,14 +42,15 @@ t_ast_node	*create_ast_nd(t_node_t type, t_ast_node *l, t_ast_node *r)
 	return (node);
 }
 
-void append_args(char ***args, char *new_arg)
+void	append_args(char ***args, char *new_arg)
 {
-	int 	count;
+	int		count;
 	char	**new_list;
-	int 	i;
+	int		i;
 
 	count = 0;
 	if (*args)
+	{
 		while ((*args)[count])
 			count++;
 		new_list = malloc(sizeof(char *) * (count + 2));
@@ -64,6 +65,7 @@ void append_args(char ***args, char *new_arg)
 		if (*args)
 			free(*args);
 		*args = new_list;
+	}
 }
 
 int	is_redir_token(t_token *token)
@@ -73,5 +75,3 @@ int	is_redir_token(t_token *token)
 	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
 		|| token->type == T_REDIR_APPEND || token->type == T_REDIR_HEREDOC);
 }
-
-
