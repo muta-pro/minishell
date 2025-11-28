@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:30:54 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 23:38:08 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:39:36 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -29,7 +29,8 @@ t_ast_node	*parse_logic_op(t_token **tokens)
 	left = parse_pipelne(tokens);
 	if (!left)
 		return (NULL);
-	while (peek_tok(*tokens) && (peek_tok(*tokens)->type == T_LOGIC_OR || peek_tok(*tokens)->type == T_LOGIC_AND))
+	while (peek_tok(*tokens) && (peek_tok(*tokens)->type == T_LOGIC_OR
+			|| peek_tok(*tokens)->type == T_LOGIC_AND))
 	{
 		type = peek_tok(*tokens)->type;
 		consume_tok(tokens, type);
