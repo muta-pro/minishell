@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/19 16:09:50 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 14:57:12 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -64,13 +64,13 @@ int	main(int argc, char **argv, char **envp)
 				free(line);
 				continue ;
 			}
-			ast = parser(tokens);
-			if (ast)
-			{
-				printf("AST built successfully!\n");
-				execute(ast, envp_cpy);
-				// free_ast(ast);
-			}
+			// ast = parser(tokens);
+			// if (ast)
+			// {
+			// 	printf("AST built successfully!\n");
+			// 	execute(ast, envp_cpy);
+			// 	free_ast(ast);
+			// }
 			// if (!ast)
 			// {
 			// 	free_tok(tokens);

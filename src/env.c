@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 20:38:56 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 15:21:33 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 14:57:08 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
@@ -69,9 +69,9 @@ int	init_shlvl(char **envp)
 	shlvl_value++;
 	update_env_var(&envp, "SHLVL", ft_itoa(shlvl_value));
 }
+char	**copy_envp(char **envp);//dup env
 
 char	*get_env_var(char **envp, char *key);//read var value
+
 void	unset_env_var(char ***envp, char *key);//remove var
-char	**copy_envp(char **envp);//dup env
 void	**free_envp(char **envp);//cleanup
-int	find_env_varible(char **envp, char *key);

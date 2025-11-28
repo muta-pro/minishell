@@ -1,16 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   evaluator.c                                        :+:      :+:    :+:   */
+/*   expand_tree.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/10 17:40:19 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 14:00:04 by imutavdz         ###   ########.fr       */
+/*   Created: 2025/11/28 15:07:29 by imutavdz          #+#    #+#             */
+/*   Updated: 2025/11/28 15:16:43 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-//variable expansion
-//syntax_validation, syntax errors. $ $ $ $ $ $ 
-void expand(t_ast_node *node, t_env **list, t)
-expand_var();
-expand_wildcards();
+#include "parser.h"
+#include "shell.h"
+
+void expand_ast(t_ast_node *node, char **envp)
+{
+	if (!IN_QT_STATE && c == '$')
+		get_env_var();
+}
+
+char *substitute_and_clean(char *str, char **envp, int quotes)
+{
+
+}

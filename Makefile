@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g 
 
 LDFLAGS = -lreadline -L/usr/local/opt/readline/lib
 
@@ -17,7 +17,8 @@ SRCF = minishell.c \
 		lexer.c scanner.c \
 		token.c tokenizer.c \
 		utils.c quotescan.c \
-		env.c signlas.c
+		env.c signals.c ast.c \
+		parser.c free.c
 SRCS = $(addprefix $(SRCDIR)/, $(SRCF))
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 

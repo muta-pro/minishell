@@ -6,13 +6,13 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:05:05 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/19 16:06:23 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 16:32:14 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
 #include "libft.h"
 
-void	append_char(t_scanner *scanner, char c)
+void	append_char(t_scanner **scanner, char c)
 {
 	if (scanner->buff_idx < 1023)
 		scanner->buffer[scanner->buff_idx++] = c;
@@ -56,7 +56,7 @@ int	is_whitespace(char c)
 int	is_operator_char(char c)
 {
 	if (c == '<' || c == '>' || c == '|'
-		|| c == '$' || c == '\'' || c == '"' || c = '&')
+		|| c == '$' || c == '\'' || c == '"' || c == '&')
 		return (1);
 	return (0);
 }
@@ -87,13 +87,17 @@ int	null_terminator(char c)
 t_scan_state	*curr_state(char *input_text)
 {
 	t_scan_state state;
-	if (input_text == 39)
+
+	if (!input_text)
+		return (IN_DEFAULT);
+	if (*input_text == 39)
 		state = IN_SNGL_QUOTE;
-	if (input_text == 34)
+	else if (*input_text == 34)
 		state = IN_DBL_QUOTE;
-	if (input_text == 92)
+	else if (*input_text == 92)
 		state = IN_ESCAPE;
 	else
-		state = IN_DEAFULT;
+		state = IN_DEFAULT;
 	return (state);
 }
+

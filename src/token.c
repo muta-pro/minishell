@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 22:19:29 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 15:20:27 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 14:57:18 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -50,7 +50,7 @@ int	is_exit_status_token(t_token *token)
 
 int	is_variable_token(t_token *token)
 {
-	if (token != NULL && token->type == T_WORD)
+	if (token != NULL && token->type == T_VAR)
 	{
 		return (1);
 	}

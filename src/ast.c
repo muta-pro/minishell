@@ -6,10 +6,9 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 10:42:05 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/19 16:06:24 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 15:53:53 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "parser.h"
 #include "shell.h"
 
 t_token	*peek_tok(t_token *tokens)
@@ -43,7 +42,7 @@ t_ast_node	*create_ast_nd(t_node_t type, t_ast_node *l, t_ast_node *r)
 	return (node);
 }
 
-void append_arg(char ***args, char *new_arg)
+void append_args(char ***args, char *new_arg)
 {
 	int 	count;
 	char	**new_list;
@@ -67,10 +66,12 @@ void append_arg(char ***args, char *new_arg)
 		*args = new_list;
 }
 
-t_redir		*is_redir_token(t_token **token)
+int	is_redir_token(t_token *token)
 {
 	if (!token)
 		return (0);
 	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
-		|| token->type == T_REDIR_APPEND || token->type == T_REDIR_HEREDOC)
+		|| token->type == T_REDIR_APPEND || token->type == T_REDIR_HEREDOC);
 }
+
+

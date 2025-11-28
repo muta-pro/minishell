@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/19 14:47:11 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 14:57:17 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -91,7 +91,7 @@ t_token	*scan_next_tok(t_scanner *scanner)
 		return (NULL);
 	if (c == '\'' || c == '"')
 		return (scan_quoted_str(scanner));
-	else if (c == '|' || c == '<' || c == '>')
+	else if (c == '|' || c == '<' || c == '>' || c == '&')
 		return (scan_operator(scanner));
 	else if (c == '$')
 		return (scan_var(scanner));
