@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 10:42:05 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 18:39:56 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:37:30 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -60,12 +60,15 @@ void	append_args(char ***args, char *new_arg)
 			new_list[i] = (*args)[i];
 			i++;
 		}
-		new_list[i] = strdup(new_arg);
-		new_list[i + 1] = NULL;
-		if (*args)
-			free(*args);
-		*args = new_list;
+		free(*args);
 	}
+	else
+		new_list = malloc(sizeof(char *) * 2);
+	if (!new_list)
+		return ;
+	new_list[count] = strdup(new_arg);
+	new_list[count + 1] = NULL;
+	*args = new_list;
 }
 
 int	is_redir_token(t_token *token)

@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:30:54 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 20:13:41 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:38:08 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -97,9 +97,9 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 		else
 			consume_tok(tokens, peek_tok(*tokens)->type);
 	}
+	if (!args && !redirs)
+		return (ast_err_cleanup(NULL, "No command found."));
 	node = create_ast_nd(NODE_CMND, NULL, NULL);
-	if (!args && !node)
-		return (NULL);
 	node->args = args;
 	node->redir_list = redirs;
 	return (node);

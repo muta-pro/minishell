@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 14:57:12 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:13:43 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -17,19 +17,19 @@
 
 volatile sig_atomic_t	g_got_sigint = 0;
 
-// static void	handle_sigint(int sig)
-// {
-// 	(void)sig;
-// 	g_got_sigint = 1;
-// 	write(STDOUT_FILENO, "\n", 1);
-// }
+static void	handle_sigint(int sig)
+{
+	(void)sig;
+	g_got_sigint = 1;
+	write(STDOUT_FILENO, "\n", 1);
+}
 
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	char		**envp_cpy;
 	t_token		*tokens;
-	t_ast_node		*ast;
+	t_ast_node	*ast;
 
 	(void)(argc);
 	(void)(argv);
@@ -51,34 +51,27 @@ int	main(int argc, char **argv, char **envp)
 			write(STDOUT_FILENO, "exit\n", 5);
 			break ;
 		}
-		if (*line)
+		if (!*line)
 		{
-			add_history(line);
-			tokens = lexer(line); // tokenize
-			if (tokens)
-				print_tokens(tokens);
-			else
-				printf("Lexer returned NULL or an error.\n");
-			if (!tokens)
-			{
-				free(line);
-				continue ;
-			}
-			// ast = parser(tokens);
-			// if (ast)
-			// {
-			// 	printf("AST built successfully!\n");
-			// 	execute(ast, envp_cpy);
-			// 	free_ast(ast);
-			// }
-			// if (!ast)
-			// {
-			// 	free_tok(tokens);
-			// 	free(line);
-			// 	continue ;
-			// }
-			free_tok(tokens);
+			free(line);
+			continue ;
 		}
+		add_history(line);
+		tokens = lexer(line); // tokenize
+		if (tokens)
+			ast = parser(tokens);
+		else
+			ast = NULL; //lexer failed
+		if (ast)
+		{
+			printf("AST built successfully!\n");
+			execute_AST(envp_cpy, ast);
+			free_ast(ast);
+		}
+		else if (tokens)
+			print_err(SYTX_ERR, "ast failed");
+		if (tokens)
+			free_tok(tokens);
 		free(line);
 	}
 	// clear_history();
