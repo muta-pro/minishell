@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 22:13:43 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:12:29 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -17,13 +17,6 @@
 
 volatile sig_atomic_t	g_got_sigint = 0;
 
-static void	handle_sigint(int sig)
-{
-	(void)sig;
-	g_got_sigint = 1;
-	write(STDOUT_FILENO, "\n", 1);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
@@ -33,7 +26,7 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)(argc);
 	(void)(argv);
-	// install_parent_handler();
+	install_parent_handler();
 	envp_cpy = copy_envp(envp);
 	init_shlvl(envp_cpy); //to handle mem alloc failure
 	while (1)

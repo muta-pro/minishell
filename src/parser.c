@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:30:54 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 23:39:36 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:01:43 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -77,7 +77,7 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 {
 	t_ast_node	*node;
 	char		**args; //array holding words
-	t_redir		*redirs; //LL of redirs
+	t_redir		*redirs;
 
 	redirs = NULL;
 	args = NULL;

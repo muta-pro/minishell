@@ -6,31 +6,33 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 18:49:00 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:54:10 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
 
 t_token	*scan_word(t_scanner *scanner)
 {
+	char			c;
+	t_scan_state	state;
+
+	state = IN_DEFAULT;
+	scanner->state = IN_DEFAULT;
 	scanner->buff_idx = 0;
-	while (!is_whitespace(peek(scanner)) && !is_operator_char(peek(scanner))
-		&& peek(scanner) != '\0' && peek(scanner) != '$')
+	c = peek(scanner);
+	while (c != '\0')
 	{
-		append_char(scanner, peek(scanner));
+		if (chop_word(state, c))
+			break ;
+		if (handle_qt_switch(state, scanner, c))
+			continue ;
+		append_char(scanner, c);
 		advance(scanner);
 	}
+	if (state == IN_SNGL_QUOTE || state == IN_DBL_QUOTE)
+		return (create_token(T_ERROR, "Unclosed quote."));
 	return (create_token(T_WORD, get_buff_lexeme(scanner)));
 }
-
-// static void	scan_token(const char *input_text)
-// {
-// 	while (**input_text == ' ')
-// 		(*input_text)++;
-// 	if (**input_text == '\0')
-// 		return (t_tok_type);
-// 	{T_EOF, NULL};
-// }
 
 t_token	*scan_operator(t_scanner *scanner)
 {
