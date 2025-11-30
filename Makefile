@@ -4,21 +4,27 @@ CFLAGS = -Wall -Wextra -Werror
 
 NAME = minishell
 
-SRCS = main.c builtins.c
+SRC_DIR = src
+SRCS_FILES =	main.c \
+				builtins.c \
+				env.c \
+				execute_tree.c \
+				pipe.c \
+				path.c
+SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 
 LIBFTPATH = libft/libft.a
 
-OBJS = $(SRCS:.c=.o)
+OBJS = $(SRCS_FILES:.c=.o)
 
 all: $(NAME)
-
 $(NAME): $(OBJS) $(LIBFTPATH)
-	cc $(SRCS) -g $(LIBFTPATH) -o minishell -lreadline
+	$(CC) $(OBJS) -g $(LIBFTPATH) -o minishell -lreadline
 
 $(LIBFTPATH):
 	make -C libft/
 
-%.o: %.c
+%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

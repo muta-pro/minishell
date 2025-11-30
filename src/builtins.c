@@ -6,40 +6,46 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/25 18:35:09 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/11/30 18:28:18 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/shell.h"
 
-void	ft_getcwd(t_cmd	*cmd)
+void	ft_getcwd()
 {
-	(void)cmd;
 	char	*cwd;
 	cwd = getcwd(NULL, 0);
 	printf("%s\n", cwd);
 	free(cwd);
 }
 
-void	ft_chdir(t_cmd *cmd)
+void	ft_chdir(t_ast_node *cmd, t_env *env)
 {
 	char	*rltv_to_full;
 	char	*current;
 
-	if (!(strncmp(cmd->full_cmd[1], "/", 1)))
-		chdir(cmd->full_cmd[1]);
+	if (cmd->args[1] == NULL || !(strncmp(cmd->args[1], "~", 1)))
+	{
+		while (strcmp(env->key, "HOME"))
+			env = env->next;
+		chdir(env->value);
+	}
+	else if (!(strncmp(cmd->args[1], "/", 1)))
+		chdir(cmd->args[1]);
 	else
 	{
 		current = getcwd(NULL, 0);
 		rltv_to_full = ft_strjoin(current, "/");
 		free(current);
 		current = ft_strdup(rltv_to_full);
-		rltv_to_full = ft_strjoin(current, cmd->full_cmd[1]);
+		rltv_to_full = ft_strjoin(current, cmd->args[1]);
         free(current);
 		if (chdir(rltv_to_full) == -1)
 			perror(rltv_to_full);
 		free(rltv_to_full);
 	}
+	ft_getcwd();
 }
 
 void	ft_exit(char *exit_status)
