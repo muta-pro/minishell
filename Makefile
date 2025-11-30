@@ -11,6 +11,7 @@ SRCS_FILES =	main.c \
 				execute_tree.c \
 				pipe.c \
 				path.c \
+				test.c #delete later
 # 				minishell.c \
 # 				lexer.c \
 # 				scanner.c \
