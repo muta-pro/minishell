@@ -6,26 +6,11 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/30 18:50:34 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/11/30 18:54:08 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/shell.h"
-
-void	free_arr(char **arr)
-{
-	int	i;
-
-	i = 0;
-	if (!arr)
-		return ;
-	while (arr[i])
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
-}
 
 int	main(int ac, char **av, char **envp)
 {
@@ -53,8 +38,8 @@ int	main(int ac, char **av, char **envp)
     .args = testargs,
 	.redir_list = NULL
 	};
-	execute_single_cmd(&simple_cmd, env);
-
+	// execute_single_cmd(&simple_cmd, env);
+	execute_AST(env, &simple_cmd);
 	free_env(&env);
 	return (0);
 }

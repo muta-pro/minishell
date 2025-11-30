@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/30 18:47:15 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/11/30 18:54:29 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	ft_env(t_env *env);
 void	ft_unset(t_env **env, char *str);
 void	ft_export(t_env **env, char *str);
 void	free_env(t_env **env);
+void	free_arr(char **arr);
 void	exec_pipe(t_env *env, t_ast_node *node);
 void	add_pid(t_pids **pids, int pid);
 void	wait_children(t_pids *pids, pid_t pid);

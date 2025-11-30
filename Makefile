@@ -11,7 +11,19 @@ SRCS_FILES =	main.c \
 				execute_tree.c \
 				pipe.c \
 				path.c \
-				
+# 				minishell.c \
+# 				lexer.c \
+# 				scanner.c \
+# 				token.c \
+# 				tokenizer.c \
+# 				utils.c \
+# 				quotescan.c \
+# 				env.c \
+# 				signals.c \
+# 				ast.c \
+# 				parser.c \
+# 				free.c
+
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 
 LIBFTPATH = libft/libft.a
