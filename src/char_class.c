@@ -6,10 +6,10 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 14:33:29 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 19:39:36 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 21:55:38 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "shell.c"
+#include "shell.h"
 
 // int	get_char_id(char c)
 // {

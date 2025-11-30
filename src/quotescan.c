@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 09:59:33 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 16:14:44 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 21:52:20 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -27,7 +27,7 @@ or runs pass it if quote state
 // 	return (IN_DBL_QUOTE);
 // }
 
-static int	chop_word(t_scan_state state, char c)
+int	chop_word(t_scan_state state, char c)
 {
 	if (state != IN_DEFAULT)
 		return (0);
@@ -38,7 +38,7 @@ static int	chop_word(t_scan_state state, char c)
 	return (0);
 }
 
-static int	handle_qt_switch(t_scan_state *state, t_scanner *scanner, char c)
+int	handle_qt_switch(t_scan_state *state, t_scanner *scanner, char c)
 {
 	if (*state == IN_DEFAULT)
 	{
@@ -51,8 +51,8 @@ static int	handle_qt_switch(t_scan_state *state, t_scanner *scanner, char c)
 		advance(scanner);
 		return (1);
 	}
-	else if (*state == IN_SNGL_QUOTE && c == '\''
-		|| *state == IN_DBL_QUOTE && c == '"')
+	else if ((*state == IN_SNGL_QUOTE && c == '\'')
+		|| (*state == IN_DBL_QUOTE && c == '"'))
 	{
 		*state = IN_DEFAULT;
 		advance(scanner);

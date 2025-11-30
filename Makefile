@@ -14,11 +14,20 @@ LIBFT = $(LIBFTDIR)/libft.a
 
 
 SRCF = minishell.c \
-		lexer.c scanner.c \
-		token.c tokenizer.c \
-		utils.c quotescan.c \
-		env.c signals.c ast.c \
-		parser.c free.c
+		lexer.c \
+		scanner.c \
+		token.c \
+		tokenizer.c \
+		utils.c \
+		quotescan.c \
+		signals.c \
+		ast.c \
+		parser.c \
+		free.c \
+		char_class.c \
+		char_ops.c \
+		error.c \
+
 SRCS = $(addprefix $(SRCDIR)/, $(SRCF))
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 

@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 19:59:14 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 21:36:03 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef SHELL_H
@@ -35,6 +35,7 @@ Expander: expand variables if delimiter wasn't quoted*/
 # include "lexer.h"
 # include "sgnl.h"
 # include "color.h"
+# include "minishell.h"
 
 typedef struct s_heredoc
 {
@@ -62,6 +63,8 @@ int		valid_char(char c);
 int		null_terminator(char c);
 
 //SIGNALS
-static void	install_parent_handler(void);
+// static void	install_parent_handler(void);
+
+void debug_ast(t_ast_node *node, int level);
 
 #endif

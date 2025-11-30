@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 22:19:29 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 19:53:37 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 21:49:25 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -16,7 +16,7 @@ skip unknown tokens to pervent inf loops on garbage
 #include "shell.h"
 #include <stddef.h>
 
-static void	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
+void	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
 {
 	t_token	*curr;
 
@@ -34,7 +34,7 @@ static void	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
 		consume_tok(tokens, curr->type);
 }
 
-static t_tok_type	get_op_type(char *lexeme)
+t_tok_type	get_op_type(char *lexeme)
 {
 	if (!strcmp(lexeme, "|"))
 		return (T_PIPE);

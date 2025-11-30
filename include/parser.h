@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:28:22 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 20:00:38 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 22:13:27 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -60,11 +60,12 @@ t_ast_node	*create_ast_nd(t_node_t type, t_ast_node *l, t_ast_node *r);
 void		free_ast(t_ast_node *node);
 void		free_arr(char **args);
 void		free_redirs(t_redir *redirs);
-void		print_err(char *type, const char *msg);
+void		print_shell_err(char *type, const char *msg, int exit_code);
 
 t_token		*peek_tok(t_token *head);
 t_token		*consume_tok(t_token **head, t_tok_type expected);
 void		append_args(char ***args, char *new_arg);
-int			is_redir_tok(t_token *token);
+int			is_redir_token(t_token *token);
+void		args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs);
 
 #endif

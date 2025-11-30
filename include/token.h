@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:38:12 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 14:57:11 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 21:51:05 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef TOKEN_H
@@ -68,7 +68,7 @@ void			free_tok(t_token *tok);
 void			remove_nxt_tok(t_token *token);
 int 			add_tok_to_list(t_token **list, t_scan_state state, char *buf);
 //it can directly use the t_scan_state to determine the token type to create
-
+t_tok_type		get_op_type(char *lexeme);
 //FOR THE PARSER check for token type
 // int				is_string_token(t_token *token);
 // int				is_variable_token(t_token *token);

@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:30:54 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 17:45:41 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 22:16:49 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -44,7 +44,7 @@ t_ast_node	*parse_logic_op(t_token **tokens)
 		left = node;
 		if (!left->right)
 		{
-			free_ast(node, "missing command");
+			free_ast(node);
 			return (NULL);
 		}
 	}
@@ -67,8 +67,8 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 		left = node;
 		if (!left->right)
 		{
-			free_ast(node, "missing command");
-			free_ast(left, NULL);
+			free_ast(node);
+			free_ast(left);
 			return (NULL);
 		} //SYNTAX ERR pipe no cmnd
 	}
@@ -111,7 +111,7 @@ void	parse_redir(t_token **tokens, t_redir **redir_head)
 	if (!file)
 		file = consume_tok(tokens, T_STR);
 	if (!file)
-		return (print_err(SYTX_ERR, "unexpected token."));
+		return (print_shell_err(SYTX_ERR, "unexpected token.", 258));
 	new_node = malloc(sizeof(t_redir));
 	new_node->type = op->type;
 	new_node->file_name = strdup(file->lexeme);

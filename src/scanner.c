@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 19:50:02 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 21:46:51 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -24,7 +24,7 @@ t_token	*return_string(t_scanner *scanner, t_tok_type type)
 	lexeme = get_buff_lexeme(scanner);
 	if (!lexeme)
 		return (create_token(T_ERROR, "Malloc fail."));
-	tok = create_token(type, lexer);
+	tok = create_token(type, lexeme);
 	free(lexeme);
 	return (tok);
 }
@@ -57,9 +57,10 @@ t_token	*scan_word(t_scanner *scanner)
 
 t_token	*scan_operator(t_scanner *scanner)
 {
-	char	c;
-	char	*lexeme;
-	t_token	type;
+	char			c;
+	char			*lexeme;
+	t_tok_type		type;
+	t_token			*tok;
 
 	scanner->buff_idx = 0;
 	c = peek(scanner);

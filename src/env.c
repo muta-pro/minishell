@@ -1,77 +1,109 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/10 20:38:56 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 14:57:08 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   env.c                                              :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/11/30 17:54:08 by yneshev       #+#    #+#                 */
+/*   Updated: 2025/11/30 18:23:59 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
-#include "libft.h"
+
 #include "shell.h"
 
-char	*new_env_str(char *key, char *value)
+void	build_env(char **envp, t_env **env)
 {
-	char	*result;
-	int		len;
-
-	len = ft_strlen(key) + ft_strlen(value) + 2;
-	result = malloc(len);
-	if (!result)
-		return (NULL);
-	ft_strcpy(result, key);
-	ft_strcat(result, "=");
-	ft_strcat(result, value);
-	return (result);
-}
-
-int	update_env_var(char ***envp, char *key, char *value)
-{
-	char	*new_var;
 	int		i;
+	int		j;
+	int		c;
+	t_env	*temp;
+	t_env	*start;
 
-	new_var = new_env_str(key, value);
-	if (!new_var)
-		return ;
-	i = find_env_varible(key, value);
-	if (i >= 0)
-	{
-		free((*envp)[index]);
-		(*envp)[index] = new_var;
-	}
-	else
-		add_env_var(envp, new_var);
-}
-
-int	init_shlvl(char **envp)
-{
-	char	*shlvl_str;
-	int		shlvl_value;
-	int		i;
-
+	start = *env;
 	i = 0;
-	shlvl_str = NULL;
-	while ((*envp)[i])
+	j = 0;
+	while (envp[i])
 	{
-		if (ft_strncmp((*envp)[i], "SHLVL=", 6) == 0)
+		j = 0;
+		while (envp[i][j] != '=')
+			j++;
+		(*env)->key = strndup(envp[i], j);
+		// (*env)->key = ft_substr(envp[i], 0, j);
+		c = 1;
+		while (envp[i][j] && c++)
+			j++;
+		(*env)->value = strndup(envp[i] + j - c + 2, c - 2);
+		// printf("\n\nj - c: %d", j -c);                                              !!!!!!
+		// (*env)->value = ft_substr(envp[i], j - c, c);
+		if (envp[i + 1])
 		{
-			shlvl_str = (*envp)[i] + 6;
-			break ;
+			temp = add_new_node(); // protect
+			(*env)->next = temp;
+			*env = temp;
 		}
 		i++;
 	}
-	if (shlvl_str)
-		shlvl_value = ft_atoi(shlvl_str);
-	else
-		shlvl_value = 0;
-	shlvl_value++;
-	update_env_var(&envp, "SHLVL", ft_itoa(shlvl_value));
+	(*env)->next = NULL;
+	*env = start;
 }
-char	**copy_envp(char **envp);//dup env
 
-char	*get_env_var(char **envp, char *key);//read var value
+void free_env(t_env **env)
+{
+	t_env	*temp;
 
-void	unset_env_var(char ***envp, char *key);//remove var
-void	**free_envp(char **envp);//cleanup
+	while (*env)
+	{
+		temp = *env;
+		*env = (*env)->next;
+		free(temp->key);
+		free(temp->value);
+		free(temp);
+	}
+}
+
+char	**list_to_2d(t_env *env)
+{
+	char	**env_array;
+	char	*temp;
+	int		i;
+
+	env_array = malloc((list_size(env) + 1) * sizeof(char *));
+	if (!env_array)
+		return (NULL);
+	i = 0;
+	while (env)
+	{
+		temp = ft_strjoin(env->key, "=");
+		env_array[i] = ft_strjoin(temp, env->value);
+		free(temp);
+		i++;
+		env = env->next;
+	}
+	env_array[i] = NULL;
+	return (env_array);
+}
+
+int	list_size(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (env)
+	{
+		i++;
+		env = env->next;
+	}
+	return (i);
+}
+
+t_env	*add_new_node(void)
+{
+	t_env	*new;
+
+	new = malloc(sizeof(new));
+	if (!new)
+		return (NULL);
+	new->next = NULL;
+	return (new);
+}
