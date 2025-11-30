@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:28:22 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 18:51:13 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 17:42:12 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -52,7 +52,7 @@ typedef struct s_ast_node
 t_ast_node	*parser(t_token *token);
 
 t_ast_node	*parse_logic_op(t_token **token_list);
-t_ast_node	*parse_pipelne(t_token **tokens);
+t_ast_node	*parse_pipeline(t_token **tokens);
 t_ast_node	*parse_cmnd(t_token **tokens);
 void		parse_redir(t_token **tokens, t_redir **redir_head);
 

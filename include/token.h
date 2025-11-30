@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:38:12 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 20:01:56 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 14:57:11 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef TOKEN_H
@@ -60,15 +60,6 @@ typedef struct s_token
 	struct	s_token	*next;
 }					t_token;
 
-//FOR THE PARSER check for token type
-int				is_string_token(t_token *token);
-int				is_variable_token(t_token *token);
-int				is_pipe_token(t_token *token);
-int				is_delimiter_token(t_token *token);
-int				is_exit_status_token(t_token *token);
-int				is_redir_token(t_token *token);
-int				is_quote_token(t_token *token);
-int				is_concat_token(t_token *token);
 
 //token list management
 t_token			*create_token(t_tok_type type, const char *lexeme);
@@ -78,4 +69,13 @@ void			remove_nxt_tok(t_token *token);
 int 			add_tok_to_list(t_token **list, t_scan_state state, char *buf);
 //it can directly use the t_scan_state to determine the token type to create
 
+//FOR THE PARSER check for token type
+// int				is_string_token(t_token *token);
+// int				is_variable_token(t_token *token);
+// int				is_pipe_token(t_token *token);
+// int				is_delimiter_token(t_token *token);
+// int				is_exit_status_token(t_token *token);
+// int				is_redir_token(t_token *token);
+// int				is_quote_token(t_token *token);
+// int				is_concat_token(t_token *token);
 #endif

@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/29 17:12:29 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 18:19:42 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -57,7 +57,7 @@ int	main(int argc, char **argv, char **envp)
 			ast = NULL; //lexer failed
 		if (ast)
 		{
-			printf("AST built successfully!\n");
+			debug_ast(ast, 0);
 			execute_AST(envp_cpy, ast);
 			free_ast(ast);
 		}

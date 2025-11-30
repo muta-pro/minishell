@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 14:33:29 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/29 15:07:23 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:39:36 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.c"
@@ -40,15 +40,7 @@ int	is_whitespace(char c)
 
 int	is_operator_char(char c)
 {
-	if (c == '<' || c == '>' || c == '|'
-		|| c == '$' || c == '\'' || c == '"' || c == '&')
-		return (1);
-	return (0);
-}
-
-int	is_redirection(char c)
-{
-	if (c == '<' || c == '>')
+	if (c == '<' || c == '>' || c == '|' || c == '&')
 		return (1);
 	return (0);
 }

@@ -6,12 +6,14 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:30:54 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 02:32:26 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 17:45:41 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
 implement recursive descent parser approach
 Start the main parsing routine, checking for the highest precedence first
+parse_cmnd : scans until hits pipe, op or EOF;
+have args arr to hold words
 */
 #include "shell.h"
 
@@ -26,7 +28,7 @@ t_ast_node	*parse_logic_op(t_token **tokens)
 	t_ast_node		*left;
 	t_tok_type		type;
 
-	left = parse_pipelne(tokens);
+	left = parse_pipeline(tokens);
 	if (!left)
 		return (NULL);
 	while (peek_tok(*tokens) && (peek_tok(*tokens)->type == T_LOGIC_OR
@@ -38,7 +40,7 @@ t_ast_node	*parse_logic_op(t_token **tokens)
 			node = create_ast_nd(NODE_OR, left, NULL);
 		else
 			node = create_ast_nd(NODE_AND, left, NULL);
-		node->right = parse_pipelne(tokens);
+		node->right = parse_pipeline(tokens);
 		left = node;
 		if (!left->right)
 		{
@@ -49,7 +51,7 @@ t_ast_node	*parse_logic_op(t_token **tokens)
 	return (left);
 }
 
-t_ast_node	*parse_pipelne(t_token **tokens)
+t_ast_node	*parse_pipeline(t_token **tokens)
 {
 	t_ast_node	*left;
 	t_ast_node	*node;
@@ -76,30 +78,18 @@ t_ast_node	*parse_pipelne(t_token **tokens)
 t_ast_node	*parse_cmnd(t_token **tokens)
 {
 	t_ast_node	*node;
-	char		**args; //array holding words
+	char		**args;
 	t_redir		*redirs;
-	t_token		*curr;
 
 	redirs = NULL;
 	args = NULL;
-	curr = peek_tok(*tokens);
-	while (curr != NULL
+	while (peek_tok(*tokens)
 		&& peek_tok(*tokens)->type != T_EOF
 		&& peek_tok(*tokens)->type != T_PIPE
 		&& peek_tok(*tokens)->type != T_LOGIC_OR
 		&& peek_tok(*tokens)->type != T_LOGIC_AND)
 	{
-		if (is_redir_token(peek_tok(*tokens)))
-			parse_redir(tokens, &redirs);
-		else if (peek_tok(*tokens)->type == T_WORD
-			|| peek_tok(*tokens)->type == T_STR
-			|| peek_tok(*tokens)->type == T_VAR)
-		{
-			append_args(&args, peek_tok(*tokens)->lexeme);
-			consume_tok(tokens, peek_tok(*tokens)->type);
-		}
-		else
-			consume_tok(tokens, peek_tok(*tokens)->type);
+		args_redirs_tok(tokens, &args, &redirs);
 	}
 	if (!args && !redirs)
 		return (NULL);
@@ -136,6 +126,4 @@ void	parse_redir(t_token **tokens, t_redir **redir_head)
 		last->next = new_node;
 	}
 }
-
-
 //malloc and init new ast_nd

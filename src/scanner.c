@@ -6,10 +6,28 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/29 16:54:10 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:50:02 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+/*
+scan_word : handles quote concatenation / quote removal
+iterates chars
+FLAG : state var
+*/
 #include "shell.h"
+
+t_token	*return_string(t_scanner *scanner, t_tok_type type)
+{
+	t_token	*tok;
+	char	*lexeme;
+
+	lexeme = get_buff_lexeme(scanner);
+	if (!lexeme)
+		return (create_token(T_ERROR, "Malloc fail."));
+	tok = create_token(type, lexer);
+	free(lexeme);
+	return (tok);
+}
 
 t_token	*scan_word(t_scanner *scanner)
 {
@@ -17,27 +35,31 @@ t_token	*scan_word(t_scanner *scanner)
 	t_scan_state	state;
 
 	state = IN_DEFAULT;
-	scanner->state = IN_DEFAULT;
 	scanner->buff_idx = 0;
 	c = peek(scanner);
 	while (c != '\0')
 	{
 		if (chop_word(state, c))
 			break ;
-		if (handle_qt_switch(state, scanner, c))
+		if (handle_qt_switch(&state, scanner, c))
+		{
+			c = peek(scanner);
 			continue ;
+		}
 		append_char(scanner, c);
 		advance(scanner);
+		c = peek(scanner);
 	}
 	if (state == IN_SNGL_QUOTE || state == IN_DBL_QUOTE)
 		return (create_token(T_ERROR, "Unclosed quote."));
-	return (create_token(T_WORD, get_buff_lexeme(scanner)));
+	return (return_string(scanner, T_WORD));
 }
 
 t_token	*scan_operator(t_scanner *scanner)
 {
 	char	c;
 	char	*lexeme;
+	t_token	type;
 
 	scanner->buff_idx = 0;
 	c = peek(scanner);
@@ -52,22 +74,13 @@ t_token	*scan_operator(t_scanner *scanner)
 		advance(scanner);
 	}
 	lexeme = get_buff_lexeme(scanner);
-	if (strcmp(lexeme, "|") == 0)
-		return (create_token(T_PIPE, lexeme));
-	if (strcmp(lexeme, "<") == 0)
-		return (create_token(T_REDIR_IN, lexeme));
-	if (strcmp(lexeme, ">") == 0)
-		return (create_token(T_REDIR_OUT, lexeme));
-	if (strcmp(lexeme, "<<") == 0)
-		return (create_token(T_REDIR_HEREDOC, lexeme));
-	if (strcmp(lexeme, ">>") == 0)
-		return (create_token(T_REDIR_APPEND, lexeme));
-	if (strcmp(lexeme, "||") == 0)
-		return (create_token(T_LOGIC_OR, lexeme));
-	if (strcmp(lexeme, "&&") == 0)
-		return (create_token(T_LOGIC_AND, lexeme));
+	type = get_op_type(lexeme);
+	if (type == T_ERROR)
+		tok = create_token(T_ERROR, "Unknown operator");
+	else
+		tok = create_token(type, lexeme);
 	free(lexeme);
-	return (create_token(T_ERROR, "Unknown operator"));
+	return (tok);
 }
 
 t_token	*scan_var(t_scanner *scanner)
@@ -79,35 +92,35 @@ t_token	*scan_var(t_scanner *scanner)
 	{
 		append_char(scanner, peek(scanner));
 		advance(scanner);
-		return (create_token(T_EXIT_STATUS, get_buff_lexeme(scanner)));
+		return_string(scanner, T_EXIT_STATUS);
 	}
 	if (is_whitespace(peek(scanner)) || is_operator_char(peek(scanner))
 		|| peek(scanner) == '\0')
-		return (create_token(T_WORD, get_buff_lexeme(scanner)));
+		return (return_string(scanner, T_VAR));
 	while (ft_isalnum(peek(scanner)) || peek(scanner) == '_')
 	{
 		append_char(scanner, peek(scanner));
 		advance(scanner);
 	}
-	return (create_token(T_VAR, get_buff_lexeme(scanner)));
+	return (return_string(scanner, T_VAR));
 }
 
-t_token	*scan_quoted_str(t_scanner *scanner)
-{
-	char	quote_type;
+// t_token	*scan_quoted_str(t_scanner *scanner)
+// {
+// 	char	quote_type;
 
-	scanner->buff_idx = 0;
-	quote_type = peek(scanner);
-	append_char(scanner, peek(scanner));
-	advance(scanner);
-	while (peek(scanner) != quote_type && peek(scanner) != '\0')
-	{
-		append_char(scanner, peek(scanner));
-		advance(scanner);
-	}
-	if (peek(scanner) == '\0')
-		return (create_token(T_ERROR, "Unclosed quote"));
-	append_char(scanner, peek(scanner));
-	advance(scanner);
-	return (create_token(T_STR, get_buff_lexeme(scanner)));
-}
+// 	scanner->buff_idx = 0;
+// 	quote_type = peek(scanner);
+// 	append_char(scanner, peek(scanner));
+// 	advance(scanner);
+// 	while (peek(scanner) != quote_type && peek(scanner) != '\0')
+// 	{
+// 		append_char(scanner, peek(scanner));
+// 		advance(scanner);
+// 	}
+// 	if (peek(scanner) == '\0')
+// 		return (create_token(T_ERROR, "Unclosed quote"));
+// 	append_char(scanner, peek(scanner));
+// 	advance(scanner);
+// 	return (create_token(T_STR, get_buff_lexeme(scanner)));
+// }

@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/29 16:26:15 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 18:38:19 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -35,6 +35,23 @@ void	init_scanner(t_scanner *scanner, char *input_text)
 	scanner->buff_idx = 0;
 }
 
+t_token	*scan_next_tok(t_scanner *scanner)
+{
+	char	c;
+
+	while (is_whitespace(peek(scanner)))
+		advance(scanner);
+	c = peek(scanner);
+	if (c == '\0')
+		return (NULL);
+	else if (is_operator_char(c))
+		return (scan_operator(scanner));
+	else if (c == '$')
+		return (scan_var(scanner));
+	else
+		return (scan_word(scanner));
+}
+
 t_token	*lexer(char *input_text)
 {
 	t_scanner	scanner;
@@ -61,25 +78,6 @@ t_token	*lexer(char *input_text)
 		insert_token(&scanner.head, token);
 	}
 	return (scanner.head);
-}
-
-t_token	*scan_next_tok(t_scanner *scanner)
-{
-	char	c;
-
-	while (is_whitespace(peek(scanner)))
-		advance(scanner);
-	c = peek(scanner);
-	if (c == '\0')
-		return (NULL);
-	if (c == '\'' || c == '"')
-		return (scan_quoted_str(scanner));
-	else if (is_operator_char(c))
-		return (scan_operator(scanner));
-	else if (c == '$')
-		return (scan_var(scanner));
-	else
-		return (scan_word(scanner));
 }
 
 t_scan_state	switch_state(t_scan_state curr, char c)

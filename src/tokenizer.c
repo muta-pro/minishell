@@ -6,15 +6,22 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 15:45:03 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 17:01:40 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 14:46:39 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 //LEXICAL ANALYSIS
 //TEST :
 //cat file | grep word
 //echo hello > output.txt
-
 #include "shell.h"
+
+int	is_redir_token(t_token *token)
+{
+	if (!token)
+		return (0);
+	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
+		|| token->type == T_REDIR_APPEND || token->type == T_REDIR_HEREDOC);
+}
 
 t_token	*create_token(t_tok_type type, const char *lexeme)
 {
@@ -49,16 +56,5 @@ void	insert_token(t_token **head, t_token *new_token)
 	}
 }
 
-void	free_tok(t_token *tok)
-{
-	t_token	*tmp;
 
-	while (tok != NULL)
-	{
-		tmp = tok->next;
-		free(tok->lexeme);
-		free(tok);
-		tok = tmp;
-	}
-}
 // nospace_oper();

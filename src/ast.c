@@ -6,9 +6,18 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 10:42:05 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 23:37:30 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 17:56:16 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+/*
+append_args - add str to char **array;
+resizing array to add + 1 new item + 1 '\0' for execve
+we copy pointers - move reference - to the new arr;
+clead old arr but string is where the new list points.
+if first arg, allocate space for it + '\0'
+copy  it and mark end of arr
+update pointer of args to point to the new array
+*/
 #include "shell.h"
 
 t_token	*peek_tok(t_token *tokens)
@@ -69,12 +78,4 @@ void	append_args(char ***args, char *new_arg)
 	new_list[count] = strdup(new_arg);
 	new_list[count + 1] = NULL;
 	*args = new_list;
-}
-
-int	is_redir_token(t_token *token)
-{
-	if (!token)
-		return (0);
-	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
-		|| token->type == T_REDIR_APPEND || token->type == T_REDIR_HEREDOC);
 }
