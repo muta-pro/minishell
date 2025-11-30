@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 18:19:42 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:59:45 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -16,7 +16,7 @@
 #include "sgnl.h"
 
 volatile sig_atomic_t	g_got_sigint = 0;
-
+debug_ast(ast, 0);
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
@@ -58,7 +58,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ast)
 		{
 			debug_ast(ast, 0);
-			execute_AST(envp_cpy, ast);
+			// execute_AST(envp_cpy, ast);
 			free_ast(ast);
 		}
 		else if (tokens)

@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 19:17:51 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:59:14 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef SHELL_H
@@ -62,6 +62,6 @@ int		valid_char(char c);
 int		null_terminator(char c);
 
 //SIGNALS
-// static void	install_parent_handler(void);
+static void	install_parent_handler(void);
 
 #endif
