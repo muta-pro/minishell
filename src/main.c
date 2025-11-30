@@ -6,12 +6,10 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/30 18:41:08 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/11/30 18:50:34 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "minishell.h"
-// #include "ast.h"
 #include "../includes/shell.h"
 
 void	free_arr(char **arr)

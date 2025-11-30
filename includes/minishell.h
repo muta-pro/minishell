@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/30 18:39:03 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/11/30 18:47:15 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,8 @@
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-// # include "libft/libft.h"
 # include <string.h>
 # include <sys/wait.h>
-
-
-// typedef struct s_cmd
-// {
-// 	char			**full_cmd;
-// 	// int			*infile;
-// 	// int			*outfile;
-// 	struct s_cmd	*next;
-// }	t_cmd;
 
 typedef struct s_env
 {
@@ -51,20 +41,19 @@ void	ft_exit(char *exit_status);
 void	ft_env(t_env *env);
 void	ft_unset(t_env **env, char *str);
 void	ft_export(t_env **env, char *str);
-// void	free_cmd(t_cmd **cmd);
 void	free_env(t_env **env);
-t_env	*add_new_node(void);
-void	build_env(char **envp, t_env **env);
-char	**list_to_2d(t_env *env);
-int		list_size(t_env *env);
-void	execute_AST(t_env *env, t_ast_node *node);
-void	execute_builtin(t_ast_node *cmd, t_env *env);
-void	execute_external(t_env *env, t_ast_node* cmd);
-void	execute_single_cmd(t_ast_node *cmd, t_env *env);
-char	*find_path(char **split_paths, char *cmd);
-char	*get_path(char **twoDenv, char *cmd);
 void	exec_pipe(t_env *env, t_ast_node *node);
 void	add_pid(t_pids **pids, int pid);
 void	wait_children(t_pids *pids, pid_t pid);
+void	build_env(char **envp, t_env **env);
+void	execute_AST(t_env *env, t_ast_node *node);
+void	execute_builtin(t_ast_node *cmd, t_env *env);
+void	execute_single_cmd(t_ast_node *cmd, t_env *env);
+void	execute_external(t_env *env, t_ast_node* cmd);
+int		list_size(t_env *env);
+char	**list_to_2d(t_env *env);
+char	*find_path(char **split_paths, char *cmd);
+char	*get_path(char **twoDenv, char *cmd);
+t_env	*add_new_node(void);
 
 #endif

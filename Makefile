@@ -10,7 +10,8 @@ SRCS_FILES =	main.c \
 				env.c \
 				execute_tree.c \
 				pipe.c \
-				path.c
+				path.c \
+				
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 
 LIBFTPATH = libft/libft.a
