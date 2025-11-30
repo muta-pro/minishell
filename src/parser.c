@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:30:54 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/29 14:01:43 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/11/30 02:32:26 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -78,10 +78,13 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 	t_ast_node	*node;
 	char		**args; //array holding words
 	t_redir		*redirs;
+	t_token		*curr;
 
 	redirs = NULL;
 	args = NULL;
-	while (peek_tok(*tokens)->type != T_EOF
+	curr = peek_tok(*tokens);
+	while (curr != NULL
+		&& peek_tok(*tokens)->type != T_EOF
 		&& peek_tok(*tokens)->type != T_PIPE
 		&& peek_tok(*tokens)->type != T_LOGIC_OR
 		&& peek_tok(*tokens)->type != T_LOGIC_AND)
@@ -99,7 +102,7 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 			consume_tok(tokens, peek_tok(*tokens)->type);
 	}
 	if (!args && !redirs)
-		return (ast_err_cleanup(NULL, "No command found."));
+		return (NULL);
 	node = create_ast_nd(NODE_CMND, NULL, NULL);
 	node->args = args;
 	node->redir_list = redirs;
