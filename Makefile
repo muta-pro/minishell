@@ -1,6 +1,8 @@
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror
+INC_DIR = includes
+
+CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR)
 
 NAME = minishell
 
@@ -33,7 +35,7 @@ OBJS = $(SRCS_FILES:.c=.o)
 
 all: $(NAME)
 $(NAME): $(OBJS) $(LIBFTPATH)
-	$(CC) $(OBJS) -g $(LIBFTPATH) -o minishell -lreadline
+	$(CC) $(CFLAGS) $(OBJS) -g $(LIBFTPATH) -o minishell -lreadline
 
 $(LIBFTPATH):
 	make -C libft/

@@ -6,11 +6,11 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:32:38 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/30 18:54:12 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/01 18:48:25 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/shell.h"
+#include "shell.h"
 
 char	*find_path(char **split_paths, char *cmd)
 {

@@ -1,5 +1,4 @@
-#include "../includes/shell.h"
-
+#include "shell.h"
 
 t_ast_node *create_command_node(char **args);
 void free_ast2(t_ast_node *node);
@@ -72,10 +71,10 @@ void free_ast2(t_ast_node *node)
 t_ast_node *test_pipe_simple()
 {
     // 1. Create the leaf nodes (the commands)
-    char *ls_args[] = {"ls", "-l", NULL};
+    char *ls_args[] = {"yes", NULL};
     t_ast_node *ls_node = create_command_node(ls_args);
 
-    char *wc_args[] = {"wc", "-l", NULL};
+    char *wc_args[] = {"head", "-n", "5", NULL};
     t_ast_node *wc_node = create_command_node(wc_args);
 
     // 2. Create the root PIPE node

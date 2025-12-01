@@ -6,11 +6,35 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:33:55 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/30 18:36:34 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/01 18:48:32 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/shell.h"
+#include "shell.h"
+
+int	is_builtin(t_ast_node *node)
+{
+	int	i = 0;
+	const char *builtins[] = {"cd", "pwd", "exit", "env", "export", "unset", NULL};
+	while (builtins[i])
+	{
+		if (!strcmp(node->args[0], builtins[i]))
+			return 1;
+		else
+			i++;
+	}
+	return 0;
+}
+
+void	run_cmd_no_fork(t_ast_node *cmd, t_env *env)
+{
+	if (is_builtin(cmd))
+	{
+		execute_builtin(cmd, env);
+		exit(0); // fix this
+	}
+	execute_external(env, cmd);
+}
 
 void	exec_pipe(t_env *env, t_ast_node *node)
 {
@@ -35,8 +59,6 @@ void	exec_pipe(t_env *env, t_ast_node *node)
 			runcmd = curr;
 			last_cmd = 1;
 		}
-
-		
 		if (!last_cmd)
 			if (pipe(pipe_fds) == -1)
 				printf("fix this"); // fix this
@@ -58,7 +80,7 @@ void	exec_pipe(t_env *env, t_ast_node *node)
 				dup2(pipe_fds[1], STDOUT_FILENO);
 				close(pipe_fds[1]);
 			}
-			execute_single_cmd(runcmd, env);
+			run_cmd_no_fork(runcmd, env);
 		}
 		
 		// Parent process

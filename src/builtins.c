@@ -6,11 +6,11 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/30 18:28:18 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/01 18:48:07 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/shell.h"
+#include "shell.h"
 
 void	ft_getcwd()
 {

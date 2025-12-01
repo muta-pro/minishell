@@ -6,21 +6,22 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/11/30 18:34:33 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/01 18:48:19 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/shell.h"
+#include "shell.h"
+
+int	is_builtin(t_ast_node *node);
 
 void	execute_AST(t_env *env, t_ast_node *node)
 {
-	while (node)
-	{
-		if (node->type == NODE_PIPE)
-			exec_pipe(env, node);
-		else
-			execute_single_cmd(node, env);
-	}
+	if (node == NULL)
+		return ;
+	if (node->type == NODE_PIPE)
+		exec_pipe(env, node);
+	else if (node->type == NODE_CMND)
+		execute_single_cmd(node, &env);
 }
 
 void	execute_builtin(t_ast_node *cmd, t_env *env)
@@ -54,6 +55,7 @@ void	execute_external(t_env *env, t_ast_node* cmd)
 	path = get_path(twoDenv, cmd->args[0]);
 	if (execve(path, cmd->args, twoDenv) == -1)
 	{
+		perror("execve");
 		// free_arr(twoDenv);
 		// free(path);
 		// free_env(&env);
@@ -62,19 +64,43 @@ void	execute_external(t_env *env, t_ast_node* cmd)
 	}
 }
 
-void	execute_single_cmd(t_ast_node *cmd, t_env *env)
+void execute_single_cmd(t_ast_node *cmd, t_env **env)
 {
-	int	i = 0;
-	const char *builtins[] = {"cd", "pwd", "exit", "env", "export", "unset", NULL};
-	while (builtins[i])
+	pid_t	pid;
+	int		status;
+
+	if (is_builtin(cmd))
+		execute_builtin(cmd, *env);
+	else
 	{
-		if (!strcmp(cmd->args[0], builtins[i]))
+		pid = fork();
+		if (pid == -1)
 		{
-			execute_builtin(cmd, env);
-			break ;
+			perror("fork");
+			return ;
 		}
+
+		if (pid == 0)
+			execute_external(*env, cmd);
 		else
-			execute_external(env, cmd);
-		i++;
+			waitpid(pid, &status, 0); // deal with status later
 	}
 }
+
+// void	execute_single_cmd(t_ast_node *cmd, t_env *env)
+// {
+// 	int	i = 0;
+// 	const char *builtins[] = {"cd", "pwd", "exit", "env", "export", "unset", NULL};
+// 	while (builtins[i])
+// 	{
+// 		if (!strcmp(cmd->args[0], builtins[i]))
+// 		{
+// 			execute_builtin(cmd, env);
+// 			break ;
+// 		}
+// 		else
+// 			execute_external(env, cmd);
+// 		i++;
+// 	}
+// }
+
