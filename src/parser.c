@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 12:30:54 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 22:16:49 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/01 16:47:26 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -14,6 +14,7 @@ implement recursive descent parser approach
 Start the main parsing routine, checking for the highest precedence first
 parse_cmnd : scans until hits pipe, op or EOF;
 have args arr to hold words
+detect * function and expand into filenames. <<<<<
 */
 #include "shell.h"
 

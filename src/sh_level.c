@@ -1,49 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   sh_level.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 20:38:56 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/28 14:57:08 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/01 17:24:11 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
 #include "shell.h"
 
-char	*new_env_str(char *key, char *value)
-{
-	char	*result;
-	int		len;
-
-	len = ft_strlen(key) + ft_strlen(value) + 2;
-	result = malloc(len);
-	if (!result)
-		return (NULL);
-	ft_strcpy(result, key);
-	ft_strcat(result, "=");
-	ft_strcat(result, value);
-	return (result);
-}
-
-int	update_env_var(char ***envp, char *key, char *value)
-{
-	char	*new_var;
-	int		i;
-
-	new_var = new_env_str(key, value);
-	if (!new_var)
-		return ;
-	i = find_env_varible(key, value);
-	if (i >= 0)
-	{
-		free((*envp)[index]);
-		(*envp)[index] = new_var;
-	}
-	else
-		add_env_var(envp, new_var);
-}
 
 int	init_shlvl(char **envp)
 {
@@ -69,9 +37,3 @@ int	init_shlvl(char **envp)
 	shlvl_value++;
 	update_env_var(&envp, "SHLVL", ft_itoa(shlvl_value));
 }
-char	**copy_envp(char **envp);//dup env
-
-char	*get_env_var(char **envp, char *key);//read var value
-
-void	unset_env_var(char ***envp, char *key);//remove var
-void	**free_envp(char **envp);//cleanup

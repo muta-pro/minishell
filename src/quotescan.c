@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 09:59:33 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 21:52:20 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:20:55 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /*
@@ -48,6 +48,7 @@ int	handle_qt_switch(t_scan_state *state, t_scanner *scanner, char c)
 			*state = IN_DBL_QUOTE;
 		else
 			return (0);
+		append_char(scanner, c);
 		advance(scanner);
 		return (1);
 	}
@@ -55,6 +56,7 @@ int	handle_qt_switch(t_scan_state *state, t_scanner *scanner, char c)
 		|| (*state == IN_DBL_QUOTE && c == '"'))
 	{
 		*state = IN_DEFAULT;
+		append_char(scanner, c);
 		advance(scanner);
 		return (1);
 	}

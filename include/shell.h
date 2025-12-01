@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 21:36:03 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/01 18:50:44 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef SHELL_H
@@ -36,6 +36,8 @@ Expander: expand variables if delimiter wasn't quoted*/
 # include "sgnl.h"
 # include "color.h"
 # include "minishell.h"
+
+extern int g_exit_status;
 
 typedef struct s_heredoc
 {

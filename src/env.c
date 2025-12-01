@@ -48,7 +48,7 @@ void	build_env(char **envp, t_env **env)
 	*env = start;
 }
 
-void free_env(t_env **env)
+void	free_env(t_env **env)
 {
 	t_env	*temp;
 
@@ -107,3 +107,44 @@ t_env	*add_new_node(void)
 	new->next = NULL;
 	return (new);
 }
+
+char	*new_env_str(char *key, char *value)
+{
+	char	*result;
+	int		len;
+
+	len = ft_strlen(key) + ft_strlen(value) + 2;
+	result = malloc(len);
+	if (!result)
+		return (NULL);
+	ft_strcpy(result, key);
+	ft_strcat(result, "=");
+	ft_strcat(result, value);
+	return (result);
+}
+
+int	update_env_var(char ***envp, char *key, char *value)
+{
+	char	*new_var;
+	int		i;
+
+	new_var = new_env_str(key, value);
+	if (!new_var)
+		return ;
+	i = find_env_varible(key, value);
+	if (i >= 0)
+	{
+		free((*envp)[index]);
+		(*envp)[index] = new_var;
+	}
+	else
+		add_env_var(envp, new_var);
+}
+
+char	**copy_envp(char **envp);//dup env
+
+char	*get_env_value(char **envp, char *key);//read var value
+
+void	unset_env_var(char ***envp, char *key);//remove var
+void	**free_envp(char **envp);//cleanup
+
