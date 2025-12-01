@@ -1,6 +1,6 @@
 CC = cc
 
-INC_DIR = includes
+INC_DIR = include
 
 CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR)
 
