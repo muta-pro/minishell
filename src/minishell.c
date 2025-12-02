@@ -1,19 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 22:15:37 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   minishell.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/07/23 16:15:36 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/02 19:12:22 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "shell.h"
-#include "lexer.h"
-#include "token.h"
-#include "parser.h"
-#include "sgnl.h"
 
 volatile sig_atomic_t	g_got_sigint = 0;
 
@@ -23,12 +20,16 @@ int	main(int argc, char **argv, char **envp)
 	// char		**envp_cpy;
 	t_token		*tokens;
 	t_ast_node	*ast;
-
+	t_env		*env;
+	
 	(void)(argc);
 	(void)(argv);
 	(void)(envp);
+	env = malloc(sizeof(env));
+	if (!env)
+		return (0);
+	build_env(envp, &env);
 	// install_parent_handler();
-	// envp_cpy = copy_envp(envp);
 	// init_shlvl(envp_cpy); //to handle mem alloc failure
 	while (1)
 	{
@@ -59,7 +60,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ast)
 		{
 			debug_ast(ast, 0);
-			// execute_AST(envp_cpy, ast);
+			execute_AST(env, ast);
 			free_ast(ast);
 		}
 		else if (tokens)

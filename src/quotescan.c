@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   quotescan.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/11 09:59:33 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 21:52:20 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   quotescan.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/10/11 09:59:33 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/02 19:10:44 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 /*
 quote state : scan word runs until whitespace or operator in default
 or runs pass it if quote state
