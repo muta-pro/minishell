@@ -65,8 +65,8 @@ typedef struct s_token
 t_token			*create_token(t_tok_type type, const char *lexeme);
 void			insert_token(t_token **head, t_token *new_token);
 void			free_tok(t_token *tok);
-void			remove_nxt_tok(t_token *token);
-int 			add_tok_to_list(t_token **list, t_scan_state state, char *buf);
+// void			remove_nxt_tok(t_token *token);
+// int 			add_tok_to_list(t_token **list, t_scan_state state, char *buf);
 //it can directly use the t_scan_state to determine the token type to create
 t_tok_type		get_op_type(char *lexeme);
 //FOR THE PARSER check for token type

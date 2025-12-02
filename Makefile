@@ -1,10 +1,9 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g 
 
-LDFLAGS = -lreadline -L/usr/local/opt/readline/lib
+INC_DIR = includes
 
-INCDIR = include
-CPPFLAGS = -I$(INCDIR) -I$(LIBFTDIR) -I/usr/local/opt/readline/include
+CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR)
 
 NAME = minishell
 SRCDIR = src
@@ -12,40 +11,44 @@ OBJDIR = obj
 LIBFTDIR = libft
 LIBFT = $(LIBFTDIR)/libft.a
 
+SRC_DIR = src
+SRCS_FILES =	builtins.c \
+				env.c \
+				execute_tree.c \
+				pipe.c \
+				path.c \
+				minishell.c \
+				lexer.c \
+				scanner.c \
+				token.c \
+				tokenizer.c \
+				utils.c \
+				quotescan.c \
+				signals.c \
+				ast.c \
+				parser.c \
+				free.c \
+				char_class.c \
+				char_ops.c \
+				error.c \
 
-SRCF = minishell.c \
-		lexer.c \
-		scanner.c \
-		token.c \
-		tokenizer.c \
-		utils.c \
-		quotescan.c \
-		signals.c \
-		ast.c \
-		parser.c \
-		free.c \
-		char_class.c \
-		char_ops.c \
-		error.c \
-
-SRCS = $(addprefix $(SRCDIR)/, $(SRCF))
-OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-
-INCLUDE = -I$(INCDIR) -I$(LIBFTDIR) -I.
-
+SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
+INCLUDE = -I$(INC_DIR) -I ./$(LIBFTDIR) -I.
 
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
-	@echo "$(NAME) is ready!"
+	$(CC) $(CFLAGS) $(OBJS) -g $(LIBFT) -o minishell -lreadline
 
 $(LIBFT):
 	@make -sC $(LIBFTDIR)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+$(OBJDIR):
+	mkdir $(OBJDIR)
+
+$(OBJDIR)/%.o: $(SRC_DIR)/%.c | $(OBJDIR)
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 clean:
 	@rm -rf $(OBJDIR)

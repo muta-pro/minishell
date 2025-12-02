@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   shell.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 21:36:03 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   shell.h                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/07/23 15:07:01 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/11/30 17:52:34 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef SHELL_H
 # define SHELL_H
 /*Heredoc handling is complex and involves multiple phases:
