@@ -13,24 +13,24 @@ LIBFT = $(LIBFTDIR)/libft.a
 
 SRC_DIR = src
 SRCS_FILES =	builtins.c \
+				ast.c \
+				char_class.c \
+				char_ops.c \
+				token.c \
 				env.c \
 				execute_tree.c \
-				pipe.c \
-				path.c \
-				minishell.c \
+				free.c \
 				lexer.c \
-				scanner.c \
-				token.c \
-				tokenizer.c \
 				utils.c \
 				quotescan.c \
 				signals.c \
-				ast.c \
 				parser.c \
-				free.c \
-				char_class.c \
-				char_ops.c \
+				scanner.c \
+				tokenizer.c \
+				pipe.c \
+				path.c \
 				error.c \
+				minishell.c \
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
