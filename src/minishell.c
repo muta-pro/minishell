@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 16:15:36 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 22:15:37 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/02 22:26:43 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "shell.h"
@@ -36,7 +36,7 @@ int	main(int argc, char **argv, char **envp)
 		{
 			g_got_sigint = 0;
 			rl_on_new_line();
-			rl_replace_line("", 0);
+			// rl_replace_line("", 0);
 			rl_redisplay();
 		}
 		line = readline("minishell: ");

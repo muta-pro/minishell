@@ -6,9 +6,10 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/01 18:50:44 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/02 22:25:49 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef SHELL_H
 # define SHELL_H
 /*Heredoc handling is complex and involves multiple phases:
