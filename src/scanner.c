@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   scanner.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 15:07:01 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 21:46:51 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   scanner.c                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/07/23 15:07:01 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/02 19:10:48 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 /*
 scan_word : handles quote concatenation / quote removal
 iterates chars

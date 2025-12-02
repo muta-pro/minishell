@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   token.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/04 22:19:29 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 21:49:25 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   token.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/08/04 22:19:29 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/02 19:11:03 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 /*
 process_token to determine if is redir/ arg / garbage
 skip unknown tokens to pervent inf loops on garbage

@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/03 03:46:11 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 18:38:19 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   lexer.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/08/03 03:46:11 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/02 19:10:32 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 /*
 define categories of tokens/should split using space delimiter.
 get_next_char();// manage the state of the lexer

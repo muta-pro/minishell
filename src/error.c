@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/30 14:41:41 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 22:06:53 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   error.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/11/30 14:41:41 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/02 19:10:00 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "shell.h"
 
 void	print_shell_err(char *src, const char *msg, int exit_code)

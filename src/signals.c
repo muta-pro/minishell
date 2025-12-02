@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/27 19:59:07 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/11/30 21:54:03 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   signals.c                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/10/27 19:59:07 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/02 19:10:51 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 /*
 use signal(SIGINT, child_handler) or 
 sigaction immediately after fork() in your Executor code.
