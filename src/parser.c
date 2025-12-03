@@ -55,7 +55,7 @@ t_ast_node	*parse_logic_op(t_token **tokens)
 t_ast_node	*parse_pipeline(t_token **tokens)
 {
 	t_ast_node	*left;
-	t_ast_node	*node;
+	t_ast_node	*pipe_nd;
 
 	left = parse_cmnd(tokens);
 	if (!left)
@@ -63,15 +63,20 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 	while (peek_tok(*tokens) && peek_tok(*tokens)->type == T_PIPE)
 	{
 		consume_tok(tokens, T_PIPE);
-		node = create_ast_nd(NODE_PIPE, left, NULL);
-		node->right = parse_cmnd(tokens);
-		left = node;
-		if (!left->right)
+		pipe_nd = create_ast_nd(NODE_PIPE, NULL, NULL);
+		if (!pipe_nd)
 		{
-			free_ast(node);
 			free_ast(left);
 			return (NULL);
+		}
+		pipe_nd->left = left;
+		pipe_nd->right = parse_pipeline(tokens);
+		if (!pipe_nd->right)
+		{
+			free_ast(pipe_nd);
+			return (NULL);
 		} //SYNTAX ERR pipe no cmnd
+		return (pipe_nd);
 	}
 	return (left);
 }
