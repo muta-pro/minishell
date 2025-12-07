@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 18:48:19 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/07 17:07:36 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,11 @@ void execute_single_cmd(t_ast_node *cmd, t_env **env)
 		}
 
 		if (pid == 0)
+		{
+			if (apply_redir(cmd->redir_list) != 0)
+				exit(1); // check later
 			execute_external(*env, cmd);
+		}
 		else
 			waitpid(pid, &status, 0); // deal with status later
 	}

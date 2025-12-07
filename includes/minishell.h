@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 17:52:03 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/07 17:06:05 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	execute_AST(t_env *env, t_ast_node *node);
 void	execute_builtin(t_ast_node *cmd, t_env *env);
 void	execute_single_cmd(t_ast_node *cmd, t_env **env);
 void	execute_external(t_env *env, t_ast_node* cmd);
+int		apply_redir(t_redir *node);
 int		list_size(t_env *env);
 char	**list_to_2d(t_env *env);
 char	*find_path(char **split_paths, char *cmd);

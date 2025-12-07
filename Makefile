@@ -30,6 +30,7 @@ SRCS_FILES =	builtins.c \
 				pipe.c \
 				path.c \
 				error.c \
+				redir.c \
 				minishell.c \
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
