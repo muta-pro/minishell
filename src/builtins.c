@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 18:48:07 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/07 18:31:42 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,17 +94,21 @@ void	ft_export(t_env **env, char *str)
 
 void	ft_unset(t_env **env, char *str)
 {
+	// something's broken
 	t_env	*temp;
-	temp = *env;
-	while (strcmp((*env)->key, str))
-		*env = (*env)->next;
-	if (!(*env))
+	t_env	*node_to_delete;
+	
+	node_to_delete = *env;
+	temp = node_to_delete;
+	while (strcmp(node_to_delete->key, str))
+		node_to_delete = node_to_delete->next;
+	if (!(node_to_delete))
 		return ;
-	while (temp->next != *env)
+	while (temp->next != node_to_delete)
 		temp = temp->next;
-	temp->next = (*env)->next;
-	free((*env)->key);
-	free((*env)->value);
-	free((*env)->next);
-	free(*env);
+	temp->next = node_to_delete->next;
+	free(node_to_delete->key);
+	free(node_to_delete->value);
+	free(node_to_delete->next);
+	free(node_to_delete);
 }
