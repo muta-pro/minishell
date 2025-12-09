@@ -14,8 +14,18 @@
 
 void debug_ast(t_ast_node *node, int level)
 {
+	t_redir *tmp = node->redir_list;
 	if (!node)
 		return ;
+	while (tmp) {
+    printf(" \033[1;35m"); // Purple color
+    if (tmp->type == T_REDIR_IN) printf("[< %s]", tmp->file_name);
+    else if (tmp->type == T_REDIR_OUT) printf("[> %s]", tmp->file_name);
+    else if (tmp->type == T_REDIR_APPEND) printf("[>> %s]", tmp->file_name); // <--- PROOF
+    else if (tmp->type == T_REDIR_HEREDOC) printf("[<< %s]", tmp->file_name);
+    printf("\033[0m");
+    tmp = tmp->next;
+}
 	for (int i = 0; i < level; i++) printf(" ");
 		if (node->type == NODE_PIPE)
 			printf("\033[1;31m[| PIPE]\033[0m\n");
