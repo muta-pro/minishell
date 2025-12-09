@@ -17,11 +17,11 @@ volatile sig_atomic_t	g_got_sigint = 0;
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
-	// char		**envp_cpy;
 	t_token		*tokens;
 	t_ast_node	*ast;
 	t_env		*env;
-	
+	int 		h_count;
+
 	(void)(argc);
 	(void)(argv);
 	(void)(envp);
@@ -30,16 +30,12 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	build_env(envp, &env);
 	// install_parent_handler();
-	// init_shlvl(envp_cpy); //to handle mem alloc failure
+	// init_shlvl(env); //to handle mem alloc failure
+	signal(SIGINT, handle_sigint);
+	signal(SIQUIT, SIG_ING);
 	while (1)
 	{
-		if (g_got_sigint)
-		{
-			g_got_sigint = 0;
-			rl_on_new_line();
-			rl_replace_line("", 0);
-			rl_redisplay();
-		}
+		g_got_sigint = 0;
 		line = readline("minishell: ");
 		if (!line)
 		{
@@ -60,6 +56,14 @@ int	main(int argc, char **argv, char **envp)
 		if (ast)
 		{
 			debug_ast(ast, 0);
+			h_count = 0;
+			here_docs(ast, &h_count);
+			if (g_got_sigint)
+			{
+				free_ast(ast);
+				continue ;
+			}
+			// expand_ast(ast, env);
 			execute_AST(env, ast);
 			free_ast(ast);
 		}
