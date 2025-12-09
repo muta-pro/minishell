@@ -14,6 +14,16 @@
 
 volatile sig_atomic_t	g_got_sigint = 0;
 
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	g_got_sigint = 1;
+}
+
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
@@ -31,8 +41,8 @@ int	main(int argc, char **argv, char **envp)
 	build_env(envp, &env);
 	// install_parent_handler();
 	// init_shlvl(env); //to handle mem alloc failure
-	signal(SIGINT, handle_sigint);
-	signal(SIQUIT, SIG_ING);
+	// signal(SIGINT, handle_sigint);
+	// signal(SIQUIT, SIG_ING);
 	while (1)
 	{
 		g_got_sigint = 0;
@@ -57,12 +67,13 @@ int	main(int argc, char **argv, char **envp)
 		{
 			debug_ast(ast, 0);
 			h_count = 0;
-			here_docs(ast, &h_count);
+			// here_docs(ast, &h_count);
 			if (g_got_sigint)
 			{
 				free_ast(ast);
 				continue ;
 			}
+			printf("T_REDIR_APPEND: %d\nnode type: %d\n", T_REDIR_APPEND, ast->redir_list->type);
 			// expand_ast(ast, env);
 			execute_AST(env, ast);
 			free_ast(ast);

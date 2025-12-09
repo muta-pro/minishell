@@ -54,7 +54,8 @@ void	unset_env_var(char ***envp, char *key);//remove var
 
 void	print_tokens(t_token *tokens);
 
-void	here_doc(t_env *env, int h_count);
+
+void	here_docs(t_ast_node *node, int *h_count);
 
 //check characters
 int		is_operator_char(char c);

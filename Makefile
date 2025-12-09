@@ -31,6 +31,7 @@ SRCS_FILES =	builtins.c \
 				path.c \
 				error.c \
 				minishell.c \
+# 				here_docs.c \
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
