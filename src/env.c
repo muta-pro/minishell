@@ -48,7 +48,7 @@ void	build_env(char **envp, t_env **env)
 	*env = start;
 }
 
-void free_env(t_env **env)
+void	free_env(t_env **env)
 {
 	t_env	*temp;
 

@@ -44,7 +44,6 @@ typedef struct s_heredoc
 	int		expand;
 }	t_heredoc;
 
-char	**copy_envp(char **envp);
 int		init_shlvl(char **envp);
 int		update_env_var(char ***envp, char *key, char *value);
 char	*new_env_str(char *key, char *value);
@@ -54,6 +53,9 @@ char	*get_env_var(char **envp, char *key);//read var value
 void	unset_env_var(char ***envp, char *key);//remove var
 
 void	print_tokens(t_token *tokens);
+
+
+void	here_docs(t_ast_node *node, int *h_count);
 
 //check characters
 int		is_operator_char(char c);
@@ -65,6 +67,7 @@ int		null_terminator(char c);
 
 //SIGNALS
 // static void	install_parent_handler(void);
+void	handle_sigint(int sig);
 
 void debug_ast(t_ast_node *node, int level);
 
