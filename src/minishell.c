@@ -15,24 +15,13 @@
 volatile sig_atomic_t	g_got_sigint = 0;
 int						g_exit_status = 0;
 
-void	handle_sigint(int sig)
-{
-	(void)sig;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_got_sigint = 1;
-}
-
-
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	t_token		*tokens;
 	t_ast_node	*ast;
 	t_env		*env;
-	int 		h_count;
+	int			h_count;
 
 	(void)(argc);
 	(void)(argv);
@@ -59,7 +48,8 @@ int	main(int argc, char **argv, char **envp)
 		if (!line)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
-			break ;
+			//perform final cleanup?
+			exit(g_exit_status);
 		}
 		if (!*line)
 		{
@@ -83,7 +73,7 @@ int	main(int argc, char **argv, char **envp)
 				free_ast(ast);
 				continue ;
 			}
-			// expand_ast(ast, env);
+			expand_ast(ast, env);
 			// execute_AST(env, ast);
 			clean_tmp(ast);
 			free_ast(ast);
@@ -95,7 +85,7 @@ int	main(int argc, char **argv, char **envp)
 		free(line);
 	}
 	// clear_history();
-	// free_envp(envp_cpy);
+	free_env(&env);
 	return (0);
 }
 

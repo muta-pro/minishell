@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/09 13:06:10 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/10 12:50:14 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/10 20:32:33 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,6 @@ void	clean_tmp(t_ast_node *node)
 	}
 	clean_tmp(node->left);
 	clean_tmp(node->right);
-}
-
-void	handle_sigint_hrdc(int sig)
-{
-	(void)sig;
-	g_got_sigint = 1;
-	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 }
 
 void	file_name(char *buf, int count)

@@ -19,6 +19,7 @@ SRCS_FILES =	builtins.c \
 				token.c \
 				env.c \
 				execute_tree.c \
+				expand_tree.c \
 				free.c \
 				lexer.c \
 				utils.c \

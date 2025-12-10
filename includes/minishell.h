@@ -20,6 +20,7 @@
 # include <readline/history.h>
 # include <string.h>
 # include <sys/wait.h>
+# include "shell.h"
 
 typedef struct s_env
 {
@@ -56,5 +57,8 @@ char	**list_to_2d(t_env *env);
 char	*find_path(char **split_paths, char *cmd);
 char	*get_path(char **twoDenv, char *cmd);
 t_env	*add_new_node(void);
+void	expand_ast(t_ast_node *node, t_env *env);
+char	*substitute_and_clean(char *arg, t_env *env);
+char	*get_var_value(char *str, int *i, t_env *env);
 
 #endif
