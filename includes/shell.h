@@ -28,6 +28,7 @@ Expander: expand variables if delimiter wasn't quoted*/
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/wait.h>
+# include <sys/ioctl.h>
 # include "libft.h"
 
 # include "defines.h"
@@ -44,6 +45,8 @@ typedef struct s_heredoc
 	int		expand;
 }	t_heredoc;
 
+extern volatile sig_atomic_t g_got_sigint;
+
 int		init_shlvl(char **envp);
 int		update_env_var(char ***envp, char *key, char *value);
 char	*new_env_str(char *key, char *value);
@@ -56,6 +59,8 @@ void	print_tokens(t_token *tokens);
 
 
 void	here_docs(t_ast_node *node, int *h_count);
+void	clean_tmp(t_ast_node *node);
+int		is_temp_hfile(char *file_name);
 
 //check characters
 int		is_operator_char(char c);

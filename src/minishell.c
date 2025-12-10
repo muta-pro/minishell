@@ -17,6 +17,7 @@ volatile sig_atomic_t	g_got_sigint = 0;
 void	handle_sigint(int sig)
 {
 	(void)sig;
+	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -41,12 +42,19 @@ int	main(int argc, char **argv, char **envp)
 	build_env(envp, &env);
 	// install_parent_handler();
 	// init_shlvl(env); //to handle mem alloc failure
-	// signal(SIGINT, handle_sigint);
-	// signal(SIQUIT, SIG_ING);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		g_got_sigint = 0;
 		line = readline("minishell: ");
+		if (g_got_sigint)
+		{
+			//g_exit_status_variable = 130;
+			if (line)
+				free(line);
+			continue ;
+		}
 		if (!line)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
@@ -67,15 +75,16 @@ int	main(int argc, char **argv, char **envp)
 		{
 			debug_ast(ast, 0);
 			h_count = 0;
-			// here_docs(ast, &h_count);
+			here_docs(ast, &h_count);
+			debug_ast(ast, 0);
 			if (g_got_sigint)
 			{
 				free_ast(ast);
 				continue ;
 			}
-			printf("T_REDIR_APPEND: %d\nnode type: %d\n", T_REDIR_APPEND, ast->redir_list->type);
 			// expand_ast(ast, env);
-			execute_AST(env, ast);
+			// execute_AST(env, ast);
+			clean_tmp(ast);
 			free_ast(ast);
 		}
 		else if (tokens)
