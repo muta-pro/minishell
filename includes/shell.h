@@ -45,7 +45,8 @@ typedef struct s_heredoc
 	int		expand;
 }	t_heredoc;
 
-extern volatile sig_atomic_t g_got_sigint;
+extern volatile	sig_atomic_t g_got_sigint;
+extern int		g_exit_status;
 
 int		init_shlvl(char **envp);
 int		update_env_var(char ***envp, char *key, char *value);

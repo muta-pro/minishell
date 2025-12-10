@@ -76,7 +76,7 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 			free_ast(pipe_nd);
 			return (NULL);
 		} //SYNTAX ERR pipe no cmnd
-		return (pipe_nd);
+		left = pipe_nd;
 	}
 	return (left);
 }

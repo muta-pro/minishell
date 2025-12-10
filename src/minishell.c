@@ -13,6 +13,7 @@
 #include "shell.h"
 
 volatile sig_atomic_t	g_got_sigint = 0;
+int						g_exit_status = 0;
 
 void	handle_sigint(int sig)
 {
