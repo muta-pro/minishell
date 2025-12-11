@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/07 18:31:42 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/11 15:32:10 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,23 @@ void	ft_chdir(t_ast_node *cmd, t_env *env)
 	{
 		while (strcmp(env->key, "HOME"))
 			env = env->next;
-		chdir(env->value);
+		chdir(env->value); // check
 	}
 	else if (!(strncmp(cmd->args[1], "/", 1)))
-		chdir(cmd->args[1]);
+		chdir(cmd->args[1]); // check
 	else
 	{
 		current = getcwd(NULL, 0);
 		rltv_to_full = ft_strjoin(current, "/");
 		free(current);
 		current = ft_strdup(rltv_to_full);
-		rltv_to_full = ft_strjoin(current, cmd->args[1]);
+		rltv_to_full = ft_strjoin(current, cmd->args[1]); // ?
         free(current);
 		if (chdir(rltv_to_full) == -1)
 			perror(rltv_to_full);
 		free(rltv_to_full);
 	}
-	ft_getcwd();
+	// ft_getcwd();
 }
 
 void	ft_exit(char *exit_status)
