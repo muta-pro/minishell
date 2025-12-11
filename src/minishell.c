@@ -25,10 +25,9 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)(argc);
 	(void)(argv);
-	(void)(envp);
-	env = malloc(sizeof(env));
+	env = malloc(sizeof(t_env));
 	if (!env)
-		return (0);
+		return (1);
 	build_env(envp, &env);
 	install_parent_handler();
 	// init_shlvl(env); //to handle mem alloc failure
@@ -38,7 +37,7 @@ int	main(int argc, char **argv, char **envp)
 		line = readline("minishell: ");
 		if (g_got_sigint)
 		{
-			//g_exit_status_variable = 130;
+			g_exit_status = 130;
 			if (line)
 				free(line);
 			continue ;
@@ -46,7 +45,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!line)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
-			//perform final cleanup?
+			free_env(&env);
 			exit(g_exit_status);
 		}
 		if (!*line)
@@ -55,7 +54,7 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		add_history(line);
-		tokens = lexer(line); // tokenize
+		tokens = lexer(line);
 		if (tokens)
 			ast = parser(tokens);
 		else
@@ -64,19 +63,22 @@ int	main(int argc, char **argv, char **envp)
 		{
 			h_count = 0;
 			here_docs(ast, &h_count);
-			debug_ast(ast, 0);
 			if (g_got_sigint)
 			{
+				clean_tmp(ast);
 				free_ast(ast);
+				free_tok(tokens);
+				free(line);
 				continue ;
 			}
 			expand_ast(ast, env);
-			// execute_AST(env, ast);
+			execute_AST(env, ast);
+			debug_ast(ast, 0);
 			clean_tmp(ast);
 			free_ast(ast);
 		}
-		else if (tokens)
-			print_shell_err(SYTX_ERR, "ast failed", 258);
+		else if (tokens)//parser failed, not lexer, should print its err
+			g_exit_status = 258;
 		if (tokens)
 			free_tok(tokens);
 		free(line);

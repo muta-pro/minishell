@@ -75,7 +75,7 @@ void	debug_ast(t_ast_node *node, int level)
 		    int i = 0;
 		    while (node->args[i])
 		    {
-		        printf("%s ", node->args[i]);
+		        printf("[%s] ", node->args[i]);
 		        i++;
 		    }
 		    printf("\n");

@@ -13,6 +13,9 @@
 /*
 quote state : scan word runs until whitespace or operator in default
 or runs pass it if quote state
+
+I should handle the T_ERROR returned by lexer (NULL TOKEN list)
+print: syntax error unexpected EOF
 */
 #include "shell.h"
 
