@@ -78,6 +78,9 @@ void	debug_ast(t_ast_node *node, int level)
 		        printf("%s ", node->args[i]);
 		        i++;
 		    }
+		    printf("\n");
+		    print_indent(level + 1);
+		    printf("\033[33m[EXPANDED] Arguments clean and ready.\033[0m");
 		}
 	}
 	   // Print Redirections (The important part for you!)
@@ -89,7 +92,10 @@ void	debug_ast(t_ast_node *node, int level)
 	           // This means it hasn't been processed yet
 	           printf("\n");
 	           print_indent(level + 1);
-	           printf("\033[1;31m<< [HEREDOC] Delimiter: %s\033[0m", tmp->file_name);
+	           if (tmp->no_expand)
+	           	printf("\033[1;31m<< [HEREDOC] Delimiter: %s (NO EXPANSION)\033[0m", tmp->file_name);
+	           else
+	           	printf("\033[1;31m<< [HEREDOC] Delimiter: %s (EXPANDS VARS)\033[0m", tmp->file_name);
 	       }
 	       else if (tmp->type == T_REDIR_IN)
 	       {

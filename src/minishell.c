@@ -30,10 +30,8 @@ int	main(int argc, char **argv, char **envp)
 	if (!env)
 		return (0);
 	build_env(envp, &env);
-	// install_parent_handler();
+	install_parent_handler();
 	// init_shlvl(env); //to handle mem alloc failure
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		g_got_sigint = 0;
@@ -64,7 +62,6 @@ int	main(int argc, char **argv, char **envp)
 			ast = NULL; //lexer failed
 		if (ast)
 		{
-			debug_ast(ast, 0);
 			h_count = 0;
 			here_docs(ast, &h_count);
 			debug_ast(ast, 0);
