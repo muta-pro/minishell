@@ -75,7 +75,8 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 		{
 			free_ast(pipe_nd);
 			return (NULL);
-		} //SYNTAX ERR pipe no cmnd
+			print_shell_err(SYTX_ERR, "No command.");
+		}
 		left = pipe_nd;
 	}
 	return (left);
@@ -96,7 +97,7 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 		flag = args_redirs_tok(tokens, &args, &redirs);
 		if (flag != 0)
 		{
-			print_shell_err(SYTX_ERR, "unexpected token", 258);
+			print_shell_err(SYTX_ERR, "Unexpected token.");
 			free_arr(args);
 			free_redirs(redirs);
 			return (NULL);
@@ -122,7 +123,7 @@ int	parse_redir(t_token **tokens, t_redir **redir_head)
 		file = consume_tok(tokens, T_STR);
 	if (!file)
 	{
-		print_shell_err(SYTX_ERR, "unexpected token.", 258);
+		print_shell_err(SYTX_ERR, "Unexpected token.");
 		return (1);
 	}
 	new_node = init_redir_node(op, file);

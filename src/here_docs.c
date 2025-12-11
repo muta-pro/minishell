@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/09 13:06:10 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/10 20:32:33 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:21:57 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,14 @@ void	file_name(char *buf, int count)
 void	read_h_input(char *delim, int fd)
 {
 	char	*line;
+	size_t	len;
 
+	len = ft_strlen(delim);
 	signal(SIGINT, handle_sigint_hrdc);
 	while (1)
 	{
-		line = readline("> ");
+		line = readline(">");
+		if (line)
 		if (g_got_sigint)
 		{
 			if (line)
@@ -65,10 +68,10 @@ void	read_h_input(char *delim, int fd)
 		}
 		if (!line)
 		{
-			printf("here-doc delimited by EOF\n");
+			printf("Warining: here-doc delimited by EOF\n");
 			break ;
 		}
-		if (strcmp(line, delim) == 0)
+		if (line && ft_strncmp(line, delim, len) == 0)
 		{
 			free (line);
 			break ;
