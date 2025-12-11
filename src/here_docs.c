@@ -6,19 +6,46 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/09 13:06:10 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/09 15:03:44 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/10 20:32:33 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+
+int	is_tmp_hfile(char *file_name)
+{
+	if (strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
+		return (1);
+	return (0);
+}
+
+void	clean_tmp(t_ast_node *node)
+{
+	t_redir	*tmp;
+
+	if (!node)
+		return ;
+	if (node->type == NODE_CMND)
+	{
+		tmp = node->redir_list;
+		while (tmp)
+		{
+			if (tmp->type == T_REDIR_IN && is_tmp_hfile(tmp->file_name))
+				unlink(tmp->file_name);
+			tmp = tmp->next;
+		}
+	}
+	clean_tmp(node->left);
+	clean_tmp(node->right);
+}
 
 void	file_name(char *buf, int count)
 {
 	char	*num;
 
 	num = ft_itoa(count);
-	ft_strcpy(buf, "/tmp/.minishell_hd_");
-	ft_strcat(buf, num);
+	strcpy(buf, "/tmp/.minishell_hd_");
+	strcat(buf, num);
 	free(num);
 }
 
@@ -26,9 +53,16 @@ void	read_h_input(char *delim, int fd)
 {
 	char	*line;
 
+	signal(SIGINT, handle_sigint_hrdc);
 	while (1)
 	{
 		line = readline("> ");
+		if (g_got_sigint)
+		{
+			if (line)
+				free(line);
+			break ;
+		}
 		if (!line)
 		{
 			printf("here-doc delimited by EOF\n");
@@ -43,6 +77,7 @@ void	read_h_input(char *delim, int fd)
 		write(fd, "\n", 1);
 		free(line);
 	}
+	signal(SIGINT, handle_sigint);
 }
 
 int	process_h_node(t_redir *tmp, int *h_count)
@@ -55,9 +90,14 @@ int	process_h_node(t_redir *tmp, int *h_count)
 		file_name(file, (*h_count)++);
 		fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd < 0)
-			return ; //handle error needing
+			return (0); //handle error needing
 		read_h_input(tmp->file_name, fd);
 		close(fd);
+		if (g_got_sigint)
+		{
+			unlink(file);
+			return (0);
+		}
 		tmp->type = T_REDIR_IN;
 		free(tmp->file_name);
 		tmp->file_name = ft_strdup(file);

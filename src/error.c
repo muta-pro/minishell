@@ -14,15 +14,15 @@
 
 void	print_shell_err(char *src, const char *msg, int exit_code)
 {
-	(void)exit_code;
-	// set_g_exit_status(exit_code);
-	WRITE_STR(SHELL_NAME);
+	if (exit_code != -1)
+		g_exit_status = exit_code;
+	write(STDERR_FILENO, SHELL_NAME, ft_strlen(SHELL_NAME));
 	if (src && ft_strlen(src) > 0)
 	{
-		WRITE_STR(src);
+		write(STDERR_FILENO, src, ft_strlen(src));
 		write(STDERR_FILENO, ": ", 2);
 	}
-	WRITE_STR(msg);
+	write(STDERR_FILENO, msg, ft_strlen(msg));
 	write(STDERR_FILENO, "\n", 1);
 }
 

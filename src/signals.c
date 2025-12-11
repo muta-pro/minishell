@@ -17,30 +17,50 @@ for chile process before running a command
 child process receives SIGINT
 Catch SIGINT during heredoc input
 Exit heredoc early without crashing
-Clean up temp files or pipes*/
+Clean up temp files or pipes
+
+Executor Flow 
+Your partner's execute_AST function must follow this template:
+Call set_parent_signals_exec().
+fork()
+Child Process: Call set_child_signals(),
+ perform redirections, and call execve.
+Parent Process: waitpid() for the child to finish, 
+then call signal(SIGINT, handle_sigint) to restore the prompt handler.*/
 #include "shell.h"
 #include <signal.h>
 
+void	install_parent_handler(void)
+{
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
+}
 
-// static void eof_exit(char *line)
-// {
-// 	if (!line)
-// 		return (NULL);
-// 	write(1, "Exit", 4);
-// 	break ;
-// }
+void	child_sig_handler(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
 
-// static void	install_parent_handler(void)
-// {
-// 	signal(SIGINT, handle_sigint);
-// 	signal(SIGQUIT, SIG_IGN);
-// 	signal(EOF, handle_exit);
-// }
+void	set_parent_sig_exec(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
 
-// static void child_sig_handler(int sig)
-// {
-// 	void(sig);
-// 	g_got_sigint = 1;
-// 	write(STDOUT_FILENO, "\n", 1);
-// }
-// static void heredoc_sig_handler()
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	g_got_sigint = 1;
+}
+
+void	handle_sigint_hrdc(int sig)
+{
+	(void)sig;
+	g_got_sigint = 1;
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+}

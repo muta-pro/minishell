@@ -6,10 +6,8 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:10:50 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/10/27 11:16:24 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/10 21:27:19 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <signal.h>
 
-void handle_sig(int sig);
-void handle_sigint_no_newline(int num);

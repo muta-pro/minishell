@@ -13,26 +13,36 @@
 /*
 process_token to determine if is redir/ arg / garbage
 skip unknown tokens to pervent inf loops on garbage
+^^^Any token reaching this point that isn't an operator or argument 
+(like T_ERROR or T_DELIMITER) should probably be handled by returning 
+ an error code from parse_cmnd, not consumed silently.
+ can return flag instead of consuming
 */
 #include "shell.h"
 #include <stddef.h>
 
-void	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
+int	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
 {
 	t_token	*curr;
 
 	curr = peek_tok(*tokens);
+	if (!curr)
+		return (0);
 	if (is_redir_token(curr))
+	{
 		parse_redir(tokens, redirs);
+		return (0);
+	}
 	else if (peek_tok(*tokens)->type == T_WORD
 		|| peek_tok(*tokens)->type == T_STR
 		|| peek_tok(*tokens)->type == T_VAR)
 	{
 		append_args(args, curr->lexeme);
 		consume_tok(tokens, curr->type);
+		return (0);
 	}
 	else
-		consume_tok(tokens, curr->type);
+		return (1);
 }
 
 t_tok_type	get_op_type(char *lexeme)
@@ -51,6 +61,8 @@ t_tok_type	get_op_type(char *lexeme)
 		return (T_LOGIC_OR);
 	if (!strcmp(lexeme, "&&"))
 		return (T_LOGIC_AND);
+	if (!strcmp(lexeme, "*"))
+		return (T_WILDC);
 	return (T_ERROR);
 }
 

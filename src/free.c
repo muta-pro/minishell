@@ -54,9 +54,18 @@ void	free_redirs(t_redir *redirs)
 	}
 }
 
-void	free_envp(char **envp_cpy)
+void	free_env(t_env **env)
 {
-	free_arr(envp_cpy);
+	t_env	*temp;
+
+	while (*env)
+	{
+		temp = *env;
+		*env = (*env)->next;
+		free(temp->key);
+		free(temp->value);
+		free(temp);
+	}
 }
 // void	clear_history();
 

@@ -28,6 +28,7 @@ Expander: expand variables if delimiter wasn't quoted*/
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/wait.h>
+# include <sys/ioctl.h>
 # include "libft.h"
 
 # include "defines.h"
@@ -44,18 +45,28 @@ typedef struct s_heredoc
 	int		expand;
 }	t_heredoc;
 
+extern volatile	sig_atomic_t g_got_sigint;
+extern int		g_exit_status;
+
 int		init_shlvl(char **envp);
 int		update_env_var(char ***envp, char *key, char *value);
 char	*new_env_str(char *key, char *value);
-void	free_envp(char **envp_cpy);//cleanup
 int		find_env_varible(char **envp, char *key);
-char	*get_env_var(char **envp, char *key);//read var value
+char	*get_env_val(t_env *env, char *key);
 void	unset_env_var(char ***envp, char *key);//remove var
 
 void	print_tokens(t_token *tokens);
+//utils
+char	*ft_strjoin_free(char *s1, char *s2);
+char	*join_char(char *str, char c);
+int		delim_has_qt(char *str);
+void	handle_sngl_qt(char *arg, int *i, char **res);
+void	handle_dollar(char *arg, int *i, char **res, t_env *env);
 
 
 void	here_docs(t_ast_node *node, int *h_count);
+void	clean_tmp(t_ast_node *node);
+int		is_temp_hfile(char *file_name);
 
 //check characters
 int		is_operator_char(char c);
@@ -68,6 +79,9 @@ int		null_terminator(char c);
 //SIGNALS
 // static void	install_parent_handler(void);
 void	handle_sigint(int sig);
+void	handle_sigint_hrdc(int sig);
+void	install_parent_handler(void);
+void	set_parent_sig_exec(void);
 
 void debug_ast(t_ast_node *node, int level);
 

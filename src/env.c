@@ -12,6 +12,17 @@
 
 #include "shell.h"
 
+char	*get_env_val(t_env *env, char *key)
+{
+	while (env)
+	{
+		if (strcmp(env->key, key) == 0)
+			return (ft_strdup(env->value));
+		env = env->next;
+	}
+	return (ft_strdup(""));
+}
+
 void	build_env(char **envp, t_env **env)
 {
 	int		i;
@@ -34,7 +45,7 @@ void	build_env(char **envp, t_env **env)
 		while (envp[i][j] && c++)
 			j++;
 		(*env)->value = strndup(envp[i] + j - c + 2, c - 2);
-		// printf("\n\nj - c: %d", j -c);                                              !!!!!!
+		// printf("\n\nj - c: %d", j -c);
 		// (*env)->value = ft_substr(envp[i], j - c, c);
 		if (envp[i + 1])
 		{
@@ -48,19 +59,6 @@ void	build_env(char **envp, t_env **env)
 	*env = start;
 }
 
-void	free_env(t_env **env)
-{
-	t_env	*temp;
-
-	while (*env)
-	{
-		temp = *env;
-		*env = (*env)->next;
-		free(temp->key);
-		free(temp->value);
-		free(temp);
-	}
-}
 
 char	**list_to_2d(t_env *env)
 {

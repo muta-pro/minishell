@@ -76,7 +76,7 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 			free_ast(pipe_nd);
 			return (NULL);
 		} //SYNTAX ERR pipe no cmnd
-		return (pipe_nd);
+		left = pipe_nd;
 	}
 	return (left);
 }
@@ -86,16 +86,21 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 	t_ast_node	*node;
 	char		**args;
 	t_redir		*redirs;
+	int			flag;
 
 	redirs = NULL;
 	args = NULL;
-	while (peek_tok(*tokens)
-		&& peek_tok(*tokens)->type != T_EOF
-		&& peek_tok(*tokens)->type != T_PIPE
-		&& peek_tok(*tokens)->type != T_LOGIC_OR
-		&& peek_tok(*tokens)->type != T_LOGIC_AND)
+	flag = 0;
+	while (!is_delim(peek_tok(*tokens)))
 	{
-		args_redirs_tok(tokens, &args, &redirs);
+		flag = args_redirs_tok(tokens, &args, &redirs);
+		if (flag != 0)
+		{
+			print_shell_err(SYTX_ERR, "unexpected token", 258);
+			free_arr(args);
+			free_redirs(redirs);
+			return (NULL);
+		}
 	}
 	if (!args && !redirs)
 		return (NULL);
@@ -105,10 +110,9 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 	return (node);
 }
 
-void	parse_redir(t_token **tokens, t_redir **redir_head)
+int	parse_redir(t_token **tokens, t_redir **redir_head)
 {
 	t_redir	*new_node;
-	t_redir	*last;
 	t_token	*op;
 	t_token	*file;
 
@@ -117,19 +121,14 @@ void	parse_redir(t_token **tokens, t_redir **redir_head)
 	if (!file)
 		file = consume_tok(tokens, T_STR);
 	if (!file)
-		return (print_shell_err(SYTX_ERR, "unexpected token.", 258));
-	new_node = malloc(sizeof(t_redir));
-	new_node->type = op->type;
-	new_node->file_name = strdup(file->lexeme);
-	new_node->next = NULL;
-	if (!*redir_head)
-		*redir_head = new_node;
-	else
 	{
-		last = *redir_head;
-		while (last->next)
-			last = last->next;
-		last->next = new_node;
+		print_shell_err(SYTX_ERR, "unexpected token.", 258);
+		return (1);
 	}
+	new_node = init_redir_node(op, file);
+	if (!new_node)
+		return (1);
+	redir_add_node(redir_head, new_node);
+	return (0);
 }
 //malloc and init new ast_nd
