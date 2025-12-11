@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/07 18:25:21 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/11 16:54:57 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,12 @@ void	execute_builtin(t_ast_node *cmd, t_env *env)
 		ft_export(&env, cmd->args[1]);
 	if (!strcmp(cmd->args[0], "unset"))
 	{
-		// ft_env(env);
-		// printf("\n\n\n");
-		ft_unset(&env, cmd->args[1]);
+		int i = 1;
+		while (cmd->args[i])
+		{
+			ft_unset(&env, cmd->args[i]);
+			i++;
+		}
 	}
 
 }

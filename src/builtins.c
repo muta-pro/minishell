@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/11 15:32:10 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/11 17:21:23 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,21 +94,25 @@ void	ft_export(t_env **env, char *str)
 
 void	ft_unset(t_env **env, char *str)
 {
-	// something's broken
-	t_env	*temp;
-	t_env	*node_to_delete;
-	
-	node_to_delete = *env;
-	temp = node_to_delete;
-	while (strcmp(node_to_delete->key, str))
-		node_to_delete = node_to_delete->next;
-	if (!(node_to_delete))
+	t_env	*curr;
+	t_env	*prev;
+
+	if (env == NULL || *env == NULL || str == NULL)
 		return ;
-	while (temp->next != node_to_delete)
-		temp = temp->next;
-	temp->next = node_to_delete->next;
-	free(node_to_delete->key);
-	free(node_to_delete->value);
-	free(node_to_delete->next);
-	free(node_to_delete);
+	curr = *env;
+	prev = NULL;
+	while (curr && strcmp(curr->key, str))
+	{
+		prev = curr;
+		curr = curr->next;
+	}
+	if (curr == NULL)
+		return ;
+	if (prev == NULL)
+		*env = curr->next;
+	else
+		prev->next = curr->next;
+	free(curr->key);
+	free(curr->value);
+	free(curr);
 }
