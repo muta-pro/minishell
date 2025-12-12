@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 18:50:31 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/10 15:51:43 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/11 18:18:02 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LEXER_H
@@ -14,27 +14,8 @@
 
 #include "token.h"
 
-// typedef enum e_char_class
-// {
-// 	C_WS,
-// 	C_Q,
-// 	C_P,
-// 	C_R,
-// 	C_W,
-// 	C_V,
-// 	c_OP,
-// 	C_EOF
+typedef struct s_shell t_shell;
 
-// }	t_char_class;
-
-// typedef struct s_env
-// {
-// 	char	**envp;
-// 	int		count;
-// 	int		capacity;
-// }	t_env;
-
-//curr state of the scanner
 typedef struct s_scanner
 {
 	const char		*input;

@@ -77,38 +77,33 @@ void	build_env(char **envp, t_env **env)
 {
 	int		i;
 	int		j;
-	int		c;
-	t_env	*temp;
-	t_env	*start;
+	t_env	*node;
+	t_env	*last;
 
-	start = *env;
+	*env = NULL;
 	i = 0;
-	j = 0;
 	while (envp[i])
 	{
+		node = add_new_node();
+		if (!node)
+			return ;
 		j = 0;
 		while (envp[i][j] != '=')
 			j++;
-		(*env)->key = strndup(envp[i], j);
-		// (*env)->key = ft_substr(envp[i], 0, j);
-		c = 1;
-		while (envp[i][j] && c++)
-			j++;
-		(*env)->value = strndup(envp[i] + j - c + 2, c - 2);
-		// printf("\n\nj - c: %d", j -c);
-		// (*env)->value = ft_substr(envp[i], j - c, c);
-		if (envp[i + 1])
+		node->key = strndup(envp[i], j);
+		node->value = strdup(envp[i] + j + 1);
+		if (*env == NULL)
+			*env = node;
+		else
 		{
-			temp = add_new_node(); // protect
-			(*env)->next = temp;
-			*env = temp;
+			last = *env;
+			while (last->next)
+				last = last->next;
+			last->next = node;
 		}
 		i++;
 	}
-	(*env)->next = NULL;
-	*env = start;
 }
-
 
 char	**list_to_2d(t_env *env)
 {

@@ -92,16 +92,14 @@ char	*eliminate_qt(char *str)
 	len = ft_strlen(str);
 	clean_str = malloc(sizeof(char) * (len - 1));
 	if (!clean_str)
-	{
-		g_exit_status = 1;
 		return (NULL);
-	}
 	i = 1;
 	while (i < len - 1)
 	{
-		clean_str[i] = str[i];
+		clean_str[i - 1] = str[i];
 		i++;
 	}
+	clean_str[len - 2] = '\0';
 	free(str);
 	return (clean_str);
 }

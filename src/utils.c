@@ -12,6 +12,26 @@
 
 #include "shell.h"
 
+void	clean_tmp(t_ast_node *node)
+{
+	t_redir	*tmp;
+
+	if (!node)
+		return ;
+	if (node->type == NODE_CMND)
+	{
+		tmp = node->redir_list;
+		while (tmp)
+		{
+			if (tmp->type == T_REDIR_IN && is_tmp_hfile(tmp->file_name))
+				unlink(tmp->file_name);
+			tmp = tmp->next;
+		}
+	}
+	clean_tmp(node->left);
+	clean_tmp(node->right);
+}
+
 int	is_delim(t_token *tok)
 {
 	if (!tok || tok->type == T_EOF || tok->type == T_PIPE
