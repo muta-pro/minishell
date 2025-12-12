@@ -68,11 +68,7 @@ int	main(int argc, char **argv, char **envp)
 				continue ;
 			}
 			expand_ast(ast, &shell);
-<<<<<<< HEAD
-			execute_AST(shell.env_list, ast);
-=======
 			// execute_AST(shell.env_list, ast);
->>>>>>> 64b3543d9b95f5752bfd4345085a738143627516
 			// debug_ast(ast, 0);
 			clean_tmp(ast);
 			free_ast(ast);
