@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/11 20:01:24 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 17:58:16 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	ft_chdir(t_ast_node *cmd, t_env **env)
 	char	old_pwd[PATH_MAX];
 	char	new_pwd[PATH_MAX];
 
+	printf("cd\n");
 	if (getcwd(old_pwd, PATH_MAX) == NULL)
 	{
 		perror("cd: getcwd error");
@@ -34,7 +35,7 @@ int	ft_chdir(t_ast_node *cmd, t_env **env)
 	}
 	if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)
 	{
-		target_path == get_env_val(env, "HOME");
+		target_path = get_env_val(*env, "HOME");
 		if (target_path == NULL || *target_path == '\0')
 		{
 			fprintf(stderr, "minishell: cd: HOME not set\n"); // change fprintf

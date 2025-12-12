@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:33:55 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/07 17:13:50 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 17:30:38 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	run_cmd_no_fork(t_ast_node *cmd, t_env *env)
 {
 	if (is_builtin(cmd))
 	{
-		execute_builtin(cmd, env);
+		execute_builtin(cmd, &env);
 		exit(0); // fix this
 	}
 	if (apply_redir(cmd->redir_list) == 0)		// CHECK IF CORRECT

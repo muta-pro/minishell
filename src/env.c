@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 17:54:08 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/11 20:26:46 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 17:22:53 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	set_env_val(t_env **env, char *key, char *value)
 			free(curr->value);
 			curr->value = ft_strdup(value);
 			if (curr->value == NULL)
-				return (printf("rip")); // handle malloc failure
+				(printf("rip")); // handle malloc failure
 		}
 		curr = curr->next;
 	}
@@ -48,7 +48,7 @@ void	set_env_val(t_env **env, char *key, char *value)
 	// If key not found make new node
 	new_node = add_new_node();
 	if (new_node == NULL)
-		return (printf("rip2")); // malloc
+		(printf("rip2")); // malloc
 	new_node->key = ft_strdup(key);
 	new_node->value = ft_strdup(value);
 
@@ -57,7 +57,7 @@ void	set_env_val(t_env **env, char *key, char *value)
 		free(new_node->key);
 		free(new_node->value);
 		free(new_node);
-		return (printf("rip3")); // malloc..
+		(printf("rip3")); // malloc..
 	}
 
 	if (*env == NULL)

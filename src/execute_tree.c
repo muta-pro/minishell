@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/11 20:27:24 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 18:14:49 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,23 +27,27 @@ void	execute_AST(t_env *env, t_ast_node *node)
 int	execute_builtin(t_ast_node *cmd, t_env **env)
 {
 	(void)env;
+
 	// if (!strcmp(cmd->args[0], "pwd"))
 	// 	return (ft_getcwd());
 	if (!strcmp(cmd->args[0], "cd"))
 		return (ft_chdir(cmd, env));
-	// if (!strcmp(cmd->args[0], "env"))
-	// 	return (ft_env(env));
-	// if (!strcmp(cmd->args[0], "export"))
-	// 	return (ft_export(&env, cmd->args[1]));
-	// if (!strcmp(cmd->args[0], "unset"))
-	// {
-	// 	int i = 1;
-	// 	while (cmd->args[i])
-	// 	{
-	// 		ft_unset(&env, cmd->args[i]);
-	// 		i++;
-	// 	}
-	// 	return (0); //fix this
+	if (!strcmp(cmd->args[0], "env"))
+	{
+		ft_env(*env);
+		return (0);
+	}	
+	if (!strcmp(cmd->args[0], "export"))
+		return (ft_export(env, cmd->args[1]), 0);
+	if (!strcmp(cmd->args[0], "unset"))
+	{
+		int i = 1;
+		while (cmd->args[i])
+		{
+			ft_unset(env, cmd->args[i]);
+			i++;
+		}
+		return (0); //fix this
 	}
 	return (127);
 }
@@ -99,7 +103,7 @@ int	is_parent_lvl_builtin(const char *cmd)
 	if (strcmp(cmd, "cd") == 0
 		|| strcmp(cmd, "export") == 0
 		|| strcmp(cmd, "unset") == 0
-		||strcmp(cmd, "exit" == 0))
+		||strcmp(cmd, "exit") == 0)
 		return (1);
 	return (0);
 }
@@ -110,7 +114,7 @@ void exec_cmd_in_child(t_ast_node *cmd, t_env **env)
 
 	if (apply_redir(cmd->redir_list))
 		exit (1);
-	if (is_builtin(cmd->args[0]))
+	if (is_builtin(cmd))
 	{
 		exit_code = execute_builtin(cmd, env);
 		exit(exit_code);
@@ -169,7 +173,9 @@ void	execute_single_cmd(t_ast_node *cmd, t_env **env)
 			return ;
 		}
 		if (pid == 0)
+		{
 			exec_cmd_in_child(cmd, env);
+		}
 		else
 		{
 			waitpid(pid, &status, 0); // fix exit status;
