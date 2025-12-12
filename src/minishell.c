@@ -42,7 +42,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (!line)
 		{
-			write(STDOUT_FILENO, "Exit.\n", 6);
+			write(STDOUT_FILENO, "exit\n", 6);
 			free_env(&shell.env_list);
 			exit(shell.exit_status);
 		}
@@ -69,7 +69,7 @@ int	main(int argc, char **argv, char **envp)
 			}
 			expand_ast(ast, &shell);
 			execute_AST(shell.env_list, ast);
-			debug_ast(ast, 0);
+			// debug_ast(ast, 0);
 			clean_tmp(ast);
 			free_ast(ast);
 		}
