@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/07/23 16:15:36 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/12/12 18:15:59 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 21:22:49 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	main(int argc, char **argv, char **envp)
 				continue ;
 			}
 			expand_ast(ast, &shell);
-			// execute_AST(shell.env_list, ast);
+			execute_AST(shell.env_list, ast);
 			// debug_ast(ast, 0);
 			clean_tmp(ast);
 			free_ast(ast);
