@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/07/23 15:07:01 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/11/30 17:52:34 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 17:31:12 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int		init_shlvl(char **envp);
 int		update_env_var(char ***envp, char *key, char *value);
 char	*new_env_str(char *key, char *value);
 int		find_env_varible(char **envp, char *key);
-char	*get_env_val(t_env *env, char *key);
+char	*get_env_val(t_env *env, const char *key); // maybe remove const if its a problem
 void	unset_env_var(char ***envp, char *key);//remove var
 
 // void	print_tokens(t_token *tokens);

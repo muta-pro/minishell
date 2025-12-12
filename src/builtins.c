@@ -6,11 +6,12 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 18:48:07 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 17:58:16 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+#include <limits.h>
 
 void	ft_getcwd()
 {
@@ -20,32 +21,56 @@ void	ft_getcwd()
 	free(cwd);
 }
 
-void	ft_chdir(t_ast_node *cmd, t_env *env)
+int	ft_chdir(t_ast_node *cmd, t_env **env)
 {
-	char	*rltv_to_full;
-	char	*current;
+	char	*target_path;
+	char	old_pwd[PATH_MAX];
+	char	new_pwd[PATH_MAX];
 
-	if (cmd->args[1] == NULL || !(strncmp(cmd->args[1], "~", 1)))
+	printf("cd\n");
+	if (getcwd(old_pwd, PATH_MAX) == NULL)
 	{
-		while (strcmp(env->key, "HOME"))
-			env = env->next;
-		chdir(env->value);
+		perror("cd: getcwd error");
+		return (1);
 	}
-	else if (!(strncmp(cmd->args[1], "/", 1)))
-		chdir(cmd->args[1]);
+	if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)
+	{
+		target_path = get_env_val(*env, "HOME");
+		if (target_path == NULL || *target_path == '\0')
+		{
+			fprintf(stderr, "minishell: cd: HOME not set\n"); // change fprintf
+			return (1);
+		}
+	}
+	else if (strcmp(cmd->args[1], "-") == 0)
+	{
+		target_path = get_env_val(*env, "OLDPWD");
+		if (target_path == NULL || *target_path == '\0')
+		{
+			fprintf(stderr, "minishell: cd: OLDPWD not set\n");
+			return (1);
+		}
+		printf("%s\n", target_path);
+	}
+	else
+		target_path = cmd->args[1];
+	// change dir
+	if (chdir(target_path) != 0)
+	{
+		fprintf(stderr, "minishell: cd: %s: ", target_path);
+		perror("");
+		return (1);
+	}
+	// update pwds
+	set_env_val(env, "OLDPWD", old_pwd);
+	if (getcwd(new_pwd, PATH_MAX) != NULL)
+		set_env_val(env, "PWD", new_pwd);
 	else
 	{
-		current = getcwd(NULL, 0);
-		rltv_to_full = ft_strjoin(current, "/");
-		free(current);
-		current = ft_strdup(rltv_to_full);
-		rltv_to_full = ft_strjoin(current, cmd->args[1]);
-        free(current);
-		if (chdir(rltv_to_full) == -1)
-			perror(rltv_to_full);
-		free(rltv_to_full);
+		perror("minishell: cd: getcwd error after change");
+		return (1);
 	}
-	ft_getcwd();
+	return (0);
 }
 
 void	ft_exit(char *exit_status)
@@ -94,17 +119,25 @@ void	ft_export(t_env **env, char *str)
 
 void	ft_unset(t_env **env, char *str)
 {
-	t_env	*temp;
-	temp = *env;
-	while (strcmp((*env)->key, str))
-		*env = (*env)->next;
-	if (!(*env))
+	t_env	*curr;
+	t_env	*prev;
+
+	if (env == NULL || *env == NULL || str == NULL)
 		return ;
-	while (temp->next != *env)
-		temp = temp->next;
-	temp->next = (*env)->next;
-	free((*env)->key);
-	free((*env)->value);
-	free((*env)->next);
-	free(*env);
+	curr = *env;
+	prev = NULL;
+	while (curr && strcmp(curr->key, str))
+	{
+		prev = curr;
+		curr = curr->next;
+	}
+	if (curr == NULL)
+		return ;
+	if (prev == NULL)
+		*env = curr->next;
+	else
+		prev->next = curr->next;
+	free(curr->key);
+	free(curr->value);
+	free(curr);
 }

@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/20 13:28:22 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/11 18:16:44 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   parser.h                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/10/20 13:28:22 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/12 17:18:43 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 /*
 recursive node structure that can represent either an operator or a command.
 Define the type of node in the AST

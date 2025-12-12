@@ -31,6 +31,7 @@ SRCS_FILES =	builtins.c \
 				pipe.c \
 				path.c \
 				error.c \
+				redir.c \
 				minishell.c \
 				here_docs.c \
 

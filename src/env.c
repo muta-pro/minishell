@@ -6,21 +6,71 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 17:54:08 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 18:48:11 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 17:22:53 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-char	*get_env_val(t_env *env, char *key)
+char	*get_env_val(t_env *env, const char *key)
 {
 	while (env)
 	{
 		if (strcmp(env->key, key) == 0)
-			return (ft_strdup(env->value));
+		{
+			if (env->value == NULL)
+				return ("");
+			return (env->value);
+		}
 		env = env->next;
 	}
-	return (ft_strdup(""));
+	return (NULL);
+}
+
+void	set_env_val(t_env **env, char *key, char *value)
+{
+	t_env	*curr;
+	t_env	*new_node;
+
+	curr = *env;
+	while (curr)
+	{
+		if(!strcmp(curr->key, key))
+		{
+			free(curr->value);
+			curr->value = ft_strdup(value);
+			if (curr->value == NULL)
+				(printf("rip")); // handle malloc failure
+		}
+		curr = curr->next;
+	}
+
+	// If key not found make new node
+	new_node = add_new_node();
+	if (new_node == NULL)
+		(printf("rip2")); // malloc
+	new_node->key = ft_strdup(key);
+	new_node->value = ft_strdup(value);
+
+	if (new_node->key == NULL || new_node->value == NULL)
+	{
+		free(new_node->key);
+		free(new_node->value);
+		free(new_node);
+		(printf("rip3")); // malloc..
+	}
+
+	if (*env == NULL)
+	{
+		*env = new_node;
+	}
+	else
+	{
+		curr = *env;
+		while (curr->next != NULL)
+			curr = curr->next;
+		curr->next = new_node;
+	}
 }
 
 void	build_env(char **envp, t_env **env)
