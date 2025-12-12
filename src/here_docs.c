@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/09 13:06:10 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/11 20:21:57 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/12 14:20:07 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ void	read_h_input(char *delim, int fd)
 	signal(SIGINT, handle_sigint_hrdc);
 	while (1)
 	{
-		line = readline(">");
-		if (line)
+		line = readline("heredoc>");
 		if (g_got_sigint)
 		{
 			if (line)
