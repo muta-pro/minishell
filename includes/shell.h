@@ -78,7 +78,7 @@ void	handle_dollar(char *arg, int *i, char **res, t_shell *shell);
 
 void	here_docs(t_ast_node *node, int *h_count);
 void	clean_tmp(t_ast_node *node);
-int		is_temp_hfile(char *file_name);
+int		is_tmp_hfile(char *file_name);
 
 //check characters
 int		is_operator_char(char c);
