@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 17:26:54 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 21:37:32 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ typedef struct s_pids
 }	t_pids;
 
 
-void	ft_getcwd();
+int		ft_getcwd();
 int		ft_chdir(t_ast_node *cmd, t_env **env);
-void	ft_exit(char *exit_status);
+int		ft_exit(t_ast_node *cmd);
 void	ft_env(t_env *env);
 void	ft_unset(t_env **env, char *str);
 void	ft_export(t_env **env, char *str);
@@ -52,6 +52,6 @@ char	*get_path(char **twoDenv, char *cmd);
 t_env	*add_new_node(void);
 
 int	execute_builtin(t_ast_node *cmd, t_env **env);
-void	set_env_val(t_env **env, char *key, char *value);
+void	set_env_val(t_env **env, const char *key, const char *value);
 
 #endif

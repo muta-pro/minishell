@@ -6,19 +6,25 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 17:58:16 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 21:37:12 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 #include <limits.h>
 
-void	ft_getcwd()
+int	ft_getcwd()
 {
 	char	*cwd;
 	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		perror("minishell: pwd:");
+		return (1);
+	}
 	printf("%s\n", cwd);
 	free(cwd);
+	return (0);
 }
 
 int	ft_chdir(t_ast_node *cmd, t_env **env)
@@ -38,7 +44,8 @@ int	ft_chdir(t_ast_node *cmd, t_env **env)
 		target_path = get_env_val(*env, "HOME");
 		if (target_path == NULL || *target_path == '\0')
 		{
-			fprintf(stderr, "minishell: cd: HOME not set\n"); // change fprintf
+			// fprintf(stderr, "minishell: cd: HOME not set\n"); // change fprintf
+			write(STDERR_FILENO, "minishell: cd: HOME not set\n", 28);
 			return (1);
 		}
 	}
@@ -73,15 +80,47 @@ int	ft_chdir(t_ast_node *cmd, t_env **env)
 	return (0);
 }
 
-void	ft_exit(char *exit_status)
+int	is_num_str(char *str)
 {
-	if (exit_status)
+	int	i;
+
+	i = 0;
+	if (str == NULL || *str == '\0')
+		return (0);
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	if (!str[i])
+		return (0);
+	while (str[i])
 	{
-		printf("exit\n");
-		exit(atoi(exit_status));
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	ft_exit(t_ast_node *cmd)
+{
+	write(STDERR_FILENO, "exit\n", 5);
+	if (cmd->args[1])
+	{
+		if (is_num_str(cmd->args[1]) == 0)
+		{
+			write(STDERR_FILENO, "minishell: exit: ", 17);
+			write(STDERR_FILENO, cmd->args[1], ft_strlen(cmd->args[1]));
+			write(STDERR_FILENO, ": numeric argument required\n", 28);
+			exit(2);
+		}
+		if (cmd->args[2])
+		{
+			write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
+			return (1);
+		}
+		exit(atoi(cmd->args[1])); // atoll maybe
 	}
 	else
-		exit(0);
+		exit(0); // fix this with exit code
 }
 
 void	ft_env(t_env *env)

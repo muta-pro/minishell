@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 18:14:49 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 21:37:42 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ int	execute_builtin(t_ast_node *cmd, t_env **env)
 {
 	(void)env;
 
-	// if (!strcmp(cmd->args[0], "pwd"))
-	// 	return (ft_getcwd());
+	if (!strcmp(cmd->args[0], "pwd"))
+		return (ft_getcwd());
 	if (!strcmp(cmd->args[0], "cd"))
 		return (ft_chdir(cmd, env));
 	if (!strcmp(cmd->args[0], "env"))
@@ -49,6 +49,8 @@ int	execute_builtin(t_ast_node *cmd, t_env **env)
 		}
 		return (0); //fix this
 	}
+	if (!strcmp(cmd->args[0], "exit"))
+		return (ft_exit(cmd));
 	return (127);
 }
 
