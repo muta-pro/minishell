@@ -19,26 +19,6 @@ int	is_tmp_hfile(char *file_name)
 	return (0);
 }
 
-void	clean_tmp(t_ast_node *node)
-{
-	t_redir	*tmp;
-
-	if (!node)
-		return ;
-	if (node->type == NODE_CMND)
-	{
-		tmp = node->redir_list;
-		while (tmp)
-		{
-			if (tmp->type == T_REDIR_IN && is_tmp_hfile(tmp->file_name))
-				unlink(tmp->file_name);
-			tmp = tmp->next;
-		}
-	}
-	clean_tmp(node->left);
-	clean_tmp(node->right);
-}
-
 void	file_name(char *buf, int count)
 {
 	char	*num;
