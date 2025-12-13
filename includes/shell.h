@@ -38,11 +38,11 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-typedef struct s_heredoc
-{
-	char	*delimiter;
-	int		expand;
-}	t_heredoc;
+// typedef struct s_heredoc
+// {
+// 	char	*delimiter;
+// 	int		expand;
+// }	t_heredoc;
 
 typedef struct s_shell
 {
@@ -97,6 +97,7 @@ void	set_parent_sig_exec(void);
 
 void	debug_ast(t_ast_node *node, int level);
 void	print_shell_err(char *type, const char *msg);
+void	print_eof_warning(char *delim);
 void	expand_ast(t_ast_node *node, t_shell *shell);
 char	*substitute_and_clean(char *arg, t_shell *shell);
 char	*get_var_value(char *str, int *i, t_shell *shell);

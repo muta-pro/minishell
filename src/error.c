@@ -34,3 +34,12 @@ int	free_on_err(char *line, t_token *tokens, t_ast_node *ast)
 		free(line);
 	return (1);
 }
+
+void	print_eof_warning(char *delim)
+{
+	(void)delim;
+	ft_putstr_fd(
+		"minishell: Warning: here-document delimited by EOF (wanted ", 2);
+	ft_putstr_fd(delim, 2);
+	ft_putendl_fd(")", 2);
+}

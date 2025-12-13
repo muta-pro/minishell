@@ -29,13 +29,11 @@ int	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
 	if (!curr)
 		return (0);
 	if (is_redir_token(curr))
-	{
-		parse_redir(tokens, redirs);
-		return (0);
-	}
+		return (parse_redir(tokens, redirs));
 	else if (peek_tok(*tokens)->type == T_WORD
 		|| peek_tok(*tokens)->type == T_STR
-		|| peek_tok(*tokens)->type == T_VAR)
+		|| peek_tok(*tokens)->type == T_VAR
+		|| peek_tok(*tokens)->type == T_EXIT_STATUS)
 	{
 		append_args(args, curr->lexeme);
 		consume_tok(tokens, curr->type);

@@ -94,7 +94,7 @@ t_token	*scan_var(t_scanner *scanner)
 	{
 		append_char(scanner, peek(scanner));
 		advance(scanner);
-		return_string(scanner, T_EXIT_STATUS);
+		return (return_string(scanner, T_EXIT_STATUS));
 	}
 	if (is_whitespace(peek(scanner)) || is_operator_char(peek(scanner))
 		|| peek(scanner) == '\0')

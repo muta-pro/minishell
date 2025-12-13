@@ -47,10 +47,10 @@ void	read_h_input(char *delim, int fd)
 		}
 		if (!line)
 		{
-			printf("Warining: here-doc delimited by EOF\n");
+			print_eof_warning(delim);
 			break ;
 		}
-		if (line && ft_strncmp(line, delim, len) == 0)
+		if (line && strcmp(line, delim) == 0)
 		{
 			free (line);
 			break ;
