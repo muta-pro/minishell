@@ -30,20 +30,20 @@ typedef struct s_pids
 
 
 int		ft_getcwd();
-int		ft_chdir(t_ast_node *cmd, t_env **env);
-int		ft_exit(t_ast_node *cmd);
+int		ft_chdir(t_ast_node *cmd, t_shell *shell);
+int		ft_exit(t_ast_node *cmd, int exit_status);
 void	ft_env(t_env *env);
 void	ft_unset(t_env **env, char *str);
 void	ft_export(t_env **env, char *str);
 void	free_env(t_env **env);
 void	free_arr(char **arr);
-void	exec_pipe(t_env *env, t_ast_node *node);
+int		exec_pipe(t_shell *shell, t_ast_node *node);
 void	add_pid(t_pids **pids, int pid);
-void	wait_children(t_pids *pids, pid_t pid);
+int		wait_children(t_pids *pids);
 void	build_env(char **envp, t_env **env);
-void	execute_AST(t_env *env, t_ast_node *node);
-void	execute_single_cmd(t_ast_node *cmd, t_env **env);
-void	execute_external(t_env *env, t_ast_node* cmd);
+void	execute_AST(t_shell *shell, t_ast_node *node);
+int		execute_single_cmd(t_ast_node *cmd, t_shell *shell);
+void	execute_external(t_shell *shell, t_ast_node* cmd);
 int		apply_redir(t_redir *node);
 int		list_size(t_env *env);
 char	**list_to_2d(t_env *env);
@@ -51,7 +51,7 @@ char	*find_path(char **split_paths, char *cmd);
 char	*get_path(char **twoDenv, char *cmd);
 t_env	*add_new_node(void);
 
-int	execute_builtin(t_ast_node *cmd, t_env **env);
+int		execute_builtin(t_ast_node *cmd, t_shell *shell);
 void	set_env_val(t_env **env, const char *key, const char *value);
 
 #endif

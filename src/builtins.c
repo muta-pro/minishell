@@ -27,7 +27,7 @@ int	ft_getcwd()
 	return (0);
 }
 
-int	ft_chdir(t_ast_node *cmd, t_env **env)
+int	ft_chdir(t_ast_node *cmd, t_shell *shell)
 {
 	char	*target_path;
 	char	old_pwd[PATH_MAX];
@@ -41,7 +41,7 @@ int	ft_chdir(t_ast_node *cmd, t_env **env)
 	}
 	if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)
 	{
-		target_path = get_env_val(*env, "HOME");
+		target_path = get_env_val(shell->env_list, "HOME");
 		if (target_path == NULL || *target_path == '\0')
 		{
 			// fprintf(stderr, "minishell: cd: HOME not set\n"); // change fprintf
@@ -51,7 +51,7 @@ int	ft_chdir(t_ast_node *cmd, t_env **env)
 	}
 	else if (strcmp(cmd->args[1], "-") == 0)
 	{
-		target_path = get_env_val(*env, "OLDPWD");
+		target_path = get_env_val(shell->env_list, "OLDPWD");
 		if (target_path == NULL || *target_path == '\0')
 		{
 			fprintf(stderr, "minishell: cd: OLDPWD not set\n");
@@ -69,9 +69,9 @@ int	ft_chdir(t_ast_node *cmd, t_env **env)
 		return (1);
 	}
 	// update pwds
-	set_env_val(env, "OLDPWD", old_pwd);
+	set_env_val(&shell->env_list, "OLDPWD", old_pwd);
 	if (getcwd(new_pwd, PATH_MAX) != NULL)
-		set_env_val(env, "PWD", new_pwd);
+		set_env_val(&shell->env_list, "PWD", new_pwd);
 	else
 	{
 		perror("minishell: cd: getcwd error after change");
@@ -100,7 +100,7 @@ int	is_num_str(char *str)
 	return (1);
 }
 
-int	ft_exit(t_ast_node *cmd)
+int	ft_exit(t_ast_node *cmd, int exit_status)
 {
 	write(STDERR_FILENO, "exit\n", 5);
 	if (cmd->args[1])
@@ -120,7 +120,7 @@ int	ft_exit(t_ast_node *cmd)
 		exit(atoi(cmd->args[1])); // atoll maybe
 	}
 	else
-		exit(0); // fix this with exit code
+		exit(exit_status); // fix this with exit code
 }
 
 void	ft_env(t_env *env)
