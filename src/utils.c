@@ -49,19 +49,6 @@ char	*join_char(char *str, char c)
 	return (ft_strjoin_free(str, tmp));
 }
 
-char	*ft_strjoin_free(char *s1, char *s2)
-{
-	char	*res;
-
-	if (!s1)
-		return (ft_strdup(s2));
-	res = ft_strjoin(s1, s2);
-	if (!res)
-		return (NULL);
-	free(s1);
-	return (res);
-}
-
 void	print_indent(int level)
 {
 	while (level > 0)

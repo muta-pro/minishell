@@ -67,7 +67,6 @@ int		find_env_varible(char **envp, char *key);
 char	*get_env_val(t_env *env, const char *key); // maybe remove const if its a problem
 void	unset_env_var(char ***envp, char *key);//remove var
 
-// void	print_tokens(t_token *tokens);
 //utils
 char	*ft_strjoin_free(char *s1, char *s2);
 char	*join_char(char *str, char c);
@@ -89,7 +88,6 @@ int		valid_char(char c);
 int		null_terminator(char c);
 
 //SIGNALS
-// static void	install_parent_handler(void);
 void	handle_sigint(int sig);
 void	handle_sigint_hrdc(int sig);
 void	install_parent_handler(void);

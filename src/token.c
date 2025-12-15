@@ -21,6 +21,14 @@ skip unknown tokens to pervent inf loops on garbage
 #include "shell.h"
 #include <stddef.h>
 
+int	is_redir_token(t_token *token)
+{
+	if (!token)
+		return (0);
+	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
+		|| token->type == T_REDIR_APPEND || token->type == T_REDIR_HEREDOC);
+}
+
 int	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
 {
 	t_token	*curr;
@@ -33,7 +41,8 @@ int	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
 	else if (peek_tok(*tokens)->type == T_WORD
 		|| peek_tok(*tokens)->type == T_STR
 		|| peek_tok(*tokens)->type == T_VAR
-		|| peek_tok(*tokens)->type == T_EXIT_STATUS)
+		|| peek_tok(*tokens)->type == T_EXIT_STATUS
+		|| peek_tok(*tokens)->type == T_WILDC)
 	{
 		append_args(args, curr->lexeme);
 		consume_tok(tokens, curr->type);
@@ -63,6 +72,8 @@ t_tok_type	get_op_type(char *lexeme)
 		return (T_WILDC);
 	return (T_ERROR);
 }
+
+t_tok_type get_other_type(char *lexeme);
 
 // int	is_pipe_token(t_token *token)
 // {

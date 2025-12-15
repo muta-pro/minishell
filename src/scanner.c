@@ -29,7 +29,7 @@ t_token	*return_string(t_scanner *scanner, t_tok_type type)
 	free(lexeme);
 	return (tok);
 }
-
+//shoul I hanlde here T_STR token and other states??
 t_token	*scan_word(t_scanner *scanner)
 {
 	char			c;
@@ -106,6 +106,7 @@ t_token	*scan_var(t_scanner *scanner)
 	}
 	return (return_string(scanner, T_VAR));
 }
+//Do I need this  T_STR token - ???
 
 // t_token	*scan_quoted_str(t_scanner *scanner)
 // {

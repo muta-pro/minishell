@@ -14,6 +14,7 @@ LIBFT = $(LIBFTDIR)/libft.a
 SRC_DIR = src
 SRCS_FILES =	builtins.c \
 				ast.c \
+				ast_ops.c \
 				char_class.c \
 				char_ops.c \
 				token.c \

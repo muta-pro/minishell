@@ -122,10 +122,11 @@ int	parse_redir(t_token **tokens, t_redir **redir_head)
 	if (!file)
 		file = consume_tok(tokens, T_STR);
 	if (!file)
-	{
-		print_shell_err(SYTX_ERR, "Unexpected token.");
+		file = consume_tok(tokens, T_VAR);
+	if (!file)
+		file = consume_tok(tokens, T_EXIT_STATUS);
+	if (!file)
 		return (1);
-	}
 	new_node = init_redir_node(op, file);
 	if (!new_node)
 		return (1);
