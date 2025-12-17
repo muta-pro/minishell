@@ -60,7 +60,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ast)
 		{
 			h_count = 0;
-			here_docs(ast, &h_count);
+			here_docs(ast, &h_count, &shell);
 			if (g_got_sigint)
 			{
 				clean_tmp(ast);

@@ -12,6 +12,13 @@
 
 #include "shell.h"
 
+int	is_tmp_hfile(char *file_name)
+{
+	if (strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
+		return (1);
+	return (0);
+}
+
 void	clean_tmp(t_ast_node *node)
 {
 	t_redir	*tmp;

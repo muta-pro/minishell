@@ -39,7 +39,6 @@ int	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
 	if (is_redir_token(curr))
 		return (parse_redir(tokens, redirs));
 	else if (peek_tok(*tokens)->type == T_WORD
-		|| peek_tok(*tokens)->type == T_STR
 		|| peek_tok(*tokens)->type == T_VAR
 		|| peek_tok(*tokens)->type == T_EXIT_STATUS
 		|| peek_tok(*tokens)->type == T_WILDC)

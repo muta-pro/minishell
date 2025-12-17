@@ -12,11 +12,23 @@
 
 #include "shell.h"
 
-int	is_tmp_hfile(char *file_name)
+char	*expand_h_var(char *line, t_shell *shell)
 {
-	if (strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
-		return (1);
-	return (0);
+	int		i;
+	char	*new_line;
+
+	new_line = ft_strdup("");
+	i = 0;
+	while (line[i])
+	{
+		if ((line[i] == '$' && line[i + 1] == '?')
+			|| (ft_isalpha(line[i + 1]) || line[i + 1] == ' '))
+			handle_dollar(line, &i, &new_line, shell);
+		else
+			new_line = join_char(new_line, line[i++]);
+	}
+	free(line);
+	return (new_line);
 }
 
 void	file_name(char *buf, int count)
@@ -29,7 +41,7 @@ void	file_name(char *buf, int count)
 	free(num);
 }
 
-void	read_h_input(char *delim, int fd)
+void	read_h_input(char *delim, int fd, int no_expand, t_shell *shell)
 {
 	char	*line;
 	size_t	len;
@@ -55,6 +67,8 @@ void	read_h_input(char *delim, int fd)
 			free (line);
 			break ;
 		}
+		if (!no_expand)
+			line = expand_h_var(line, shell);
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
@@ -62,7 +76,7 @@ void	read_h_input(char *delim, int fd)
 	signal(SIGINT, handle_sigint);
 }
 
-int	process_h_node(t_redir *tmp, int *h_count)
+int	process_h_node(t_redir *tmp, int *h_count, t_shell *shell)
 {
 	char	file[50];
 	int		fd;
@@ -73,7 +87,7 @@ int	process_h_node(t_redir *tmp, int *h_count)
 		fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd < 0)
 			return (0); //handle error needing
-		read_h_input(tmp->file_name, fd);
+		read_h_input(tmp->file_name, fd, tmp->no_expand, shell);
 		close(fd);
 		if (g_got_sigint)
 		{
@@ -88,7 +102,7 @@ int	process_h_node(t_redir *tmp, int *h_count)
 	return (0);
 }
 
-void	here_docs(t_ast_node *node, int *h_count)
+void	here_docs(t_ast_node *node, int *h_count, t_shell *shell)
 {
 	t_redir	*tmp;
 
@@ -99,10 +113,10 @@ void	here_docs(t_ast_node *node, int *h_count)
 		tmp = node->redir_list;
 		while (tmp)
 		{
-			process_h_node(tmp, h_count);
+			process_h_node(tmp, h_count, shell);
 			tmp = tmp->next;
 		}
 	}
-	here_docs(node->left, h_count);
-	here_docs(node->right, h_count);
+	here_docs(node->left, h_count, shell);
+	here_docs(node->right, h_count, shell);
 }

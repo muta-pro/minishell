@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:38:12 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/15 15:34:23 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:03:23 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef TOKEN_H
@@ -16,7 +16,6 @@ typedef enum token_type
 {
 	T_DELIMITER, //special char marking end of token [space/tab/newline]
 	T_WORD, //word
-	T_STR, // quoted str CMND
 	T_EXIT_STATUS, //$?
 	T_VAR, //$HOME
 	T_PIPE, //|
@@ -32,7 +31,6 @@ typedef enum token_type
 	T_RPAREN,
 	T_WILDC,
 	T_ENV,
-	T_BACKGR,
 	T_SNGL_Q,
 	T_DBL_Q,
 	T_MIX_Q

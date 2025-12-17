@@ -35,7 +35,7 @@ void	set_env_val(t_env **env, const char *key, const char *value)
 	curr = *env;
 	while (curr)
 	{
-		if(!strcmp(curr->key, key))
+		if (!strcmp(curr->key, key))
 		{
 			free(curr->value);
 			curr->value = ft_strdup(value);
@@ -45,14 +45,12 @@ void	set_env_val(t_env **env, const char *key, const char *value)
 		}
 		curr = curr->next;
 	}
-
 	// If key not found make new node
 	new_node = add_new_node();
 	if (new_node == NULL)
 		(printf("rip2")); // malloc
 	new_node->key = ft_strdup(key);
 	new_node->value = ft_strdup(value);
-
 	if (new_node->key == NULL || new_node->value == NULL)
 	{
 		free(new_node->key);
@@ -60,7 +58,6 @@ void	set_env_val(t_env **env, const char *key, const char *value)
 		free(new_node);
 		(printf("rip3")); // malloc..
 	}
-
 	if (*env == NULL)
 	{
 		*env = new_node;
