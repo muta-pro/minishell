@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 21:37:12 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/17 18:00:23 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,31 +130,156 @@ void	ft_env(t_env *env)
 	node = env;
 	while (node)
 	{
-		printf("%s=%s\n", node->key, node->value);
+		if (node->value != NULL)
+			printf("%s=%s\n", node->key, node->value);
 		node = node->next;
 	}
 }
 
-void	ft_export(t_env **env, char *str)
+void	env_add_last(t_env **env, t_env *new_node)
 {
-	t_env	*temp;
-	t_env	*start;
-	int		i;
+	t_env	*curr;
+
+	curr = *env;
+
+	if (env == NULL || new_node == NULL)
+		return ;
+	if (*env == NULL)
+		*env = new_node;
+	while (curr->next)
+		curr = curr->next;
+	curr->next = new_node;
+}
+
+int	valid_id(const char *str)
+{
+	int	i;
 
 	i = 0;
-	start = *env;
-	while ((*env)->next)
-		*env = (*env)->next;
-	temp = add_new_node();
-	(*env)->next = temp;
-	while (str[i] != '=')
-		i++;
-	temp->key = strndup(&str[0], i);
+	if (str == NULL || *str == '\0')
+		return (0);
+	if (!ft_isalpha(str[i]) && str[i] != '_')
+		return (0);
+	i++;
 	while (str[i])
+	{
+		if (!isalnum(str[i]) && str[i] != '_')
+			return (0);
 		i++;
-	temp->value = strndup(&str[strlen(temp->key) + 1], i - (strlen(temp->key) + 1));
-	(*env) = start;
+	}
+	return (1);
 }
+
+void	print_export(t_env *env)
+{
+	t_env	*node;
+
+	node = env;
+	while (node)
+	{
+		printf("declare -x %s", node->key);
+		if (node->value)
+			printf("=%s", node->value);
+		printf("\n");
+		node = node->next;
+	}
+}
+
+int	ft_export(t_env **env, t_ast_node *node)
+{
+	int		exit_status;
+	int		i;
+	char	*curr;
+	char	*key;
+	char	*eqptr;
+	int		key_found;
+	
+
+	i = 1;
+	exit_status = 0;
+	if (node->args[1] == NULL)
+	{
+		// printf(""); //print export list
+		// ft_env(*env);
+		print_export(*env);
+		return (0);
+	}
+	while (node->args[i])
+	{
+		curr = node->args[i];
+		eqptr = ft_strchr(curr, '=');
+		key_found = 0;
+
+		if (eqptr)
+			key = strndup(curr, eqptr - curr); // ft_ !!!
+		else
+			key = ft_strdup(curr);
+		
+		if (!valid_id(key))
+		{
+			fprintf(stderr, "minishell: export: '%s': not a valid indentifier\n", curr); // write
+			free(key);
+			exit_status = 1;
+			i++;
+			continue ;
+		}
+
+		t_env *curr_env = *env;
+		while (curr_env)
+		{
+			if (strcmp(curr_env->key, key) == 0) // ft_
+			{
+				if (eqptr)
+				{
+					free(curr_env->value);
+					curr_env->value = ft_strdup(eqptr + 1);
+					if (!curr_env->value)
+						exit (69); // fix
+				}
+				key_found = 1;
+				break ;
+			}
+			curr_env = curr_env->next;
+		}
+
+		if (!key_found)
+		{
+			t_env *new_node = add_new_node();
+			new_node->key = ft_strdup(key);
+			if (eqptr)
+				new_node->value = ft_strdup(eqptr + 1);
+			else
+				new_node->value = NULL;
+			new_node->next = NULL;
+
+			env_add_last(env, new_node);
+		}
+		free(key);
+		i++;
+	}
+	return (exit_status);
+}
+
+// void	ft_export(t_env **env, char *str)
+// {
+// 	t_env	*temp;
+// 	t_env	*start;
+// 	int		i;
+
+// 	i = 0;
+// 	start = *env;
+// 	while ((*env)->next)
+// 		*env = (*env)->next;
+// 	temp = add_new_node();
+// 	(*env)->next = temp;
+// 	while (str[i] != '=')
+// 		i++;
+// 	temp->key = strndup(&str[0], i);
+// 	while (str[i])
+// 		i++;
+// 	temp->value = strndup(&str[strlen(temp->key) + 1], i - (strlen(temp->key) + 1));
+// 	(*env) = start;
+// }
 
 void	ft_unset(t_env **env, char *str)
 {

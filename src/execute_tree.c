@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 21:37:42 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/17 17:29:48 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	execute_AST(t_shell *shell, t_ast_node *node)
 {
 	int	status;
 
+	status = shell->exit_status;
 	if (node == NULL)
 		return ;
 	if (node->type == NODE_PIPE)
@@ -26,7 +27,7 @@ void	execute_AST(t_shell *shell, t_ast_node *node)
 		status = execute_single_cmd(node, shell);
 
 	shell->exit_status = status;
-	printf("Exit status: %d\n\n", status);
+	// printf("Exit status: %d\n\n", status);
 }
 
 int	execute_builtin(t_ast_node *cmd, t_shell *shell)
@@ -41,7 +42,7 @@ int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 		return (0);
 	}	
 	if (!strcmp(cmd->args[0], "export"))
-		return (ft_export(&shell->env_list, cmd->args[1]), 0);
+		return (ft_export(&shell->env_list, cmd), 0);
 	if (!strcmp(cmd->args[0], "unset"))
 	{
 		int i = 1;
