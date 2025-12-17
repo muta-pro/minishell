@@ -65,6 +65,17 @@ void	print_indent(int level)
 	}
 }
 
+t_env	*add_new_node(void)
+{
+	t_env	*new;
+
+	new = malloc(sizeof(*new));
+	if (!new)
+		return (NULL);
+	new->next = NULL;
+	return (new);
+}
+
 // void	debug_ast(t_ast_node *node, int level)
 // {
 // 	t_redir	*tmp;

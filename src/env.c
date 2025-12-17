@@ -137,14 +137,3 @@ int	list_size(t_env *env)
 	}
 	return (i);
 }
-
-t_env	*add_new_node(void)
-{
-	t_env	*new;
-
-	new = malloc(sizeof(*new));
-	if (!new)
-		return (NULL);
-	new->next = NULL;
-	return (new);
-}
