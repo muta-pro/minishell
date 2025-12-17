@@ -16,48 +16,6 @@
 //echo hello > output.txt
 #include "shell.h"
 
-void	redir_add_node(t_redir **head, t_redir *new_node)
-{
-	t_redir	*last;
-
-	if (!*head)
-		*head = new_node;
-	else
-	{
-		last = *head;
-		while (last->next)
-			last = last->next;
-		last->next = new_node;
-	}
-}
-
-t_redir	*init_redir_node(t_token *op, t_token *file)
-{
-	t_redir	*node;
-
-	node = malloc(sizeof(t_redir));
-	if (!node)
-		return (NULL);
-	node->type = op->type;
-	node->file_name = ft_strdup(file->lexeme);
-	node->no_expand = 0;
-	if (delim_has_qt(node->file_name))
-	{
-		node->no_expand = 1;
-		node->file_name = eliminate_qt(node->file_name);
-	}
-	node->next = NULL;
-	return (node);
-}
-
-int	is_redir_token(t_token *token)
-{
-	if (!token)
-		return (0);
-	return (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
-		|| token->type == T_REDIR_APPEND || token->type == T_REDIR_HEREDOC);
-}
-
 t_token	*create_token(t_tok_type type, const char *lexeme)
 {
 	t_token	*token;

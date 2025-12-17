@@ -6,50 +6,45 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/07/23 16:15:36 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/12/02 19:12:22 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 21:54:09 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
 volatile sig_atomic_t	g_got_sigint = 0;
-int						g_exit_status = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
 	char		*line;
 	t_token		*tokens;
 	t_ast_node	*ast;
-	t_env		*env;
 	int			h_count;
+	t_shell		shell;
 
 	(void)(argc);
 	(void)(argv);
-	(void)(envp);
-	env = malloc(sizeof(env));
-	if (!env)
-		return (0);
-	build_env(envp, &env);
-	// install_parent_handler();
-	// init_shlvl(env); //to handle mem alloc failure
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
+	shell.exit_status = 0;
+	shell.env_list = NULL;
+	build_env(envp, &shell.env_list);
+	install_parent_handler();
+	// init_shlvl(&shell); //to handle mem alloc failure
 	while (1)
 	{
 		g_got_sigint = 0;
 		line = readline("minishell: ");
 		if (g_got_sigint)
 		{
-			//g_exit_status_variable = 130;
+			shell.exit_status = 130;
 			if (line)
 				free(line);
 			continue ;
 		}
 		if (!line)
 		{
-			write(STDOUT_FILENO, "exit\n", 5);
-			//perform final cleanup?
-			exit(g_exit_status);
+			write(STDOUT_FILENO, "exit\n", 6);
+			free_env(&shell.env_list);
+			exit(shell.exit_status);
 		}
 		if (!*line)
 		{
@@ -57,35 +52,35 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		}
 		add_history(line);
-		tokens = lexer(line); // tokenize
+		tokens = lexer(line);
 		if (tokens)
 			ast = parser(tokens);
 		else
 			ast = NULL; //lexer failed
 		if (ast)
 		{
-			debug_ast(ast, 0);
 			h_count = 0;
 			here_docs(ast, &h_count);
-			debug_ast(ast, 0);
 			if (g_got_sigint)
 			{
-				free_ast(ast);
+				clean_tmp(ast);
+				free_on_err(line, tokens, ast);
 				continue ;
 			}
-			expand_ast(ast, env);
-			// execute_AST(env, ast);
+			expand_ast(ast, &shell);
+			execute_AST(shell.env_list, ast);
+			// debug_ast(ast, 0);
 			clean_tmp(ast);
 			free_ast(ast);
 		}
-		else if (tokens)
-			print_shell_err(SYTX_ERR, "ast failed", 258);
+		else if (tokens) //parser failure
+			shell.exit_status = 258;
 		if (tokens)
 			free_tok(tokens);
 		free(line);
 	}
 	// clear_history();
-	free_env(&env);
+	// free_env(&shell.env_list);
 	return (0);
 }
 

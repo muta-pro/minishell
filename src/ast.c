@@ -21,22 +21,6 @@ update pointer of args to point to the new array
 */
 #include "shell.h"
 
-t_token	*peek_tok(t_token *tokens)
-{
-	return (tokens);
-}
-
-t_token	*consume_tok(t_token **tokens, t_tok_type expected)
-{
-	t_token	*curr;
-
-	curr = *tokens;
-	if (!curr || curr->type != expected)
-		return (NULL); //syntax err handle later
-	*tokens = curr->next;
-	return (curr);
-}
-
 t_ast_node	*create_ast_nd(t_node_t type, t_ast_node *l, t_ast_node *r)
 {
 	t_ast_node	*node;

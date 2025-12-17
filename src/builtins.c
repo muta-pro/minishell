@@ -6,57 +6,121 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 18:48:07 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 21:37:12 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
+#include <limits.h>
 
-void	ft_getcwd()
+int	ft_getcwd()
 {
 	char	*cwd;
 	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		perror("minishell: pwd:");
+		return (1);
+	}
 	printf("%s\n", cwd);
 	free(cwd);
+	return (0);
 }
 
-void	ft_chdir(t_ast_node *cmd, t_env *env)
+int	ft_chdir(t_ast_node *cmd, t_env **env)
 {
-	char	*rltv_to_full;
-	char	*current;
+	char	*target_path;
+	char	old_pwd[PATH_MAX];
+	char	new_pwd[PATH_MAX];
 
-	if (cmd->args[1] == NULL || !(strncmp(cmd->args[1], "~", 1)))
+	printf("cd\n");
+	if (getcwd(old_pwd, PATH_MAX) == NULL)
 	{
-		while (strcmp(env->key, "HOME"))
-			env = env->next;
-		chdir(env->value);
+		perror("cd: getcwd error");
+		return (1);
 	}
-	else if (!(strncmp(cmd->args[1], "/", 1)))
-		chdir(cmd->args[1]);
+	if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)
+	{
+		target_path = get_env_val(*env, "HOME");
+		if (target_path == NULL || *target_path == '\0')
+		{
+			// fprintf(stderr, "minishell: cd: HOME not set\n"); // change fprintf
+			write(STDERR_FILENO, "minishell: cd: HOME not set\n", 28);
+			return (1);
+		}
+	}
+	else if (strcmp(cmd->args[1], "-") == 0)
+	{
+		target_path = get_env_val(*env, "OLDPWD");
+		if (target_path == NULL || *target_path == '\0')
+		{
+			fprintf(stderr, "minishell: cd: OLDPWD not set\n");
+			return (1);
+		}
+		printf("%s\n", target_path);
+	}
+	else
+		target_path = cmd->args[1];
+	// change dir
+	if (chdir(target_path) != 0)
+	{
+		fprintf(stderr, "minishell: cd: %s: ", target_path);
+		perror("");
+		return (1);
+	}
+	// update pwds
+	set_env_val(env, "OLDPWD", old_pwd);
+	if (getcwd(new_pwd, PATH_MAX) != NULL)
+		set_env_val(env, "PWD", new_pwd);
 	else
 	{
-		current = getcwd(NULL, 0);
-		rltv_to_full = ft_strjoin(current, "/");
-		free(current);
-		current = ft_strdup(rltv_to_full);
-		rltv_to_full = ft_strjoin(current, cmd->args[1]);
-        free(current);
-		if (chdir(rltv_to_full) == -1)
-			perror(rltv_to_full);
-		free(rltv_to_full);
+		perror("minishell: cd: getcwd error after change");
+		return (1);
 	}
-	ft_getcwd();
+	return (0);
 }
 
-void	ft_exit(char *exit_status)
+int	is_num_str(char *str)
 {
-	if (exit_status)
+	int	i;
+
+	i = 0;
+	if (str == NULL || *str == '\0')
+		return (0);
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	if (!str[i])
+		return (0);
+	while (str[i])
 	{
-		printf("exit\n");
-		exit(atoi(exit_status));
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	ft_exit(t_ast_node *cmd)
+{
+	write(STDERR_FILENO, "exit\n", 5);
+	if (cmd->args[1])
+	{
+		if (is_num_str(cmd->args[1]) == 0)
+		{
+			write(STDERR_FILENO, "minishell: exit: ", 17);
+			write(STDERR_FILENO, cmd->args[1], ft_strlen(cmd->args[1]));
+			write(STDERR_FILENO, ": numeric argument required\n", 28);
+			exit(2);
+		}
+		if (cmd->args[2])
+		{
+			write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
+			return (1);
+		}
+		exit(atoi(cmd->args[1])); // atoll maybe
 	}
 	else
-		exit(0);
+		exit(0); // fix this with exit code
 }
 
 void	ft_env(t_env *env)
@@ -94,17 +158,25 @@ void	ft_export(t_env **env, char *str)
 
 void	ft_unset(t_env **env, char *str)
 {
-	t_env	*temp;
-	temp = *env;
-	while (strcmp((*env)->key, str))
-		*env = (*env)->next;
-	if (!(*env))
+	t_env	*curr;
+	t_env	*prev;
+
+	if (env == NULL || *env == NULL || str == NULL)
 		return ;
-	while (temp->next != *env)
-		temp = temp->next;
-	temp->next = (*env)->next;
-	free((*env)->key);
-	free((*env)->value);
-	free((*env)->next);
-	free(*env);
+	curr = *env;
+	prev = NULL;
+	while (curr && strcmp(curr->key, str))
+	{
+		prev = curr;
+		curr = curr->next;
+	}
+	if (curr == NULL)
+		return ;
+	if (prev == NULL)
+		*env = curr->next;
+	else
+		prev->next = curr->next;
+	free(curr->key);
+	free(curr->value);
+	free(curr);
 }

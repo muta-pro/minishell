@@ -12,16 +12,16 @@
 
 #include "shell.h"
 
-void	handle_dollar(char *arg, int *i, char **res, t_env *env)
+void	handle_dollar(char *arg, int *i, char **res, t_shell *shell)
 {
 	char	*value;
 
-	value = get_var_value(arg, i, env);
+	value = get_var_value(arg, i, shell);
 	*res = ft_strjoin_free(*res, value);
 	free(value);
 }
 
-char	*get_var_value(char *str, int *i, t_env *env)
+char	*get_var_value(char *str, int *i, t_shell *shell)
 {
 	char	*var;
 	char	*value;
@@ -31,18 +31,18 @@ char	*get_var_value(char *str, int *i, t_env *env)
 	if (str[*i] == '?')
 	{
 		(*i)++;
-		return (ft_itoa(g_exit_status));
+		return (ft_itoa(shell->exit_status));
 	}
 	start = *i;
 	while (ft_isalnum(str[*i]) || str[*i] == '_')
 		(*i)++;
 	var = ft_substr(str, start, *i - start);
-	value = get_env_val(env, var);
+	value = get_env_val(shell->env_list, var);
 	free(var);
 	return (value);
 }
 
-char	*substitute_and_clean(char *arg, t_env *env)
+char	*substitute_and_clean(char *arg, t_shell *shell)
 {
 	char	*result;
 	int		i;
@@ -62,7 +62,7 @@ char	*substitute_and_clean(char *arg, t_env *env)
 		}
 		else if (arg[i] == '$' && (ft_isalnum(arg[i + 1])
 				|| arg[i + 1] == '_' || arg[i + 1] == '?'))
-			handle_dollar(arg, &i, &result, env);
+			handle_dollar(arg, &i, &result, shell);
 		else
 			result = join_char(result, arg[i++]);
 	}
@@ -70,28 +70,28 @@ char	*substitute_and_clean(char *arg, t_env *env)
 	return (result);
 }
 
-void	expand_ast(t_ast_node *node, t_env *env)
+void	expand_ast(t_ast_node *node, t_shell *shell)
 {
 	int		i;
 	t_redir	*tmp;
 
 	if (!node)
 		return ;
-	expand_ast(node->left, env);
-	expand_ast(node->right, env);
+	expand_ast(node->left, shell);
+	expand_ast(node->right, shell);
 	if (node->type == NODE_CMND)
 	{
 		i = 0;
 		while (node->args && node->args[i])
 		{
-			node->args[i] = substitute_and_clean(node->args[i], env);
+			node->args[i] = substitute_and_clean(node->args[i], shell);
 			i++;
 		}
 		tmp = node->redir_list;
 		while (tmp)
 		{
 			if (tmp->file_name && !tmp->no_expand)
-				tmp->file_name = substitute_and_clean(tmp->file_name, env);
+				tmp->file_name = substitute_and_clean(tmp->file_name, shell);
 			tmp = tmp->next;
 		}
 	}

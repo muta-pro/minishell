@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   here_docs.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/09 13:06:10 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/10 20:32:33 by imutavdz         ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   here_docs.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2025/12/09 13:06:10 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/12 17:37:09 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,6 @@ int	is_tmp_hfile(char *file_name)
 	if (strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
 		return (1);
 	return (0);
-}
-
-void	clean_tmp(t_ast_node *node)
-{
-	t_redir	*tmp;
-
-	if (!node)
-		return ;
-	if (node->type == NODE_CMND)
-	{
-		tmp = node->redir_list;
-		while (tmp)
-		{
-			if (tmp->type == T_REDIR_IN && is_tmp_hfile(tmp->file_name))
-				unlink(tmp->file_name);
-			tmp = tmp->next;
-		}
-	}
-	clean_tmp(node->left);
-	clean_tmp(node->right);
 }
 
 void	file_name(char *buf, int count)
@@ -52,11 +32,13 @@ void	file_name(char *buf, int count)
 void	read_h_input(char *delim, int fd)
 {
 	char	*line;
+	size_t	len;
 
+	len = ft_strlen(delim);
 	signal(SIGINT, handle_sigint_hrdc);
 	while (1)
 	{
-		line = readline("> ");
+		line = readline("heredoc>");
 		if (g_got_sigint)
 		{
 			if (line)
@@ -65,10 +47,10 @@ void	read_h_input(char *delim, int fd)
 		}
 		if (!line)
 		{
-			printf("here-doc delimited by EOF\n");
+			print_eof_warning(delim);
 			break ;
 		}
-		if (strcmp(line, delim) == 0)
+		if (line && strcmp(line, delim) == 0)
 		{
 			free (line);
 			break ;
