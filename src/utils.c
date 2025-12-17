@@ -12,6 +12,13 @@
 
 #include "shell.h"
 
+int	is_tmp_hfile(char *file_name)
+{
+	if (strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
+		return (1);
+	return (0);
+}
+
 void	clean_tmp(t_ast_node *node)
 {
 	t_redir	*tmp;
@@ -56,6 +63,17 @@ void	print_indent(int level)
 		printf("	");
 		level--;
 	}
+}
+
+t_env	*add_new_node(void)
+{
+	t_env	*new;
+
+	new = malloc(sizeof(*new));
+	if (!new)
+		return (NULL);
+	new->next = NULL;
+	return (new);
 }
 
 // void	debug_ast(t_ast_node *node, int level)

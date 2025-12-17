@@ -26,24 +26,29 @@ int	is_builtin(t_ast_node *node)
 	return 0;
 }
 
-void	run_cmd_no_fork(t_ast_node *cmd, t_env *env)
+void	run_cmd_no_fork(t_ast_node *cmd, t_shell *shell)
 {
+	int	exit_code;
+
+	if (apply_redir(cmd->redir_list) != 0)
+		exit (1);
+	if (cmd->args == NULL || cmd->args[0] == NULL)
+		exit (0);
 	if (is_builtin(cmd))
 	{
-		execute_builtin(cmd, &env);
-		exit(0); // fix this
+		exit_code = execute_builtin(cmd, shell);
+		exit (exit_code);
 	}
-	if (apply_redir(cmd->redir_list) == 0)		// CHECK IF CORRECT
-		execute_external(env, cmd);
 	else
-		exit (1);
+		execute_external(shell, cmd);
 }
 
-void	exec_pipe(t_env *env, t_ast_node *node)
+int	exec_pipe(t_shell *shell, t_ast_node *node)
 {
 	int			pipe_fds[2];
 	int			input_fd;
 	int			last_cmd;
+	int			exit_status;
 	t_ast_node	*curr;
 	t_ast_node	*runcmd;
 	pid_t		pid;
@@ -52,6 +57,7 @@ void	exec_pipe(t_env *env, t_ast_node *node)
 	all_pids = NULL;
 	input_fd = STDIN_FILENO;
 	curr = node;
+	pid = -1;
 	while (curr)
 	{
 		last_cmd = 0;
@@ -83,7 +89,7 @@ void	exec_pipe(t_env *env, t_ast_node *node)
 				dup2(pipe_fds[1], STDOUT_FILENO);
 				close(pipe_fds[1]);
 			}
-			run_cmd_no_fork(runcmd, env);
+			run_cmd_no_fork(runcmd, shell);
 		}
 		
 		// Parent process
@@ -101,7 +107,9 @@ void	exec_pipe(t_env *env, t_ast_node *node)
 	}
 
 	// Wait for children
-	wait_children(all_pids, pid);
+	exit_status = wait_children(all_pids);
+	// free pids?
+	return (exit_status);
 }
 
 void add_pid(t_pids **pids, int pid)
@@ -127,19 +135,34 @@ void add_pid(t_pids **pids, int pid)
 	
 }
 
-void	wait_children(t_pids *pids, pid_t pid)
+int	wait_children(t_pids *pids)
 {
 	int		status;
-	t_pids *curr;
+	int		final_status;
+	t_pids	*curr;
+	pid_t	last_pid;
 
+	last_pid = 0;
+	final_status = 0;
 	status = 0;
+	curr = pids;
+	if (curr)
+	{
+		while (curr->next)
+			curr = curr->next;
+		last_pid = curr->pid;
+	}
 	curr = pids;
 	while (curr)
 	{
-		if (curr->pid == pid)
-			waitpid(curr->pid, &status, 0);
-		else
-			waitpid(curr->pid, NULL, 0);
+		waitpid(curr->pid, &status, 0);
+		if (curr->pid == last_pid)
+			final_status = status;
 		curr = curr->next;
 	}
+	if (WIFEXITED(final_status))
+		return (WEXITSTATUS(final_status));
+	else if (WIFSIGNALED(final_status))
+		return (128 + WTERMSIG(final_status));
+	return (0);
 }

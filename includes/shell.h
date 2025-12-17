@@ -75,7 +75,7 @@ void	handle_sngl_qt(char *arg, int *i, char **res);
 void	handle_dollar(char *arg, int *i, char **res, t_shell *shell);
 
 
-void	here_docs(t_ast_node *node, int *h_count);
+void	here_docs(t_ast_node *node, int *h_count, t_shell *shell);
 void	clean_tmp(t_ast_node *node);
 int		is_tmp_hfile(char *file_name);
 
@@ -97,6 +97,7 @@ void	debug_ast(t_ast_node *node, int level);
 void	print_shell_err(char *type, const char *msg);
 void	print_eof_warning(char *delim);
 void	expand_ast(t_ast_node *node, t_shell *shell);
+char	*expand_h_var(char *line, t_shell *shell);
 char	*substitute_and_clean(char *arg, t_shell *shell);
 char	*get_var_value(char *str, int *i, t_shell *shell);
 

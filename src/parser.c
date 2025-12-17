@@ -20,37 +20,40 @@ have args arr to hold words
 
 t_ast_node	*parser(t_token *token)
 {
-	return (parse_logic_op(&token));
+	return (parse_pipeline(&token));
+	// return (parse_logic_op(&token));
 }
 
-t_ast_node	*parse_logic_op(t_token **tokens)
-{
-	t_ast_node		*node;
-	t_ast_node		*left;
-	t_tok_type		type;
+// t_ast_node parse_parenthesis(t_token *token);
 
-	left = parse_pipeline(tokens);
-	if (!left)
-		return (NULL);
-	while (peek_tok(*tokens) && (peek_tok(*tokens)->type == T_LOGIC_OR
-			|| peek_tok(*tokens)->type == T_LOGIC_AND))
-	{
-		type = peek_tok(*tokens)->type;
-		consume_tok(tokens, type);
-		if (type == T_LOGIC_OR)
-			node = create_ast_nd(NODE_OR, left, NULL);
-		else
-			node = create_ast_nd(NODE_AND, left, NULL);
-		node->right = parse_pipeline(tokens);
-		left = node;
-		if (!left->right)
-		{
-			free_ast(node);
-			return (NULL);
-		}
-	}
-	return (left);
-}
+// t_ast_node	*parse_logic_op(t_token **tokens)
+// {
+// 	t_ast_node		*node;
+// 	t_ast_node		*left;
+// 	t_tok_type		type;
+
+// 	left = parse_pipeline(tokens);
+// 	if (!left)
+// 		return (NULL);
+// 	while (peek_tok(*tokens) && (peek_tok(*tokens)->type == T_LOGIC_OR
+// 			|| peek_tok(*tokens)->type == T_LOGIC_AND))
+// 	{
+// 		type = peek_tok(*tokens)->type;
+// 		consume_tok(tokens, type);
+// 		if (type == T_LOGIC_OR)
+// 			node = create_ast_nd(NODE_OR, left, NULL);
+// 		else
+// 			node = create_ast_nd(NODE_AND, left, NULL);
+// 		node->right = parse_pipeline(tokens);
+// 		left = node;
+// 		if (!left->right)
+// 		{
+// 			free_ast(node);
+// 			return (NULL);
+// 		}
+// 	}
+// 	return (left);
+// }
 
 t_ast_node	*parse_pipeline(t_token **tokens)
 {
@@ -74,8 +77,8 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 		if (!pipe_nd->right)
 		{
 			free_ast(pipe_nd);
-			return (NULL);
 			print_shell_err(SYTX_ERR, "No command.");
+			return (NULL);
 		}
 		left = pipe_nd;
 	}
@@ -120,11 +123,11 @@ int	parse_redir(t_token **tokens, t_redir **redir_head)
 	op = consume_tok(tokens, peek_tok(*tokens)->type);
 	file = consume_tok(tokens, T_WORD);
 	if (!file)
-		file = consume_tok(tokens, T_STR);
-	if (!file)
 		file = consume_tok(tokens, T_VAR);
 	if (!file)
 		file = consume_tok(tokens, T_EXIT_STATUS);
+	// if (!file)
+	// 	file = consume_tok(tokens, T_WILDC);
 	if (!file)
 		return (1);
 	new_node = init_redir_node(op, file);

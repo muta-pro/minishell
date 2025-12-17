@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 21:37:42 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/17 17:29:48 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,63 +14,73 @@
 
 int	is_builtin(t_ast_node *node);
 
-void	execute_AST(t_env *env, t_ast_node *node)
+void	execute_AST(t_shell *shell, t_ast_node *node)
 {
+	int	status;
+
+	status = shell->exit_status;
 	if (node == NULL)
 		return ;
 	if (node->type == NODE_PIPE)
-		exec_pipe(env, node);
+		status = exec_pipe(shell, node);
 	else if (node->type == NODE_CMND)
-		execute_single_cmd(node, &env);
+		status = execute_single_cmd(node, shell);
+
+	shell->exit_status = status;
+	// printf("Exit status: %d\n\n", status);
 }
 
-int	execute_builtin(t_ast_node *cmd, t_env **env)
+int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 {
-	(void)env;
-
 	if (!strcmp(cmd->args[0], "pwd"))
 		return (ft_getcwd());
 	if (!strcmp(cmd->args[0], "cd"))
-		return (ft_chdir(cmd, env));
+		return (ft_chdir(cmd, shell));
 	if (!strcmp(cmd->args[0], "env"))
 	{
-		ft_env(*env);
+		ft_env(shell->env_list);
 		return (0);
 	}	
 	if (!strcmp(cmd->args[0], "export"))
-		return (ft_export(env, cmd->args[1]), 0);
+		return (ft_export(&shell->env_list, cmd), 0);
 	if (!strcmp(cmd->args[0], "unset"))
 	{
 		int i = 1;
-		while (cmd->args[i])
+		while (cmd->args[i]) // Need to pass the whole args array
 		{
-			ft_unset(env, cmd->args[i]);
+			ft_unset(&shell->env_list, cmd->args[i]);
 			i++;
 		}
 		return (0); //fix this
 	}
 	if (!strcmp(cmd->args[0], "exit"))
-		return (ft_exit(cmd));
+		return (ft_exit(cmd, shell->exit_status));
 	return (127);
 }
 
-void	execute_external(t_env *env, t_ast_node* cmd)
+void	execute_external(t_shell *shell, t_ast_node* cmd)
 {
 	char	**twoDenv;
 	char	*path;
 	
 	path = NULL;
-	twoDenv = list_to_2d(env);
+	twoDenv = list_to_2d(shell->env_list);
 	path = get_path(twoDenv, cmd->args[0]);
-	if (execve(path, cmd->args, twoDenv) == -1)
+	if (path == NULL)
 	{
-		perror("execve");
+		write(STDERR_FILENO, "minishell:", 10);
+		write(STDERR_FILENO, cmd->args[0], ft_strlen(cmd->args[0]));
+		write(STDERR_FILENO, " : command not found\n", 21);
 		free_arr(twoDenv);
-		free(path);
-		// free_env(&env);
-		// free_cmd(&cmd);
-		exit(0); // handle exit
+		exit(127);
 	}
+	execve(path, cmd->args, twoDenv);
+	write(STDERR_FILENO, "minishell: ", 11);
+	write(STDERR_FILENO, cmd->args[0], ft_strlen(cmd->args[0]));
+	write(STDERR_FILENO, ": ", 2);
+	perror("");
+	free(path);
+	exit(126);
 }
 
 // void execute_single_cmd(t_ast_node *cmd, t_env **env)
@@ -110,7 +120,7 @@ int	is_parent_lvl_builtin(const char *cmd)
 	return (0);
 }
 
-void exec_cmd_in_child(t_ast_node *cmd, t_env **env)
+void exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
 {
 	int	exit_code;
 
@@ -118,11 +128,11 @@ void exec_cmd_in_child(t_ast_node *cmd, t_env **env)
 		exit (1);
 	if (is_builtin(cmd))
 	{
-		exit_code = execute_builtin(cmd, env);
+		exit_code = execute_builtin(cmd, shell);
 		exit(exit_code);
 	}
 	else
-		execute_external(*env, cmd);
+		execute_external(shell, cmd);
 }
 
 void	restore_fds(int ogstdin, int ogstdout)
@@ -133,7 +143,7 @@ void	restore_fds(int ogstdin, int ogstdout)
 	close(ogstdout);
 }
 
-int	exec_builtin_in_parent(t_ast_node *cmd, t_env **env)
+int	exec_builtin_in_parent(t_ast_node *cmd, t_shell *shell)
 {
 	int	og_stdin;
 	int	og_stdout;
@@ -148,39 +158,38 @@ int	exec_builtin_in_parent(t_ast_node *cmd, t_env **env)
 		return (1);
 	}
 	if (cmd->args && cmd->args[0])
-		exit_status = execute_builtin(cmd, env);
+		exit_status = execute_builtin(cmd, shell);
 	restore_fds(og_stdin, og_stdout);
 	return (exit_status);
 }
 
-void	execute_single_cmd(t_ast_node *cmd, t_env **env)
+int	execute_single_cmd(t_ast_node *cmd, t_shell *shell)
 {
 	pid_t	pid;
 	int		status;
-	int		exit_code;
 
 	if (cmd->args == NULL || cmd->args[0] == NULL)
-	{
-		exec_builtin_in_parent(cmd, env);
-		return ;
-	}
+		return (exec_builtin_in_parent(cmd, shell));
 	if (is_parent_lvl_builtin(cmd->args[0]))
-		exit_code = exec_builtin_in_parent(cmd, env);
+		return (exec_builtin_in_parent(cmd, shell));
 	else
 	{
 		pid = fork();
 		if (pid == -1)
 		{
-			perror("fork"); // fix exit status
-			return ;
+			perror("minishell: fork");
+			return (1);
 		}
 		if (pid == 0)
-		{
-			exec_cmd_in_child(cmd, env);
-		}
+			exec_cmd_in_child(cmd, shell);
 		else
 		{
-			waitpid(pid, &status, 0); // fix exit status;
+			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				return (WEXITSTATUS(status)); // ??
+			else if (WIFSIGNALED(status))
+				return (128 + WTERMSIG(status));
 		}
 	}
+	return (1);
 }
