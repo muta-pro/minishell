@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:23:13 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 21:37:32 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/18 17:28:31 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,12 @@ int		ft_chdir(t_ast_node *cmd, t_shell *shell);
 int		ft_exit(t_ast_node *cmd, int exit_status);
 void	ft_env(t_env *env);
 void	ft_unset(t_env **env, char *str);
-void	ft_export(t_env **env, char *str);
+int		ft_export(t_env **env, t_ast_node *node);
 void	free_env(t_env **env);
 void	free_arr(char **arr);
 int		exec_pipe(t_shell *shell, t_ast_node *node);
+int	is_dir(const char *path);
+int	ft_echo(char **args);
 void	add_pid(t_pids **pids, int pid);
 int		wait_children(t_pids *pids);
 void	build_env(char **envp, t_env **env);

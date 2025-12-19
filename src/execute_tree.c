@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/17 17:29:48 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/18 17:29:16 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ void	execute_AST(t_shell *shell, t_ast_node *node)
 
 int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 {
+	if (!strcmp(cmd->args[0], "echo"))
+		return (ft_echo(cmd->args));
 	if (!strcmp(cmd->args[0], "pwd"))
 		return (ft_getcwd());
 	if (!strcmp(cmd->args[0], "cd"))
@@ -58,30 +60,91 @@ int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 	return (127);
 }
 
-void	execute_external(t_shell *shell, t_ast_node* cmd)
+int	is_dir(const char *path)
+{
+	int		fd;
+	int		dir;
+	char	buffer;
+
+	dir = 0;
+	fd = open(path, O_RDONLY);
+	if (fd == -1)
+		return (0);
+	if (read(fd, &buffer, 0) == -1 && errno == EISDIR)
+		dir = 1;
+	close(fd);
+	return (dir);
+}
+
+void	execute_external(t_shell *shell, t_ast_node *cmd)
 {
 	char	**twoDenv;
 	char	*path;
-	
+	char	*cmnd;
+
+	cmnd = cmd->args[0];
 	path = NULL;
-	twoDenv = list_to_2d(shell->env_list);
-	path = get_path(twoDenv, cmd->args[0]);
-	if (path == NULL)
+	if (cmnd == NULL || *cmnd == '\0')
+		exit (0);
+	if (ft_strchr(cmnd, '/'))
 	{
-		write(STDERR_FILENO, "minishell:", 10);
-		write(STDERR_FILENO, cmd->args[0], ft_strlen(cmd->args[0]));
-		write(STDERR_FILENO, " : command not found\n", 21);
-		free_arr(twoDenv);
-		exit(127);
+		if (is_dir(cmnd))
+		{
+			write(STDERR_FILENO, "minishell: ", 11);
+			write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
+			write(STDERR_FILENO, ": Is a directory\n", 17);
+			exit(126);
+		}
 	}
-	execve(path, cmd->args, twoDenv);
-	write(STDERR_FILENO, "minishell: ", 11);
-	write(STDERR_FILENO, cmd->args[0], ft_strlen(cmd->args[0]));
-	write(STDERR_FILENO, ": ", 2);
-	perror("");
-	free(path);
-	exit(126);
+	twoDenv = list_to_2d(shell->env_list);
+	path = get_path(twoDenv, cmnd);
+	if (path)
+	{
+		if (is_dir(path))
+		{
+			write(STDERR_FILENO, "minishell: ", 11);
+			write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
+			write(STDERR_FILENO, ": Is a directory\n", 17);
+			exit(126);
+		}
+		execve(path, cmd->args, twoDenv);
+	}
+	if (is_dir(cmnd))
+	{
+		write(STDERR_FILENO, "minishell: ", 11);
+		write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
+		write(STDERR_FILENO, ": Is a directory\n", 17);
+		exit(126);
+	}
+	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
+	write(STDERR_FILENO, ": command not found\n", 20);
+	exit(127);
 }
+
+// void	execute_external(t_shell *shell, t_ast_node* cmd)
+// {
+// 	char	**twoDenv;
+// 	char	*path;
+	
+// 	path = NULL;
+// 	twoDenv = list_to_2d(shell->env_list);
+// 	path = get_path(twoDenv, cmd->args[0]);
+// 	if (path == NULL)
+// 	{
+// 		write(STDERR_FILENO, "minishell:", 10);
+// 		write(STDERR_FILENO, cmd->args[0], ft_strlen(cmd->args[0]));
+// 		write(STDERR_FILENO, " : command not found\n", 21);
+// 		free_arr(twoDenv);
+// 		exit(127);
+// 	}
+// 	execve(path, cmd->args, twoDenv);
+// 	write(STDERR_FILENO, "minishell: ", 11);
+// 	write(STDERR_FILENO, cmd->args[0], ft_strlen(cmd->args[0]));
+// 	write(STDERR_FILENO, ": ", 2);
+// 	perror("");
+// 	free(path);
+// 	exit(126);
+// }
 
 // void execute_single_cmd(t_ast_node *cmd, t_env **env)
 // {
