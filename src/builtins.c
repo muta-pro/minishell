@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/18 17:33:31 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/19 18:06:14 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int	is_num_str(char *str)
 
 int	ft_exit(t_ast_node *cmd, int exit_status)
 {
-	write(STDERR_FILENO, "exit\n", 5);
+	write(STDOUT_FILENO, "exit\n", 5);
 	if (cmd->args[1])
 	{
 		if (is_num_str(cmd->args[1]) == 0)
