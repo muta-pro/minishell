@@ -6,12 +6,36 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/17 18:00:23 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/19 18:06:14 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 #include <limits.h>
+
+int	ft_echo(char **args)
+{
+	int	i;
+	int	print_n;
+
+	i = 1;
+	print_n = 1;
+	while (args[i] && strcmp(args[i], "-n") == 0)
+	{
+		print_n = 0;
+		i++;
+	}
+	while (args[i])
+	{
+		printf("%s", args[i]);
+		if (args[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (print_n)
+		printf("\n");
+	return (0);
+}
 
 int	ft_getcwd()
 {
@@ -102,7 +126,7 @@ int	is_num_str(char *str)
 
 int	ft_exit(t_ast_node *cmd, int exit_status)
 {
-	write(STDERR_FILENO, "exit\n", 5);
+	write(STDOUT_FILENO, "exit\n", 5);
 	if (cmd->args[1])
 	{
 		if (is_num_str(cmd->args[1]) == 0)
@@ -217,7 +241,7 @@ int	ft_export(t_env **env, t_ast_node *node)
 		
 		if (!valid_id(key))
 		{
-			fprintf(stderr, "minishell: export: '%s': not a valid indentifier\n", curr); // write
+			fprintf(stderr, "minishell: export: '%s': not a valid identifier\n", curr); // write
 			free(key);
 			exit_status = 1;
 			i++;

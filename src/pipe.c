@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:33:55 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 17:30:38 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/18 17:32:35 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	is_builtin(t_ast_node *node)
 {
 	int	i = 0;
-	const char *builtins[] = {"cd", "pwd", "exit", "env", "export", "unset", NULL};
+	const char *builtins[] = {"echo", "cd", "pwd", "exit", "env", "export", "unset", NULL};
 	while (builtins[i])
 	{
 		if (!strcmp(node->args[0], builtins[i]))
