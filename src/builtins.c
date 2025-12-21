@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/21 14:01:58 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/21 18:55:01 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	ft_chdir(t_ast_node *cmd, t_shell *shell)
 	}
 	if (cmd->args[2])
 	{
-		fprintf(stderr, "minishell: cd: too many argumentsq\n");
+		fprintf(stderr, "minishell: cd: too many arguments\n");
 		return (1);
 	}
 	if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)
