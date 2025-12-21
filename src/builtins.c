@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/19 18:06:14 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/21 14:01:58 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,15 @@ int	ft_chdir(t_ast_node *cmd, t_shell *shell)
 	char	old_pwd[PATH_MAX];
 	char	new_pwd[PATH_MAX];
 
-	printf("cd\n");
+	// printf("cd\n");
 	if (getcwd(old_pwd, PATH_MAX) == NULL)
 	{
 		perror("cd: getcwd error");
+		return (1);
+	}
+	if (cmd->args[2])
+	{
+		fprintf(stderr, "minishell: cd: too many argumentsq\n");
 		return (1);
 	}
 	if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)

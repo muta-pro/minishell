@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/18 17:29:16 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/21 16:57:30 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,16 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 	cmnd = cmd->args[0];
 	path = NULL;
 	if (cmnd == NULL || *cmnd == '\0')
-		exit (0);
+		exit(0);
 	if (ft_strchr(cmnd, '/'))
 	{
+		if (access(cmnd, F_OK) == -1)
+		{
+			write(STDERR_FILENO, "minishell: ", 11);
+			write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
+			write(STDERR_FILENO, ": No such file or directory\n: ", 30);
+			exit(127);
+		}
 		if (is_dir(cmnd))
 		{
 			write(STDERR_FILENO, "minishell: ", 11);
@@ -95,29 +102,31 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 			write(STDERR_FILENO, ": Is a directory\n", 17);
 			exit(126);
 		}
+		twoDenv = list_to_2d(shell->env_list);
+		execve(cmnd, cmd->args, twoDenv);
+		write(STDERR_FILENO, "minishell: ", 11);
+		write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
+		write(STDERR_FILENO, ": ", 2);
+		perror("");
+		free(twoDenv);
+		exit(126);
 	}
 	twoDenv = list_to_2d(shell->env_list);
 	path = get_path(twoDenv, cmnd);
 	if (path)
 	{
-		if (is_dir(path))
-		{
-			write(STDERR_FILENO, "minishell: ", 11);
-			write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
-			write(STDERR_FILENO, ": Is a directory\n", 17);
-			exit(126);
-		}
 		execve(path, cmd->args, twoDenv);
-	}
-	if (is_dir(cmnd))
-	{
 		write(STDERR_FILENO, "minishell: ", 11);
 		write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
-		write(STDERR_FILENO, ": Is a directory\n", 17);
+		write(STDERR_FILENO, ": ", 11);
+		perror("");
+		free(twoDenv);
 		exit(126);
 	}
+	write(STDERR_FILENO, "minishell: ", 11);
 	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
 	write(STDERR_FILENO, ": command not found\n", 20);
+	free(twoDenv);
 	exit(127);
 }
 
