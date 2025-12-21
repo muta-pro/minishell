@@ -68,7 +68,7 @@ int	main(int argc, char **argv, char **envp)
 				continue ;
 			}
 			expand_ast(ast, &shell);
-			execute_AST(&shell, ast);
+			execute_ast(&shell, ast);
 			// debug_ast(ast, 0);
 			clean_tmp(ast);
 			free_ast(ast);

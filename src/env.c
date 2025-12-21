@@ -20,11 +20,11 @@ char	*get_env_val(t_env *env, const char *key)
 		{
 			if (env->value == NULL)
 				return ("");
-			return (env->value);
+			return (ft_strdup(env->value));
 		}
 		env = env->next;
 	}
-	return (NULL);
+	return (ft_strdup(""));
 }
 
 void	set_env_val(t_env **env, const char *key, const char *value)

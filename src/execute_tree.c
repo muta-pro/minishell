@@ -14,7 +14,7 @@
 
 int	is_builtin(t_ast_node *node);
 
-void	execute_AST(t_shell *shell, t_ast_node *node)
+void	execute_ast(t_shell *shell, t_ast_node *node)
 {
 	int	status;
 
@@ -25,13 +25,14 @@ void	execute_AST(t_shell *shell, t_ast_node *node)
 		status = exec_pipe(shell, node);
 	else if (node->type == NODE_CMND)
 		status = execute_single_cmd(node, shell);
-
 	shell->exit_status = status;
 	// printf("Exit status: %d\n\n", status);
 }
 
 int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 {
+	int	i;
+
 	if (!strcmp(cmd->args[0], "echo"))
 		return (ft_echo(cmd->args));
 	if (!strcmp(cmd->args[0], "pwd"))
@@ -42,12 +43,12 @@ int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 	{
 		ft_env(shell->env_list);
 		return (0);
-	}	
+	}
 	if (!strcmp(cmd->args[0], "export"))
 		return (ft_export(&shell->env_list, cmd), 0);
 	if (!strcmp(cmd->args[0], "unset"))
 	{
-		int i = 1;
+		i = 1;
 		while (cmd->args[i]) // Need to pass the whole args array
 		{
 			ft_unset(&shell->env_list, cmd->args[i]);
@@ -78,7 +79,7 @@ int	is_dir(const char *path)
 
 void	execute_external(t_shell *shell, t_ast_node *cmd)
 {
-	char	**twoDenv;
+	char	**two_denv;
 	char	*path;
 	char	*cmnd;
 
@@ -96,8 +97,8 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 			exit(126);
 		}
 	}
-	twoDenv = list_to_2d(shell->env_list);
-	path = get_path(twoDenv, cmnd);
+	two_denv = list_to_2d(shell->env_list);
+	path = get_path(two_denv, cmnd);
 	if (path)
 	{
 		if (is_dir(path))
@@ -107,7 +108,7 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 			write(STDERR_FILENO, ": Is a directory\n", 17);
 			exit(126);
 		}
-		execve(path, cmd->args, twoDenv);
+		execve(path, cmd->args, two_denv);
 	}
 	if (is_dir(cmnd))
 	{
@@ -183,7 +184,7 @@ int	is_parent_lvl_builtin(const char *cmd)
 	return (0);
 }
 
-void exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
+void	exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
 {
 	int	exit_code;
 
