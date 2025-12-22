@@ -19,7 +19,7 @@ char	*get_env_val(t_env *env, const char *key)
 		if (strcmp(env->key, key) == 0)
 		{
 			if (env->value == NULL)
-				return ("");
+				return (ft_strdup(""));
 			return (ft_strdup(env->value));
 		}
 		env = env->next;

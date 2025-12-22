@@ -37,9 +37,10 @@ int	ft_echo(char **args)
 	return (0);
 }
 
-int	ft_getcwd()
+int	ft_getcwd(void)
 {
 	char	*cwd;
+
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

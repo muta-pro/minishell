@@ -14,7 +14,7 @@
 
 int	is_builtin(t_ast_node *node);
 
-void	execute_AST(t_shell *shell, t_ast_node *node)
+void	execute_ast(t_shell *shell, t_ast_node *node)
 {
 	int	status;
 
@@ -25,13 +25,14 @@ void	execute_AST(t_shell *shell, t_ast_node *node)
 		status = exec_pipe(shell, node);
 	else if (node->type == NODE_CMND)
 		status = execute_single_cmd(node, shell);
-
 	shell->exit_status = status;
 	// printf("Exit status: %d\n\n", status);
 }
 
 int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 {
+	int	i;
+
 	if (!strcmp(cmd->args[0], "echo"))
 		return (ft_echo(cmd->args));
 	if (!strcmp(cmd->args[0], "pwd"))
@@ -42,12 +43,12 @@ int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 	{
 		ft_env(shell->env_list);
 		return (0);
-	}	
+	}
 	if (!strcmp(cmd->args[0], "export"))
 		return (ft_export(&shell->env_list, cmd), 0);
 	if (!strcmp(cmd->args[0], "unset"))
 	{
-		int i = 1;
+		i = 1;
 		while (cmd->args[i]) // Need to pass the whole args array
 		{
 			ft_unset(&shell->env_list, cmd->args[i]);
