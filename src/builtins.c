@@ -150,7 +150,7 @@ int	ft_exit(t_ast_node *cmd, int exit_status)
 		exit(atoi(cmd->args[1])); // atoll maybe
 	}
 	else
-		exit(exit_status); // fix this with exit code
+		exit(exit_status); // fix this with exit code -<<FIX!
 }
 
 void	ft_env(t_env *env)

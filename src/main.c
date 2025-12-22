@@ -10,45 +10,84 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "shell.h"
+#include "shell.h"
 
-// t_ast_node *create_command_node(char **args);
-// void free_ast2(t_ast_node *node);
-// t_ast_node *test_ls_simple();
-// t_ast_node *test_pipe_simple();
+volatile sig_atomic_t	g_got_sigint = 0;
 
-// int	main(int ac, char **av, char **envp)
-// {
-// 	(void)ac;
-// 	(void)av;
-// 	t_env	*env;
+int	run_line(char *line, t_shell *shell)
+{
+	t_token		*tokens;
+	t_ast_node	*ast;
+	int			status;
 
-// 	env = (t_env *)malloc(sizeof(*env));
-// 	if (!env)
-// 		return (0);
-// 	build_env(envp, &env);
+	tokens = NULL;
+	ast = build_ast(line, &tokens, shell);
+	if (!ast)
+	{
+		if (tokens)
+			shell->exit_status = 258;
+		cleanup_pack(NULL, tokens, NULL);
+		return (shell->exit_status);
+	}
+	status = run_ast(ast, shell);
+	cleanup_pack(NULL, tokens, ast);
+	return (status);
+}
 
-// 	// char **testargs;
-// 	// testargs = malloc(sizeof(testargs));
-// 	// if (!testargs)
-// 	// 	return 1;
-// 	// testargs[0] = ft_strdup("ls");
-// 	// testargs[1] = ft_strdup("-l");
-// 	// testargs[2] = NULL;
-	
-// 	// t_ast_node simple_cmd = {
-//     // .type = NODE_CMND,
-//     // .left = NULL,
-//     // .right = NULL,
-//     // .args = testargs,
-// 	// .redir_list = NULL
-// 	// };
-// 	// execute_single_cmd(&simple_cmd, env);
+char	*read_input(t_shell *shell)
+{
+	char	*line;
 
-// 	t_ast_node *test_node = test_pipe_simple();
-//     // t_ast_node *test_node = test_ls_simple();
-// 	execute_AST(env, test_node);
-// 	free_ast2(test_node);
-// 	free_env(&env);
-// 	return (0);
-// }
+	(void)shell;
+	g_got_sigint = 0;
+	line = readline("minishell: ");
+	if (g_got_sigint == SIGINT)
+	{
+		if (line)
+			free(line);
+		return (NULL);
+	}
+	return (line);
+}
+
+int	shell_loop(t_shell *shell)
+{
+	char	*line;
+
+	while (1)
+	{
+		g_got_sigint = 0;
+		line = read_input(shell);
+		if (g_got_sigint == SIGINT)
+		{
+			shell->exit_status = 130;
+			continue ;
+		}
+		if (!line)
+			break ;
+		if (*line)
+			add_history(line);
+		shell->exit_status = run_line(line, shell);
+		free(line);
+	}
+	return (shell->exit_status);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_shell	shell;
+	int		status;
+
+	(void)argc;
+	if (argv == NULL || argv[0] == NULL || argv[0][0] == '\0')
+		return (0);
+	ft_bzero(&shell, sizeof(t_shell));
+	build_env(envp, &shell.env_list);
+	shell.exit_status = 0;
+	install_parent_handler();
+	status = shell_loop(&shell);
+	write(STDOUT_FILENO, "exit\n", 5);
+	rl_clear_history();
+	free_env(&shell.env_list);
+	return (shell.exit_status);
+}

@@ -18,8 +18,11 @@ have args arr to hold words
 */
 #include "shell.h"
 
-t_ast_node	*parser(t_token *token)
+t_ast_node	*parser(t_token *token, t_shell *shell)
 {
+	(void)shell;
+	if (!token)
+		return (NULL);
 	return (parse_pipeline(&token));
 	// return (parse_logic_op(&token));
 }
@@ -68,13 +71,10 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 		consume_tok(tokens, T_PIPE);
 		pipe_nd = create_ast_nd(NODE_PIPE, NULL, NULL);
 		if (!pipe_nd)
-		{
 			free_ast(left);
-			return (NULL);
-		}
 		pipe_nd->left = left;
 		pipe_nd->right = parse_pipeline(tokens);
-		if (!pipe_nd->right)
+		if (!pipe_nd->right && left)
 		{
 			free_ast(pipe_nd);
 			print_shell_err(SYTX_ERR, "No command.");
@@ -100,7 +100,7 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 		flag = args_redirs_tok(tokens, &args, &redirs);
 		if (flag != 0)
 		{
-			print_shell_err(SYTX_ERR, "near unexpected token.");
+			// print_shell_err(SYTX_ERR, "near unexpected token.");
 			free_arr(args);
 			free_redirs(redirs);
 			return (NULL);
@@ -109,6 +109,8 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 	if (!args && !redirs)
 		return (NULL);
 	node = create_ast_nd(NODE_CMND, NULL, NULL);
+	if (!node)
+		free(node);
 	node->args = args;
 	node->redir_list = redirs;
 	return (node);
@@ -129,7 +131,10 @@ int	parse_redir(t_token **tokens, t_redir **redir_head)
 	// if (!file)
 	// 	file = consume_tok(tokens, T_WILDC);
 	if (!file)
+	{
+		print_shell_err(SYTX_ERR, "unexpected token near newline");
 		return (1);
+	}
 	new_node = init_redir_node(op, file);
 	if (!new_node)
 		return (1);
