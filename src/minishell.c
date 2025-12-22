@@ -69,12 +69,12 @@ int	main(int argc, char **argv, char **envp)
 			}
 			expand_ast(ast, &shell);
 			execute_ast(&shell, ast);
-			// debug_ast(ast, 0);
+			debug_ast(ast, 0);
 			clean_tmp(ast);
 			free_ast(ast);
 		}
 		else if (tokens) //parser failure
-			shell.exit_status = 258;
+			shell.exit_status = 128;
 		if (tokens)
 			free_tok(tokens);
 		free(line);

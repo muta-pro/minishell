@@ -100,7 +100,7 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 		flag = args_redirs_tok(tokens, &args, &redirs);
 		if (flag != 0)
 		{
-			print_shell_err(SYTX_ERR, "Unexpected token.");
+			print_shell_err(SYTX_ERR, "near unexpected token.");
 			free_arr(args);
 			free_redirs(redirs);
 			return (NULL);
