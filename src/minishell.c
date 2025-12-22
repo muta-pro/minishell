@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/07/23 16:15:36 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/12/21 20:13:51 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/21 20:13:51 by imutavdz       ########   odam.nl        */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,3 @@ int	main(int argc, char **argv, char **envp)
 	free_env(&shell.env_list);
 	return (0);
 }
-
-//	how do I chek if SHLVL exits, then decrement
