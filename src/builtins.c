@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/06/06 16:25:30 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/21 18:55:01 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/23 18:36:06 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ int	ft_chdir(t_ast_node *cmd, t_shell *shell)
 	char	old_pwd[PATH_MAX];
 	char	new_pwd[PATH_MAX];
 
-	// printf("cd\n");
 	if (getcwd(old_pwd, PATH_MAX) == NULL)
 	{
 		perror("cd: getcwd error");
@@ -74,7 +73,6 @@ int	ft_chdir(t_ast_node *cmd, t_shell *shell)
 		target_path = get_env_val(shell->env_list, "HOME");
 		if (target_path == NULL || *target_path == '\0')
 		{
-			// fprintf(stderr, "minishell: cd: HOME not set\n"); // change fprintf
 			write(STDERR_FILENO, "minishell: cd: HOME not set\n", 28);
 			return (1);
 		}
@@ -96,8 +94,12 @@ int	ft_chdir(t_ast_node *cmd, t_shell *shell)
 	{
 		fprintf(stderr, "minishell: cd: %s: ", target_path);
 		perror("");
+		// if (target_path)
+		// 	free(target_path);
 		return (1);
 	}
+	// if (target_path)
+	// 	free(target_path);
 	// update pwds
 	set_env_val(&shell->env_list, "OLDPWD", old_pwd);
 	if (getcwd(new_pwd, PATH_MAX) != NULL)

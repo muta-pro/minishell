@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:33:55 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/18 17:32:35 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/23 17:52:00 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,19 @@ void	run_cmd_no_fork(t_ast_node *cmd, t_shell *shell)
 	}
 	else
 		execute_external(shell, cmd);
+}
+
+void	free_all_pids(t_pids **all_pids)
+{
+	t_pids	*temp;
+	
+	temp = *all_pids;
+	while (*all_pids)
+	{
+		temp = *all_pids;
+		*all_pids = (*all_pids)->next;
+		free(temp);
+	}
 }
 
 int	exec_pipe(t_shell *shell, t_ast_node *node)
@@ -108,7 +121,7 @@ int	exec_pipe(t_shell *shell, t_ast_node *node)
 
 	// Wait for children
 	exit_status = wait_children(all_pids);
-	// free pids?
+	free_all_pids(&all_pids);
 	return (exit_status);
 }
 

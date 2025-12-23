@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/23 17:10:29 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/23 18:41:55 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,13 @@ void	execute_ast(t_shell *shell, t_ast_node *node)
 		status = exec_pipe(shell, node);
 	else if (node->type == NODE_CMND)
 		status = execute_single_cmd(node, shell);
+
 	shell->exit_status = status;
 	// printf("Exit status: %d\n\n", status);
 }
 
 int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 {
-	int	i;
-
 	if (!strcmp(cmd->args[0], "echo"))
 		return (ft_echo(cmd->args));
 	if (!strcmp(cmd->args[0], "pwd"))
@@ -43,12 +42,12 @@ int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 	{
 		ft_env(shell->env_list);
 		return (0);
-	}
+	}	
 	if (!strcmp(cmd->args[0], "export"))
 		return (ft_export(&shell->env_list, cmd), 0);
 	if (!strcmp(cmd->args[0], "unset"))
 	{
-		i = 1;
+		int i = 1;
 		while (cmd->args[i]) // Need to pass the whole args array
 		{
 			ft_unset(&shell->env_list, cmd->args[i]);
@@ -230,8 +229,18 @@ int	exec_builtin_in_parent(t_ast_node *cmd, t_shell *shell)
 		restore_fds(og_stdin, og_stdout);
 		return (1);
 	}
-	if (cmd->args && cmd->args[0])
-		exit_status = execute_builtin(cmd, shell);
+	if (cmd->args == NULL || cmd->args[0] == NULL)
+	{
+		restore_fds(og_stdin, og_stdout);
+		return (0);
+	}
+	if (strcmp(cmd->args[0], "exit") == 0)
+	{
+		exit_status = ft_exit(cmd, shell->exit_status);
+		restore_fds(og_stdin, og_stdout);
+		return (exit_status);
+	}
+	exit_status = execute_builtin(cmd, shell);
 	restore_fds(og_stdin, og_stdout);
 	return (exit_status);
 }
