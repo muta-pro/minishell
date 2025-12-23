@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:38:12 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/16 16:03:23 by imutavdz         ###   ########.fr       */
+/*   Updated: 2025/12/22 06:41:09 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef TOKEN_H
@@ -27,13 +27,9 @@ typedef enum token_type
 	T_REDIR_HEREDOC, //<<
 	T_EOF,
 	T_ERROR,
-	T_LPAREN,
-	T_RPAREN,
-	T_WILDC,
-	T_ENV,
-	T_SNGL_Q,
-	T_DBL_Q,
-	T_MIX_Q
+	// T_LPAREN,
+	// T_RPAREN,
+	// T_WILDC,
 }	t_tok_type;
 
 typedef enum e_scan_state //state management for the lexer
@@ -42,11 +38,11 @@ typedef enum e_scan_state //state management for the lexer
 	IN_SNGL_QUOTE,
 	IN_DBL_QUOTE,
 	IN_ESCAPE,
-	IN_STRING,
-	IN_HEREDOC,
-	IN_VAR,
-	IN_PIPE,
-	IN_LOGICAL
+	// IN_STRING,
+	// IN_HEREDOC,
+	// IN_VAR,
+	// IN_PIPE,
+	// IN_LOGICAL
 }	t_scan_state;
 
 typedef struct s_token

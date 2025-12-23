@@ -13,7 +13,6 @@
 #ifndef SHELL_H
 # define SHELL_H
 /*Heredoc handling is complex and involves multiple phases:
-
 Tokenizer: recognize <<
 Parser: identify the delimiter
 Executor: read lines until delimiter
@@ -38,12 +37,6 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-// typedef struct s_heredoc
-// {
-// 	char	*delimiter;
-// 	int		expand;
-// }	t_heredoc;
-
 typedef struct s_shell
 {
 	t_env	*env_list;
@@ -60,12 +53,16 @@ typedef struct s_shell
 
 extern volatile	sig_atomic_t g_got_sigint;
 
+int			run_ast(t_ast_node *ast, t_shell *shell);
+t_ast_node	*build_ast(char *line, t_token **tok, t_shell *shell);
+void		cleanup_pack(char *line, t_token *tok, t_ast_node *ast);
+
+
 int		init_shlvl(char **envp);
 int		update_env_var(char ***envp, char *key, char *value);
 char	*new_env_str(char *key, char *value);
 int		find_env_varible(char **envp, char *key);
-char	*get_env_val(t_env *env, const char *key); // maybe remove const if its a problem
-void	unset_env_var(char ***envp, char *key);//remove var
+char	*get_env_val(t_env *env, const char *key);
 
 //utils
 char	*ft_strjoin_free(char *s1, char *s2);
@@ -76,6 +73,7 @@ void	handle_dollar(char *arg, int *i, char **res, t_shell *shell);
 
 
 void	here_docs(t_ast_node *node, int *h_count, t_shell *shell);
+void	expand_h_line(char **line, int no_expand, t_shell *shell);
 void	clean_tmp(t_ast_node *node);
 int		is_tmp_hfile(char *file_name);
 

@@ -37,9 +37,10 @@ int	ft_echo(char **args)
 	return (0);
 }
 
-int	ft_getcwd()
+int	ft_getcwd(void)
 {
 	char	*cwd;
+
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
@@ -149,7 +150,7 @@ int	ft_exit(t_ast_node *cmd, int exit_status)
 		exit(atoi(cmd->args[1])); // atoll maybe
 	}
 	else
-		exit(exit_status); // fix this with exit code
+		exit(exit_status); // fix this with exit code -<<FIX!
 }
 
 void	ft_env(t_env *env)

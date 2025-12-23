@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 17:54:08 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/21 19:05:33 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 20:36:58 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ char	*get_env_val(t_env *env, const char *key)
 		if (strcmp(env->key, key) == 0)
 		{
 			if (env->value == NULL)
-				return (ft_strdup(""));
+				return (NULL);
 			return (ft_strdup(env->value));
 		}
 		env = env->next;
 	}
-	return (NULL);
+	return (ft_strdup(""));
 }
 
 void	set_env_val(t_env **env, const char *key, const char *value)

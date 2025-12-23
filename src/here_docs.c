@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/09 13:06:10 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/12/12 17:37:09 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/12 17:37:09 by imutavdz      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,12 @@ char	*expand_h_var(char *line, t_shell *shell)
 	i = 0;
 	while (line[i])
 	{
-		if ((line[i] == '$' && line[i + 1] == '?')
-			|| (ft_isalpha(line[i + 1]) || line[i + 1] == ' '))
+		if ((line[i] == '$') && (line[i + 1] == '?'
+				|| ft_isalpha(line[i + 1]) || line[i + 1] == ' '))
 			handle_dollar(line, &i, &new_line, shell);
 		else
 			new_line = join_char(new_line, line[i++]);
 	}
-	free(line);
 	return (new_line);
 }
 
@@ -51,28 +50,20 @@ void	read_h_input(char *delim, int fd, int no_expand, t_shell *shell)
 	while (1)
 	{
 		line = readline("heredoc>");
-		if (g_got_sigint)
-		{
-			if (line)
-				free(line);
+		if (g_got_sigint || !line)
 			break ;
-		}
-		if (!line)
-		{
-			print_eof_warning(delim);
-			break ;
-		}
 		if (line && strcmp(line, delim) == 0)
 		{
 			free (line);
 			break ;
 		}
-		if (!no_expand)
-			line = expand_h_var(line, shell);
+		expand_h_line(&line, no_expand, shell);
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
 	}
+	if (!line)
+		print_eof_warning(delim);
 	signal(SIGINT, handle_sigint);
 }
 

@@ -1,9 +1,8 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g 
 
 INC_DIR = includes
+CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR) -g
 
-CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR)
 
 NAME = minishell
 SRCDIR = src
@@ -34,6 +33,7 @@ SRCS_FILES =	builtins.c \
 				error.c \
 				redir.c \
 				minishell.c \
+				main.c \
 				here_docs.c \
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))

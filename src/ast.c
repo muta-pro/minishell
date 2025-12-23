@@ -27,7 +27,7 @@ t_ast_node	*create_ast_nd(t_node_t type, t_ast_node *l, t_ast_node *r)
 
 	node = malloc(sizeof(t_ast_node));
 	if (!node)
-		return (NULL);
+		return (NULL);//should error handle return null
 	node->type = type;
 	node->left = l;
 	node->right = r;
