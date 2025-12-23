@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/21 16:57:30 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/23 17:10:29 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 		write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
 		write(STDERR_FILENO, ": ", 2);
 		perror("");
-		free(twoDenv);
+		free(twoDenv); // fix
 		exit(126);
 	}
 	twoDenv = list_to_2d(shell->env_list);
@@ -126,7 +126,7 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 	write(STDERR_FILENO, "minishell: ", 11);
 	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
 	write(STDERR_FILENO, ": command not found\n", 20);
-	free(twoDenv);
+	free_arr(twoDenv);
 	exit(127);
 }
 
