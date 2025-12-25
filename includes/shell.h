@@ -41,6 +41,7 @@ typedef struct s_shell
 {
 	t_env	*env_list;
 	int		exit_status;
+	int		save_exit_status;
 }	t_shell;
 
 # include "defines.h"

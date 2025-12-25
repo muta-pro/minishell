@@ -25,9 +25,9 @@ void	execute_ast(t_shell *shell, t_ast_node *node)
 		status = exec_pipe(shell, node);
 	else if (node->type == NODE_CMND)
 		status = execute_single_cmd(node, shell);
-
+	if (status == -42)
+		shell->save_exit_status = shell->exit_status;
 	shell->exit_status = status;
-	// printf("Exit status: %d\n\n", status);
 }
 
 int	execute_builtin(t_ast_node *cmd, t_shell *shell)
@@ -56,7 +56,7 @@ int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 		return (0); //fix this
 	}
 	if (!strcmp(cmd->args[0], "exit"))
-		return (ft_exit(cmd, shell->exit_status));
+		return (ft_exit(cmd, shell));
 	return (127);
 }
 
@@ -108,7 +108,7 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 		write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
 		write(STDERR_FILENO, ": ", 2);
 		perror("");
-		free(twoDenv); // fix
+		free_arr(twoDenv);
 		exit(126);
 	}
 	twoDenv = list_to_2d(shell->env_list);
@@ -118,7 +118,7 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 		execve(path, cmd->args, twoDenv);
 		write(STDERR_FILENO, "minishell: ", 11);
 		write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
-		write(STDERR_FILENO, ": ", 11);
+		write(STDERR_FILENO, ": ", 2);
 		perror("");
 		free(twoDenv);
 		exit(126);
@@ -236,7 +236,7 @@ int	exec_builtin_in_parent(t_ast_node *cmd, t_shell *shell)
 	}
 	if (strcmp(cmd->args[0], "exit") == 0)
 	{
-		exit_status = ft_exit(cmd, shell->exit_status);
+		exit_status = ft_exit(cmd, shell);
 		restore_fds(og_stdin, og_stdout);
 		return (exit_status);
 	}

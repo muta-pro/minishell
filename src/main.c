@@ -69,6 +69,11 @@ int	shell_loop(t_shell *shell)
 			add_history(line);
 		shell->exit_status = run_line(line, shell);
 		free(line);
+		if (shell->exit_status == -42)
+		{
+			shell->exit_status = shell->save_exit_status;
+			break ;
+		}
 	}
 	return (shell->exit_status);
 }
@@ -76,7 +81,6 @@ int	shell_loop(t_shell *shell)
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
-	int		status;
 
 	(void)argc;
 	if (argv == NULL || argv[0] == NULL || argv[0][0] == '\0')
@@ -85,8 +89,8 @@ int	main(int argc, char **argv, char **envp)
 	build_env(envp, &shell.env_list);
 	shell.exit_status = 0;
 	install_parent_handler();
-	status = shell_loop(&shell);
-	write(STDOUT_FILENO, "exit\n", 5);
+	shell_loop(&shell);
+	// write(STDOUT_FILENO, "exit\n", 5);
 	rl_clear_history();
 	free_env(&shell.env_list);
 	return (shell.exit_status);

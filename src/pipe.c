@@ -145,7 +145,6 @@ void add_pid(t_pids **pids, int pid)
 			current_node = current_node->next;
 		current_node->next = new;
 	}
-	
 }
 
 int	wait_children(t_pids *pids)

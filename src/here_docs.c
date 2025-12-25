@@ -43,9 +43,7 @@ void	file_name(char *buf, int count)
 void	read_h_input(char *delim, int fd, int no_expand, t_shell *shell)
 {
 	char	*line;
-	size_t	len;
 
-	len = ft_strlen(delim);
 	signal(SIGINT, handle_sigint_hrdc);
 	while (1)
 	{

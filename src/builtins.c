@@ -63,7 +63,7 @@ int	ft_chdir(t_ast_node *cmd, t_shell *shell)
 		perror("cd: getcwd error");
 		return (1);
 	}
-	if (cmd->args[2])
+	if (cmd->args[1] && cmd->args[2])
 	{
 		fprintf(stderr, "minishell: cd: too many arguments\n");
 		return (1);
@@ -88,18 +88,18 @@ int	ft_chdir(t_ast_node *cmd, t_shell *shell)
 		printf("%s\n", target_path);
 	}
 	else
-		target_path = cmd->args[1];
+		target_path = ft_strdup(cmd->args[1]);
 	// change dir
 	if (chdir(target_path) != 0)
 	{
 		fprintf(stderr, "minishell: cd: %s: ", target_path);
 		perror("");
-		// if (target_path)
-		// 	free(target_path);
+		if (target_path)
+			free(target_path);
 		return (1);
 	}
-	// if (target_path)
-	// 	free(target_path);
+	if (target_path)
+		free(target_path);
 	// update pwds
 	set_env_val(&shell->env_list, "OLDPWD", old_pwd);
 	if (getcwd(new_pwd, PATH_MAX) != NULL)
@@ -132,7 +132,7 @@ int	is_num_str(char *str)
 	return (1);
 }
 
-int	ft_exit(t_ast_node *cmd, int exit_status)
+int	ft_exit(t_ast_node *cmd, t_shell *shell)
 {
 	write(STDOUT_FILENO, "exit\n", 5);
 	if (cmd->args[1])
@@ -147,12 +147,14 @@ int	ft_exit(t_ast_node *cmd, int exit_status)
 		if (cmd->args[2])
 		{
 			write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
-			return (1);
+			shell->exit_status = 1;
+			return (-42);
 		}
-		exit(atoi(cmd->args[1])); // atoll maybe
+		shell->exit_status = atoi(cmd->args[1]);
+		return (-42);
 	}
 	else
-		exit(exit_status); // fix this with exit code -<<FIX!
+		return (-42);
 }
 
 void	ft_env(t_env *env)

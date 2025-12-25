@@ -31,7 +31,7 @@ typedef struct s_pids
 
 int		ft_getcwd();
 int		ft_chdir(t_ast_node *cmd, t_shell *shell);
-int		ft_exit(t_ast_node *cmd, int exit_status);
+int		ft_exit(t_ast_node *cmd, t_shell *shell);
 void	ft_env(t_env *env);
 void	ft_unset(t_env **env, char *str);
 int		ft_export(t_env **env, t_ast_node *node);
