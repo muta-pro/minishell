@@ -40,6 +40,9 @@ SRCS_FILES =	ast.c \
 				cd_pwd.c \
 				echo.c \
 				exit.c \
+				exec_builtin.c \
+				exec_utils.c \
+				pipe_utils.c \
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)

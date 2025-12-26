@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:32:38 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 18:48:25 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/26 22:19:00 by joko          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,3 @@ char	*get_path(char **twoDenv, char *cmd)
 		return (free_arr(split_paths), NULL);
 	return (free_arr(split_paths), full_path);
 }
-
-// void	free_arr(char **arr)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	if (!arr)
-// 		return ;
-// 	while (arr[i])
-// 	{
-// 		free(arr[i]);
-// 		i++;
-// 	}
-// 	free(arr);
-// }

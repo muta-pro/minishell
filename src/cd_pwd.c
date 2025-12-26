@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   cd.c                                               :+:    :+:            */
+/*   cd_pwd.c                                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: joko <joko@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/26 15:42:34 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 16:27:02 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/26 23:25:47 by joko          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,12 @@ static int  ft_chdir(char *target_path)
 
 static int  update_pwds(t_shell *shell, char *old_pwd, char *new_pwd)
 {
-    set_env_val(&shell->env_list, "OLDPWD", old_pwd);
+    if (set_env_val(&shell->env_list, "OLDPWD", old_pwd) == 1)
+		return (1);
 	if (getcwd(new_pwd, PATH_MAX) != NULL)
     {
-		set_env_val(&shell->env_list, "PWD", new_pwd);
+		if (set_env_val(&shell->env_list, "PWD", new_pwd) == 1)
+			return (1);
         return (0);
     }
 	else
@@ -58,7 +60,7 @@ static int  parse_cd_args(t_shell *shell, t_ast_node *cmd, char **target_path)
 		*target_path = get_env_val(shell->env_list, "OLDPWD");
 		if (*target_path == NULL || **target_path == '\0')
 		{
-			fprintf(stderr, "minishell: cd: OLDPWD not set\n");
+			write(STDERR_FILENO, "minishell: cd: OLDPWD not set\n", 30);
 			return (free(*target_path), 1);
 		}
 		printf("%s\n", *target_path);
@@ -106,6 +108,5 @@ int	ft_cd(t_ast_node *cmd, t_shell *shell)
         return (1);
     if (update_pwds(shell, old_pwd, new_pwd) == 1)
         return (1);
-	
     return (0);
 }

@@ -6,48 +6,61 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 17:54:08 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/26 16:29:34 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/26 23:55:59 by joko          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
+static int	set_val_new_node(t_env **new_node, const char *key, const char *value)
+{
+	*new_node = add_new_node();
+	if (new_node == NULL)
+		return ((write(STDERR_FILENO, "minishell: fatal error: cannot allocate memory\n", 47)), 1);
+	(*new_node)->key = ft_strdup(key);
+	(*new_node)->value = ft_strdup(value);
+	if ((*new_node)->key == NULL || (*new_node)->value == NULL)
+	{
+		free((*new_node)->key);
+		free((*new_node)->value);
+		free((*new_node));
+		return (write(STDERR_FILENO, "minishell: fatal error: cannot allocate memory\n", 47), 1);
+	}
+	return (0);
+}
 
-void	set_env_val(t_env **env, const char *key, const char *value)
+static int	find_key(t_env **curr, const char *key, const char *value)
+{
+	while (*curr)
+	{
+		if (!strcmp((*curr)->key, key))
+		{
+			free((*curr)->value);
+			(*curr)->value = ft_strdup(value);
+			if ((*curr)->value == NULL)
+				return (write(STDERR_FILENO, "minishell: fatal error: cannot allocate memory\n", 47), 1);
+			return (0);
+		}
+		*curr = (*curr)->next;
+	}
+	return (2);
+}
+
+int	set_env_val(t_env **env, const char *key, const char *value)
 {
 	t_env	*curr;
 	t_env	*new_node;
+	int		rtrn;
 
 	curr = *env;
-	while (curr)
-	{
-		if (!strcmp(curr->key, key))
-		{
-			free(curr->value);
-			curr->value = ft_strdup(value);
-			if (curr->value == NULL)
-				(printf("rip")); // handle malloc failure
-			return ;
-		}
-		curr = curr->next;
-	}
-	// If key not found make new node
-	new_node = add_new_node();
-	if (new_node == NULL)
-		(printf("rip2")); // malloc
-	new_node->key = ft_strdup(key);
-	new_node->value = ft_strdup(value);
-	if (new_node->key == NULL || new_node->value == NULL)
-	{
-		free(new_node->key);
-		free(new_node->value);
-		free(new_node);
-		(printf("rip3")); // malloc..
-	}
+	new_node = NULL;
+	rtrn = find_key(&curr, key, value);
+	if (rtrn != 2)
+		return (rtrn);
+	if (set_val_new_node(&new_node, key, value) == 1)
+		return (1);
 	if (*env == NULL)
-	{
 		*env = new_node;
-	}
 	else
 	{
 		curr = *env;
@@ -55,37 +68,35 @@ void	set_env_val(t_env **env, const char *key, const char *value)
 			curr = curr->next;
 		curr->next = new_node;
 	}
+	return (0);
 }
 
 void	build_env(char **envp, t_env **env)
 {
-	int		i;
-	int		j;
-	t_env	*node;
-	t_env	*last;
+	t_build_env	be;
 
 	*env = NULL;
-	i = 0;
-	while (envp[i])
+	be.i = 0;
+	while (envp[be.i])
 	{
-		node = add_new_node();
-		if (!node)
+		be.node = add_new_node();
+		if (!be.node)
 			return ;
-		j = 0;
-		while (envp[i][j] != '=')
-			j++;
-		node->key = strndup(envp[i], j);
-		node->value = strdup(envp[i] + j + 1);
+		be.j = 0;
+		while (envp[be.i][be.j] != '=')
+			be.j++;
+		be.node->key = strndup(envp[be.i], be.j);
+		be.node->value = strdup(envp[be.i] + be.j + 1);
 		if (*env == NULL)
-			*env = node;
+			*env = be.node;
 		else
 		{
-			last = *env;
-			while (last->next)
-				last = last->next;
-			last->next = node;
+			be.last = *env;
+			while (be.last->next)
+				be.last = be.last->next;
+			be.last->next = be.node;
 		}
-		i++;
+		be.i++;
 	}
 }
 
