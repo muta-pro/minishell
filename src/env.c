@@ -6,62 +6,66 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 17:54:08 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/12 20:36:58 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/29 17:09:04 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-char	*get_env_val(t_env *env, const char *key)
+static int	set_val_new_node(t_env **node, const char *key, const char *value)
 {
-	while (env)
+	*node = add_new_node();
+	if (node == NULL)
+		return ((write(STDERR_FILENO,
+					"minishell: fatal error: cannot allocate memory\n",
+					47)), 1);
+	(*node)->key = ft_strdup(key);
+	(*node)->value = ft_strdup(value);
+	if ((*node)->key == NULL || (*node)->value == NULL)
 	{
-		if (strcmp(env->key, key) == 0)
-		{
-			if (env->value == NULL)
-				return (NULL);
-			return (ft_strdup(env->value));
-		}
-		env = env->next;
+		free((*node)->key);
+		free((*node)->value);
+		free((*node));
+		return (write(STDERR_FILENO,
+				"minishell: fatal error: cannot allocate memory\n", 47), 1);
 	}
-	return (ft_strdup(""));
+	return (0);
 }
 
-void	set_env_val(t_env **env, const char *key, const char *value)
+static int	find_key(t_env **curr, const char *key, const char *value)
+{
+	while (*curr)
+	{
+		if (!strcmp((*curr)->key, key))
+		{
+			free((*curr)->value);
+			(*curr)->value = ft_strdup(value);
+			if ((*curr)->value == NULL)
+				return (write(STDERR_FILENO,
+						"minishell: fatal error: cannot allocate memory\n",
+						47), 1);
+			return (0);
+		}
+		*curr = (*curr)->next;
+	}
+	return (2);
+}
+
+int	set_env_val(t_env **env, const char *key, const char *value)
 {
 	t_env	*curr;
 	t_env	*new_node;
+	int		rtrn;
 
 	curr = *env;
-	while (curr)
-	{
-		if (!strcmp(curr->key, key))
-		{
-			free(curr->value);
-			curr->value = ft_strdup(value);
-			if (curr->value == NULL)
-				(printf("rip")); // handle malloc failure
-			return ;
-		}
-		curr = curr->next;
-	}
-	// If key not found make new node
-	new_node = add_new_node();
-	if (new_node == NULL)
-		(printf("rip2")); // malloc
-	new_node->key = ft_strdup(key);
-	new_node->value = ft_strdup(value);
-	if (new_node->key == NULL || new_node->value == NULL)
-	{
-		free(new_node->key);
-		free(new_node->value);
-		free(new_node);
-		(printf("rip3")); // malloc..
-	}
+	new_node = NULL;
+	rtrn = find_key(&curr, key, value);
+	if (rtrn != 2)
+		return (rtrn);
+	if (set_val_new_node(&new_node, key, value) == 1)
+		return (1);
 	if (*env == NULL)
-	{
 		*env = new_node;
-	}
 	else
 	{
 		curr = *env;
@@ -69,71 +73,47 @@ void	set_env_val(t_env **env, const char *key, const char *value)
 			curr = curr->next;
 		curr->next = new_node;
 	}
+	return (0);
 }
 
 void	build_env(char **envp, t_env **env)
 {
-	int		i;
-	int		j;
-	t_env	*node;
-	t_env	*last;
+	t_build_env	be;
 
 	*env = NULL;
-	i = 0;
-	while (envp[i])
+	be.i = 0;
+	while (envp[be.i])
 	{
-		node = add_new_node();
-		if (!node)
+		be.node = add_new_node();
+		if (!be.node)
 			return ;
-		j = 0;
-		while (envp[i][j] != '=')
-			j++;
-		node->key = strndup(envp[i], j);
-		node->value = strdup(envp[i] + j + 1);
+		be.j = 0;
+		while (envp[be.i][be.j] != '=')
+			be.j++;
+		be.node->key = strndup(envp[be.i], be.j);
+		be.node->value = strdup(envp[be.i] + be.j + 1);
 		if (*env == NULL)
-			*env = node;
+			*env = be.node;
 		else
 		{
-			last = *env;
-			while (last->next)
-				last = last->next;
-			last->next = node;
+			be.last = *env;
+			while (be.last->next)
+				be.last = be.last->next;
+			be.last->next = be.node;
 		}
-		i++;
+		be.i++;
 	}
 }
 
-char	**list_to_2d(t_env *env)
+void	ft_env(t_env *env)
 {
-	char	**env_array;
-	char	*temp;
-	int		i;
+	t_env	*node;
 
-	env_array = malloc((list_size(env) + 1) * sizeof(char *));
-	if (!env_array)
-		return (NULL);
-	i = 0;
-	while (env)
+	node = env;
+	while (node)
 	{
-		temp = ft_strjoin(env->key, "=");
-		env_array[i] = ft_strjoin(temp, env->value);
-		free(temp);
-		i++;
-		env = env->next;
+		if (node->value != NULL)
+			printf("%s=%s\n", node->key, node->value);
+		node = node->next;
 	}
-	env_array[i] = NULL;
-	return (env_array);
-}
-
-int	list_size(t_env *env)
-{
-	int	i;
-
-	i = 0;
-	while (env)
-	{
-		i++;
-		env = env->next;
-	}
-	return (i);
 }

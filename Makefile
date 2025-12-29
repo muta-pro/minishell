@@ -11,13 +11,13 @@ LIBFTDIR = libft
 LIBFT = $(LIBFTDIR)/libft.a
 
 SRC_DIR = src
-SRCS_FILES =	builtins.c \
-				ast.c \
+SRCS_FILES =	ast.c \
 				ast_ops.c \
 				char_class.c \
 				char_ops.c \
 				token.c \
 				env.c \
+				env_utils.c \
 				execute_tree.c \
 				expand_tree.c \
 				free.c \
@@ -35,6 +35,14 @@ SRCS_FILES =	builtins.c \
 				minishell.c \
 				main.c \
 				here_docs.c \
+				export_unset.c \
+				export_utils.c \
+				cd_pwd.c \
+				echo.c \
+				exit.c \
+				exec_builtin.c \
+				exec_utils.c \
+				pipe_utils.c \
 
 SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
