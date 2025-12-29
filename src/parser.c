@@ -65,7 +65,10 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 
 	left = parse_cmnd(tokens);
 	if (!left)
+	{
+		free_ast(left);
 		return (NULL);
+	}
 	while (peek_tok(*tokens) && peek_tok(*tokens)->type == T_PIPE)
 	{
 		consume_tok(tokens, T_PIPE);

@@ -14,7 +14,7 @@
 
 int	is_tmp_hfile(char *file_name)
 {
-	if (strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
+	if (ft_strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
 		return (1);
 	return (0);
 }

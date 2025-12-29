@@ -65,6 +65,6 @@ void	handle_sigint(int sig)
 void	handle_sigint_hrdc(int sig)
 {
 	(void)sig;
-	g_got_sigint = 1;
+	g_got_sigint = sig;
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 }

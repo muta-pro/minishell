@@ -71,11 +71,10 @@ t_token	*lexer(char *input_text)
 		}
 		if (token->type == T_ERROR)
 		{
-			print_shell_err(SYTX_ERR, token->lexeme);
+			// print_shell_err(SYTX_ERR, token->lexeme);
 			free_tok(scanner.head);
 			free_tok(token);
 			return (NULL);
-			break ;
 		}
 		insert_token(&scanner.head, token);
 	}
