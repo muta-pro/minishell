@@ -6,7 +6,7 @@
 /*   By: joko <joko@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/26 16:16:41 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 16:21:42 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 17:51:49 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void    print_export(t_env *env)
 	{
 		printf("declare -x %s", node->key);
 		if (node->value)
-			printf("=%s", node->value);
+			printf("=\"%s\"", node->value);
 		printf("\n");
 		node = node->next;
 	}
