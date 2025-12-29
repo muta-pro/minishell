@@ -6,7 +6,7 @@
 /*   By: joko <joko@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/26 22:15:08 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 22:16:20 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 17:11:30 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 void	exec_external_print_err(char *cmnd)
 {
-		write(STDERR_FILENO, "minishell: ", 11);
-		write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
-		write(STDERR_FILENO, ": ", 2);
-		perror("");
+	write(STDERR_FILENO, "minishell: ", 11);
+	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
+	write(STDERR_FILENO, ": ", 2);
+	perror("");
 }
 
 void	handle_exec_errors(t_shell *shell, t_ast_node *cmd, char *cmnd)
 {
-	char	**twoDenv;
+	char	**two_d_env;
 
 	if (access(cmnd, F_OK) == -1)
 	{
@@ -38,13 +38,13 @@ void	handle_exec_errors(t_shell *shell, t_ast_node *cmd, char *cmnd)
 		write(STDERR_FILENO, ": Is a directory\n", 17);
 		exit(126);
 	}
-	twoDenv = list_to_2d(shell->env_list);
-	execve(cmnd, cmd->args, twoDenv);
+	two_d_env = list_to_2d(shell->env_list);
+	execve(cmnd, cmd->args, two_d_env);
 	write(STDERR_FILENO, "minishell: ", 11);
 	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
 	write(STDERR_FILENO, ": ", 2);
 	perror("");
-	free_arr(twoDenv);
+	free_arr(two_d_env);
 	exit(126);
 }
 

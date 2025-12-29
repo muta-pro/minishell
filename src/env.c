@@ -6,25 +6,28 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 17:54:08 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/26 23:55:59 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 17:09:04 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-static int	set_val_new_node(t_env **new_node, const char *key, const char *value)
+static int	set_val_new_node(t_env **node, const char *key, const char *value)
 {
-	*new_node = add_new_node();
-	if (new_node == NULL)
-		return ((write(STDERR_FILENO, "minishell: fatal error: cannot allocate memory\n", 47)), 1);
-	(*new_node)->key = ft_strdup(key);
-	(*new_node)->value = ft_strdup(value);
-	if ((*new_node)->key == NULL || (*new_node)->value == NULL)
+	*node = add_new_node();
+	if (node == NULL)
+		return ((write(STDERR_FILENO,
+					"minishell: fatal error: cannot allocate memory\n",
+					47)), 1);
+	(*node)->key = ft_strdup(key);
+	(*node)->value = ft_strdup(value);
+	if ((*node)->key == NULL || (*node)->value == NULL)
 	{
-		free((*new_node)->key);
-		free((*new_node)->value);
-		free((*new_node));
-		return (write(STDERR_FILENO, "minishell: fatal error: cannot allocate memory\n", 47), 1);
+		free((*node)->key);
+		free((*node)->value);
+		free((*node));
+		return (write(STDERR_FILENO,
+				"minishell: fatal error: cannot allocate memory\n", 47), 1);
 	}
 	return (0);
 }
@@ -38,7 +41,9 @@ static int	find_key(t_env **curr, const char *key, const char *value)
 			free((*curr)->value);
 			(*curr)->value = ft_strdup(value);
 			if ((*curr)->value == NULL)
-				return (write(STDERR_FILENO, "minishell: fatal error: cannot allocate memory\n", 47), 1);
+				return (write(STDERR_FILENO,
+						"minishell: fatal error: cannot allocate memory\n",
+						47), 1);
 			return (0);
 		}
 		*curr = (*curr)->next;

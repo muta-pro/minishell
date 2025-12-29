@@ -6,15 +6,16 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/07 15:49:06 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/07 17:06:15 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/29 17:21:57 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-int apply_redir(t_redir *node)
+int	apply_redir(t_redir *node)
 {
-    int fd;
+	int	fd;
+
     while (node)
     {
         if (node->type == T_REDIR_OUT || node->type == T_REDIR_APPEND)

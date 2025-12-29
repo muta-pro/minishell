@@ -6,7 +6,7 @@
 /*   By: joko <joko@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/26 16:14:30 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 16:15:05 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 16:57:29 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ int	ft_exit(t_ast_node *cmd, t_shell *shell)
 		if (cmd->args[2])
 		{
 			write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
-			shell->exit_status = 1;
-			return (-42);
+			// shell->exit_status = 1;
+			// return (-42);
 		}
 		shell->exit_status = atoi(cmd->args[1]);
 		return (-42);

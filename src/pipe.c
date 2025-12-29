@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:33:55 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/26 22:57:50 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 17:18:33 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	run_parent_prcs(t_pipe *pv)
 		pv->curr = NULL;
 }
 
-static int init_pipe_stage(t_pipe *pv)
+static int	init_pipe_stage(t_pipe *pv)
 {
 	pv->last_cmd = 0;
 	if (pv->curr->type == NODE_PIPE)
@@ -100,7 +100,7 @@ int	exec_pipe(t_shell *shell, t_ast_node *node)
 		if (init_pipe_stage(&pv) == 1)
 			return (1);
 		if (pv.pid == 0)
-			run_child_prcs(shell, &pv);		
+			run_child_prcs(shell, &pv);
 		run_parent_prcs(&pv);
 	}
 	pv.exit_status = wait_children(pv.all_pids);

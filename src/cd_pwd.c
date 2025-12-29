@@ -6,15 +6,15 @@
 /*   By: joko <joko@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/26 15:42:34 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 23:25:47 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 17:06:04 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-static int  ft_chdir(char *target_path)
+static int	ft_chdir(char *target_path)
 {
-    if (chdir(target_path) != 0)
+	if (chdir(target_path) != 0)
 	{
 		fprintf(stderr, "minishell: cd: %s: ", target_path);
 		perror("");
@@ -24,19 +24,19 @@ static int  ft_chdir(char *target_path)
 	}
 	if (target_path)
 		free(target_path);
-    return (0);
+	return (0);
 }
 
-static int  update_pwds(t_shell *shell, char *old_pwd, char *new_pwd)
+static int	update_pwds(t_shell *shell, char *old_pwd, char *new_pwd)
 {
-    if (set_env_val(&shell->env_list, "OLDPWD", old_pwd) == 1)
+	if (set_env_val(&shell->env_list, "OLDPWD", old_pwd) == 1)
 		return (1);
 	if (getcwd(new_pwd, PATH_MAX) != NULL)
-    {
+	{
 		if (set_env_val(&shell->env_list, "PWD", new_pwd) == 1)
 			return (1);
-        return (0);
-    }
+		return (0);
+	}
 	else
 	{
 		perror("minishell: cd: getcwd error after change");
@@ -44,9 +44,9 @@ static int  update_pwds(t_shell *shell, char *old_pwd, char *new_pwd)
 	}
 }
 
-static int  parse_cd_args(t_shell *shell, t_ast_node *cmd, char **target_path)
+static int	parse_cd_args(t_shell *shell, t_ast_node *cmd, char **target_path)
 {
-    if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)
+	if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)
 	{
 		*target_path = get_env_val(shell->env_list, "HOME");
 		if (*target_path == NULL || **target_path == '\0')
@@ -67,7 +67,7 @@ static int  parse_cd_args(t_shell *shell, t_ast_node *cmd, char **target_path)
 	}
 	else
 		*target_path = ft_strdup(cmd->args[1]);
-    return (0);
+	return (0);
 }
 
 int	ft_getcwd(void)
@@ -91,7 +91,7 @@ int	ft_cd(t_ast_node *cmd, t_shell *shell)
 	char	old_pwd[PATH_MAX];
 	char	new_pwd[PATH_MAX];
 
-    target_path = NULL;
+	target_path = NULL;
 	if (getcwd(old_pwd, PATH_MAX) == NULL)
 	{
 		perror("cd: getcwd error");
@@ -102,11 +102,11 @@ int	ft_cd(t_ast_node *cmd, t_shell *shell)
 		write(STDERR_FILENO, "minishell: cd: too many arguments\n", 34);
 		return (1);
 	}
-    if (parse_cd_args(shell, cmd, &target_path) == 1)
-        return (1);
-    if (ft_chdir(target_path) == 1)
-        return (1);
-    if (update_pwds(shell, old_pwd, new_pwd) == 1)
-        return (1);
-    return (0);
+	if (parse_cd_args(shell, cmd, &target_path) == 1)
+		return (1);
+	if (ft_chdir(target_path) == 1)
+		return (1);
+	if (update_pwds(shell, old_pwd, new_pwd) == 1)
+		return (1);
+	return (0);
 }

@@ -6,19 +6,18 @@
 /*   By: joko <joko@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/26 22:56:14 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 22:57:19 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 17:20:38 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
 
-void add_pid(t_pids **pids, int pid)
+void	add_pid(t_pids **pids, int pid)
 {
 	t_pids	*new;
 	t_pids	*current_node;
 
 	current_node = *pids;
-
 	new = malloc(sizeof(t_pids));
 	if (!new)
 		printf("fix"); // fix
@@ -36,22 +35,25 @@ void add_pid(t_pids **pids, int pid)
 
 int	is_builtin(t_ast_node *node)
 {
-	int	i = 0;
-	const char *builtins[] = {"echo", "cd", "pwd", "exit", "env", "export", "unset", NULL};
+	int			i;
+	const char	*builtins[] = {
+		"echo", "cd", "pwd", "exit", "env", "export", "unset", NULL};
+
+	i = 0;
 	while (builtins[i])
 	{
 		if (!strcmp(node->args[0], builtins[i]))
-			return 1;
+			return (1);
 		else
 			i++;
 	}
-	return 0;
+	return (0);
 }
 
 void	free_all_pids(t_pids **all_pids)
 {
 	t_pids	*temp;
-	
+
 	temp = *all_pids;
 	while (*all_pids)
 	{

@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/26 22:16:52 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 17:14:14 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	execute_ast(t_shell *shell, t_ast_node *node)
 
 void	execute_external(t_shell *shell, t_ast_node *cmd)
 {
-	char	**twoDenv;
+	char	**two_d_env;
 	char	*path;
 	char	*cmnd;
 
@@ -40,23 +40,23 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 		exit(0);
 	if (ft_strchr(cmnd, '/'))
 		handle_exec_errors(shell, cmd, cmnd);
-	twoDenv = list_to_2d(shell->env_list);
-	path = get_path(twoDenv, cmnd);
+	two_d_env = list_to_2d(shell->env_list);
+	path = get_path(two_d_env, cmnd);
 	if (path)
 	{
-		execve(path, cmd->args, twoDenv);
+		execve(path, cmd->args, two_d_env);
 		exec_external_print_err(cmnd);
-		free(twoDenv);
+		free(two_d_env);
 		exit(126);
 	}
 	write(STDERR_FILENO, "minishell: ", 11);
 	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
 	write(STDERR_FILENO, ": command not found\n", 20);
-	free_arr(twoDenv);
+	free_arr(two_d_env);
 	exit(127);
 }
 
-void exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
+void	exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
 {
 	int	exit_code;
 
