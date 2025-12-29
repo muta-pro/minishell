@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/07/23 15:07:01 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/12/26 22:26:14 by joko          ########   odam.nl         */
+/*   Updated: 2025/12/29 18:05:17 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void	handle_sigint(int sig);
 void	handle_sigint_hrdc(int sig);
 void	install_parent_handler(void);
 void	set_parent_sig_exec(void);
+void	child_sig_handler(void);
 
 void	debug_ast(t_ast_node *node, int level);
 void	print_shell_err(char *type, const char *msg);

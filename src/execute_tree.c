@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:29:44 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/29 17:14:14 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/29 18:10:00 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 	path = get_path(two_d_env, cmnd);
 	if (path)
 	{
+		child_sig_handler();
 		execve(path, cmd->args, two_d_env);
 		exec_external_print_err(cmnd);
 		free(two_d_env);

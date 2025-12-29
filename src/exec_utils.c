@@ -6,7 +6,7 @@
 /*   By: joko <joko@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/12/26 22:15:08 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/29 17:11:30 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/29 18:10:02 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	handle_exec_errors(t_shell *shell, t_ast_node *cmd, char *cmnd)
 		exit(126);
 	}
 	two_d_env = list_to_2d(shell->env_list);
+	child_sig_handler();
 	execve(cmnd, cmd->args, two_d_env);
 	write(STDERR_FILENO, "minishell: ", 11);
 	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
