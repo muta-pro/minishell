@@ -12,6 +12,16 @@
 
 #include "shell.h"
 
+void	child_cleanup_exit(t_shell *shell, int code)
+{
+	//check if per-cmnd fds are closed
+	cleanup_pack(NULL, shell->curr_tok, shell->curr_ast);
+	shell->curr_tok = NULL;
+	shell->curr_ast = NULL;
+	free_env(&shell->env_list);
+	_exit(code);
+}
+
 void	cleanup_pack(char *line, t_token *tok, t_ast_node *ast)
 {
 	if (ast)

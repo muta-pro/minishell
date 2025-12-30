@@ -4,8 +4,9 @@
    match-leak-kinds: reachable
    fun:malloc
    fun:xmalloc
-   fun:alloc_history_entry
-   fun:add_history
+   fun:readline_internal_teardown
+   fun:readline
+   fun:read_input
    fun:shell_loop
    fun:main
 }
@@ -14,12 +15,9 @@
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
-   fun:xrealloc
-   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
-   fun:rl_expand_prompt
-   fun:rl_set_prompt
-   fun:readline
-   fun:read_input
+   fun:xmalloc
+   fun:alloc_history_entry
+   fun:add_history
    fun:shell_loop
    fun:main
 }
@@ -42,6 +40,20 @@
    <insert_a_suppression_name_here>
    Memcheck:Leak
    match-leak-kinds: reachable
+   fun:realloc
+   fun:xrealloc
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+   fun:rl_expand_prompt
+   fun:rl_set_prompt
+   fun:readline
+   fun:read_input
+   fun:shell_loop
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
    fun:malloc
    fun:xmalloc
    fun:rl_set_prompt
@@ -61,16 +73,6 @@
    fun:rl_set_prompt
    fun:readline
    fun:read_input
-   fun:shell_loop
-   fun:main
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:xmalloc
-   fun:add_history
    fun:shell_loop
    fun:main
 }
@@ -178,6 +180,16 @@
    fun:readline
    fun:read_input
    fun:shell_loop
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:add_history
+   fun:shell_loop
+   fun:main
 }
 {
    <insert_a_suppression_name_here>

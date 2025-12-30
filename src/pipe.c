@@ -95,15 +95,17 @@ int	exec_pipe(t_shell *shell, t_ast_node *node)
 	pv.input_fd = STDIN_FILENO;
 	pv.curr = node;
 	pv.pid = -1;
+	set_parent_sig_exec();
 	while (pv.curr)
 	{
 		if (init_pipe_stage(&pv) == 1)
-			return (1);
+			return (install_parent_handler(), 1);
 		if (pv.pid == 0)
 			run_child_prcs(shell, &pv);
 		run_parent_prcs(&pv);
 	}
 	pv.exit_status = wait_children(pv.all_pids);
+	install_parent_handler();
 	free_all_pids(&pv.all_pids);
 	return (pv.exit_status);
 }

@@ -18,36 +18,43 @@ int	run_line(char *line, t_shell *shell)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;
+	t_token		*curr_tok;
+	t_ast_node	*curr_ast;
 	int			status;
 
 	tokens = NULL;
+	ast = NULL;
 	ast = build_ast(line, &tokens, shell);
+	curr_tok = tokens;
+	curr_ast = ast;
 	if (!ast)
 	{
-		if (tokens)
-			shell->exit_status = 258;
 		cleanup_pack(NULL, tokens, NULL);
 		return (shell->exit_status);
 	}
 	status = run_ast(ast, shell);
 	cleanup_pack(NULL, tokens, ast);
+	curr_tok = NULL;
+	curr_ast = NULL;
 	return (status);
+}
+
+static int	handle_sigint_prompt(t_shell *shell, char *line)
+{
+	if (g_got_sigint != SIGINT)
+		return (0);
+	shell->exit_status = 130;
+	g_got_sigint = 0;
+	if (line)
+		free(line);
+	return (1);
 }
 
 char	*read_input(t_shell *shell)
 {
-	char	*line;
-
 	(void)shell;
 	g_got_sigint = 0;
-	line = readline("minishell: ");
-	if (g_got_sigint == SIGINT)
-	{
-		if (line)
-			free(line);
-		return (NULL);
-	}
-	return (line);
+	return (readline("minishell: "));
 }
 
 int	shell_loop(t_shell *shell)
@@ -56,13 +63,9 @@ int	shell_loop(t_shell *shell)
 
 	while (1)
 	{
-		g_got_sigint = 0;
 		line = read_input(shell);
-		if (g_got_sigint == SIGINT)
-		{
-			shell->exit_status = 130;
+		if (handle_sigint_prompt(shell, line))
 			continue ;
-		}
 		if (!line)
 			break ;
 		if (*line)
@@ -70,10 +73,7 @@ int	shell_loop(t_shell *shell)
 		shell->exit_status = run_line(line, shell);
 		free(line);
 		if (shell->exit_status == -42)
-		{
-			shell->exit_status = shell->save_exit_status;
-			break ;
-		}
+			return (shell->save_exit_status);
 	}
 	return (shell->exit_status);
 }
@@ -89,8 +89,7 @@ int	main(int argc, char **argv, char **envp)
 	build_env(envp, &shell.env_list);
 	shell.exit_status = 0;
 	install_parent_handler();
-	shell_loop(&shell);
-	// write(STDOUT_FILENO, "exit\n", 5);
+	shell.exit_status = shell_loop(&shell);
 	rl_clear_history();
 	free_env(&shell.env_list);
 	return (shell.exit_status);

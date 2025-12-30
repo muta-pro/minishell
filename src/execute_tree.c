@@ -37,7 +37,7 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 	cmnd = cmd->args[0];
 	path = NULL;
 	if (cmnd == NULL || *cmnd == '\0')
-		exit(0);
+		child_cleanup_exit(shell, 0);
 	if (ft_strchr(cmnd, '/'))
 		handle_exec_errors(shell, cmd, cmnd);
 	two_d_env = list_to_2d(shell->env_list);
@@ -47,14 +47,14 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 		child_sig_handler();
 		execve(path, cmd->args, two_d_env);
 		exec_external_print_err(cmnd);
-		free(two_d_env);
-		exit(126);
+		free_arr(two_d_env);
+		child_cleanup_exit(shell, 126);
 	}
 	write(STDERR_FILENO, "minishell: ", 11);
 	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
 	write(STDERR_FILENO, ": command not found\n", 20);
 	free_arr(two_d_env);
-	exit(127);
+	child_cleanup_exit(shell, 127);
 }
 
 void	exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
@@ -62,14 +62,15 @@ void	exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
 	int	exit_code;
 
 	if (apply_redir(cmd->redir_list))
-		exit (1);
+		child_cleanup_exit(shell, 1);
 	if (is_builtin(cmd))
 	{
 		exit_code = execute_builtin(cmd, shell);
-		exit(exit_code);
+		child_cleanup_exit(shell, exit_code);
 	}
 	else
 		execute_external(shell, cmd);
+	child_cleanup_exit(shell, 127);
 }
 
 int	execute_single_cmd(t_ast_node *cmd, t_shell *shell)
@@ -77,8 +78,12 @@ int	execute_single_cmd(t_ast_node *cmd, t_shell *shell)
 	pid_t	pid;
 	int		status;
 
-	if (cmd->args == NULL || cmd->args[0] == NULL)
-		return (exec_builtin_in_parent(cmd, shell));
+	if (!cmd->args || !cmd->args[0])
+	{
+		if (apply_redir(cmd->redir_list))
+			return (1);
+		return (0);
+	}
 	if (is_parent_lvl_builtin(cmd->args[0]))
 		return (exec_builtin_in_parent(cmd, shell));
 	else
@@ -90,11 +95,14 @@ int	execute_single_cmd(t_ast_node *cmd, t_shell *shell)
 			exec_cmd_in_child(cmd, shell);
 		else
 		{
+			set_parent_sig_exec();
 			waitpid(pid, &status, 0);
+			install_parent_handler();
 			if (WIFEXITED(status))
 				return (WEXITSTATUS(status)); // ??
-			else if (WIFSIGNALED(status))
+			if (WIFSIGNALED(status))
 				return (128 + WTERMSIG(status));
+			return (1);
 		}
 	}
 	return (1);

@@ -30,22 +30,27 @@ Expander: expand variables if delimiter wasn't quoted*/
 # include <sys/ioctl.h>
 # include "libft.h"
 
+typedef struct s_token		t_token;
+typedef struct s_ast_node	t_ast_node;
+
 typedef struct s_env
 {
 	char			*key;
 	char			*value;
 	struct s_env	*next;
-}	t_env;
+}					t_env;
 
 typedef struct s_shell
 {
-	t_env	*env_list;
-	int		exit_status;
-	int		save_exit_status;
-}	t_shell;
+	t_env		*env_list;
+	int			exit_status;
+	int			save_exit_status;
+	t_token		*curr_tok;
+	t_ast_node	*curr_ast;
+}				t_shell;
 
-# include "defines.h"
 # include "token.h"
+# include "defines.h"
 # include "parser.h"
 # include "lexer.h"
 # include "sgnl.h"
@@ -57,6 +62,7 @@ extern volatile	sig_atomic_t g_got_sigint;
 int			run_ast(t_ast_node *ast, t_shell *shell);
 t_ast_node	*build_ast(char *line, t_token **tok, t_shell *shell);
 void		cleanup_pack(char *line, t_token *tok, t_ast_node *ast);
+void		child_cleanup_exit(t_shell *shell, int code);
 
 
 int			init_shlvl(char **envp);

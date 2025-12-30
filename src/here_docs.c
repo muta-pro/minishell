@@ -22,7 +22,7 @@ char	*expand_h_var(char *line, t_shell *shell)
 	while (line[i])
 	{
 		if ((line[i] == '$') && (line[i + 1] == '?'
-				|| ft_isalpha(line[i + 1]) || line[i + 1] == ' '))
+				|| ft_isalpha(line[i + 1])))
 			handle_dollar(line, &i, &new_line, shell);
 		else
 			new_line = join_char(new_line, line[i++]);
@@ -48,7 +48,9 @@ void	read_h_input(char *delim, int fd, int no_expand, t_shell *shell)
 	while (1)
 	{
 		line = readline("heredoc>");
-		if (g_got_sigint || !line)
+		if (g_got_sigint)
+			break ;
+		if (!line)
 			break ;
 		if (line && strcmp(line, delim) == 0) //FORBF
 		{
@@ -60,7 +62,7 @@ void	read_h_input(char *delim, int fd, int no_expand, t_shell *shell)
 		write(fd, "\n", 1);
 		free(line);
 	}
-	if (!line)
+	if (!line && !g_got_sigint)
 		print_eof_warning(delim);
 	signal(SIGINT, handle_sigint);
 }

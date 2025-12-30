@@ -57,14 +57,14 @@ void	set_parent_sig_exec(void)
 void	handle_sigint(int sig)
 {
 	g_got_sigint = sig;
+	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
-	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	rl_redisplay();
 }
 
 void	handle_sigint_hrdc(int sig)
 {
-	(void)sig;
 	g_got_sigint = sig;
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 }
