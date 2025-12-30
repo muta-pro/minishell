@@ -1,32 +1,81 @@
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror
+INC_DIR = includes
+CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR) -g
+
 
 NAME = minishell
+SRCDIR = src
+OBJDIR = obj
+LIBFTDIR = libft
+LIBFT = $(LIBFTDIR)/libft.a
 
-SRCS = main.c
+SRC_DIR = src
+SRCS_FILES =	ast.c \
+				ast_ops.c \
+				char_class.c \
+				char_ops.c \
+				token.c \
+				env.c \
+				env_utils.c \
+				execute_tree.c \
+				expand_tree.c \
+				free.c \
+				lexer.c \
+				utils.c \
+				quotescan.c \
+				signals.c \
+				parser.c \
+				scanner.c \
+				tokenizer.c \
+				pipe.c \
+				path.c \
+				error.c \
+				redir.c \
+				minishell.c \
+				main.c \
+				here_docs.c \
+				export_unset.c \
+				export_utils.c \
+				cd_pwd.c \
+				echo.c \
+				exit.c \
+				exec_builtin.c \
+				exec_utils.c \
+				pipe_utils.c \
 
-LIBFTPATH = libft/libft.a
-
-OBJS = $(SRCS:.c=.o)
+SRCS = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
+INCLUDE = -I$(INC_DIR) -I ./$(LIBFTDIR) -I.
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFTPATH)
-	cc $(SRCS) $(LIBFTPATH) -o minishell -lreadline
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(OBJS) -g $(LIBFT) -o minishell -lreadline
 
-$(LIBFTPATH):
-	make -C libft/
+$(LIBFT):
+	@make -sC $(LIBFTDIR)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJDIR):
+	mkdir $(OBJDIR)
+
+$(OBJDIR)/%.o: $(SRC_DIR)/%.c | $(OBJDIR)
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
-	make -C libft/ clean
+	@rm -rf $(OBJDIR)
+	@make -sC $(LIBFTDIR) clean
+	@echo "Cleaned obj files"
 
 fclean: clean
-	rm -f $(NAME)
-	make -C libft/ fclean
+	@rm -f $(NAME)
+	@make -sC $(LIBFTDIR) fclean
+	@echo "Cleaned all"
 
 re: fclean all
+
+test: $(NAME)
+	@echo "Running $(NAME) -- exit immediately"
+	@printf "\x04" | ./$(NAME) && echo "[ OK ]" || echo "[FAILED]"
+
+.PHONY: all clean fclean re test

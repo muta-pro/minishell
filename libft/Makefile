@@ -12,7 +12,7 @@ SRCS = ft_bzero.c ft_calloc.c ft_memchr.c ft_memcpy.c \
 	   ft_tolower.c ft_toupper.c ft_strjoin.c ft_strnstr.c \
 	   ft_strrchr.c ft_itoa.c ft_strchr.c ft_strtrim.c \
 	   ft_substr.c ft_strdup.c ft_strmapi.c ft_striteri.c \
-	   ft_split.c ft_putendl_fd.c \
+	   ft_split.c ft_putendl_fd.c ft_strcat.c ft_strcmp.c ft_strcpy.c \
 
 BONUS_SRCS = ft_lstnew.c ft_lstadd_front.c \
 		ft_lstsize.c ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c \
