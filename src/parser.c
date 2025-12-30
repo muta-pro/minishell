@@ -79,9 +79,8 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 		pipe_nd->right = parse_pipeline(tokens);
 		if (!pipe_nd->right && left)
 		{
-			free_ast(pipe_nd);
 			print_shell_err(SYTX_ERR, "No command.");
-			return (NULL);
+			return (free_ast(pipe_nd), NULL);
 		}
 		left = pipe_nd;
 	}
@@ -105,8 +104,7 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 		{
 			// print_shell_err(SYTX_ERR, "near unexpected token.");
 			free_arr(args);
-			free_redirs(redirs);
-			return (NULL);
+			return (free_redirs(redirs), NULL);
 		}
 	}
 	if (!args && !redirs)

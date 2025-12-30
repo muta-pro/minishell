@@ -61,3 +61,14 @@ char	*get_env_val(t_env *env, const char *key)
 	}
 	return (ft_strdup(""));
 }
+
+t_env	*add_new_node(void)
+{
+	t_env	*new;
+
+	new = malloc(sizeof(*new));
+	if (!new)
+		return (NULL);
+	new->next = NULL;
+	return (new);
+}

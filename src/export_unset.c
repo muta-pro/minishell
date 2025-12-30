@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   export_unset.c                                     :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: joko <joko@student.codam.nl>                 +#+                     */
+/*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2025/12/26 15:00:50 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 16:25:00 by joko          ########   odam.nl         */
+/*   Created: 2025/12/26 15:00:50 by yneshev       #+#    #+#                 */
+/*   Updated: 2025/12/30 19:01:21 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	env_add_last(t_env **env, t_env *new_node)
 	t_env	*curr;
 
 	curr = *env;
-
 	if (env == NULL || new_node == NULL)
 		return ;
 	if (*env == NULL)
@@ -37,19 +36,19 @@ int	ft_export(t_env **env, t_ast_node *node)
 		return (print_export(*env), 0);
 	while (node->args[xp.i])
 	{
-        parse_export_arg(node, &xp);
+		parse_export_arg(node, &xp);
 		if (!valid_id(xp.key))
 		{
-            write(STDERR_FILENO, "minishell: export: '", 20);
-            write(STDERR_FILENO, xp.curr, ft_strlen(xp.curr));
-            write(STDERR_FILENO, "': not a valid identifier\n", 26);
-            free(xp.key);
+			write(STDERR_FILENO, "minishell: export: '", 20);
+			write(STDERR_FILENO, xp.curr, ft_strlen(xp.curr));
+			write(STDERR_FILENO, "': not a valid identifier\n", 26);
+			free(xp.key);
 			xp.exit_status = 1;
 			xp.i++;
 			continue ;
 		}
-        update_if_exists(env, &xp);
-        export_new_node(env, &xp);
+		update_if_exists(env, &xp);
+		export_new_node(env, &xp);
 	}
 	return (xp.exit_status);
 }
@@ -63,7 +62,7 @@ void	ft_unset(t_env **env, char *str)
 		return ;
 	curr = *env;
 	prev = NULL;
-	while (curr && strcmp(curr->key, str))
+	while (curr && ft_strcmp(curr->key, str))
 	{
 		prev = curr;
 		curr = curr->next;

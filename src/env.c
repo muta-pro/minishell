@@ -36,7 +36,7 @@ static int	find_key(t_env **curr, const char *key, const char *value)
 {
 	while (*curr)
 	{
-		if (!strcmp((*curr)->key, key))
+		if (!ft_strcmp((*curr)->key, key))
 		{
 			free((*curr)->value);
 			(*curr)->value = ft_strdup(value);
@@ -90,8 +90,8 @@ void	build_env(char **envp, t_env **env)
 		be.j = 0;
 		while (envp[be.i][be.j] != '=')
 			be.j++;
-		be.node->key = strndup(envp[be.i], be.j);
-		be.node->value = strdup(envp[be.i] + be.j + 1);
+		be.node->key = ft_strndup(envp[be.i], be.j);
+		be.node->value = ft_strdup(envp[be.i] + be.j + 1);
 		if (*env == NULL)
 			*env = be.node;
 		else

@@ -35,8 +35,8 @@ void	file_name(char *buf, int count)
 	char	*num;
 
 	num = ft_itoa(count);
-	strcpy(buf, "/tmp/.minishell_hd_"); //FORBF
-	strcat(buf, num); //FORBF
+	ft_strcpy(buf, "/tmp/.minishell_hd_");
+	ft_strcat(buf, num);
 	free(num);
 }
 
@@ -49,7 +49,10 @@ void	read_h_input(char *delim, int fd, int no_expand, t_shell *shell)
 	{
 		line = readline("heredoc>");
 		if (g_got_sigint)
+		{
+			free(line);
 			break ;
+		}
 		if (!line)
 			break ;
 		if (line && strcmp(line, delim) == 0) //FORBF

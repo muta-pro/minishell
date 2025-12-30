@@ -67,6 +67,14 @@ typedef struct s_build_env
 	t_env	*last;
 }	t_build_env;
 
+typedef struct s_path_vars
+{
+	int		i;
+	char	*paths;
+	char	**split_paths;
+	char	*full_path;
+}	t_path_vars;
+
 int		ft_getcwd();
 int		ft_cd(t_ast_node *cmd, t_shell *shell);
 int		ft_exit(t_ast_node *cmd, t_shell *shell);
@@ -85,6 +93,7 @@ void	execute_ast(t_shell *shell, t_ast_node *node);
 int		execute_single_cmd(t_ast_node *cmd, t_shell *shell);
 void	execute_external(t_shell *shell, t_ast_node* cmd);
 int		apply_redir(t_redir *node);
+int		apply_redir_parent(t_redir *node);
 int		list_size(t_env *env);
 char	**list_to_2d(t_env *env);
 char	*find_path(char **split_paths, char *cmd);

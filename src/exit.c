@@ -12,7 +12,7 @@
 
 #include "shell.h"
 
-static int  is_num_str(char *str)
+static int	is_num_str(char *str)
 {
 	int	i;
 

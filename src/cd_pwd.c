@@ -3,9 +3,9 @@
 /*                                                        ::::::::            */
 /*   cd_pwd.c                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: joko <joko@student.codam.nl>                 +#+                     */
+/*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2025/12/26 15:42:34 by joko          #+#    #+#                 */
+/*   Created: 2025/12/26 15:42:34 by yneshev       #+#    #+#                 */
 /*   Updated: 2025/12/29 17:06:04 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
@@ -46,7 +46,7 @@ static int	update_pwds(t_shell *shell, char *old_pwd, char *new_pwd)
 
 static int	parse_cd_args(t_shell *shell, t_ast_node *cmd, char **target_path)
 {
-	if (cmd->args[1] == NULL || strcmp(cmd->args[1], "~") == 0)
+	if (cmd->args[1] == NULL || ft_strcmp(cmd->args[1], "~") == 0)
 	{
 		*target_path = get_env_val(shell->env_list, "HOME");
 		if (*target_path == NULL || **target_path == '\0')
@@ -55,7 +55,7 @@ static int	parse_cd_args(t_shell *shell, t_ast_node *cmd, char **target_path)
 			return (free(*target_path), 1);
 		}
 	}
-	else if (strcmp(cmd->args[1], "-") == 0)
+	else if (ft_strcmp(cmd->args[1], "-") == 0)
 	{
 		*target_path = get_env_val(shell->env_list, "OLDPWD");
 		if (*target_path == NULL || **target_path == '\0')

@@ -61,7 +61,6 @@ int	run_ast(t_ast_node *ast, t_shell *shell)
 	return (shell->exit_status);
 }
 
-
 // int	main(int argc, char **argv, char **envp)
 // {
 // 	char		*line;

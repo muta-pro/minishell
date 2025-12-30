@@ -65,85 +65,75 @@ void	print_indent(int level)
 	}
 }
 
-t_env	*add_new_node(void)
-{
-	t_env	*new;
 
-	new = malloc(sizeof(*new));
-	if (!new)
-		return (NULL);
-	new->next = NULL;
-	return (new);
-}
+// void	debug_ast(t_ast_node *node, int level)
+// {
+// 	t_redir	*tmp;
 
-void	debug_ast(t_ast_node *node, int level)
-{
-	t_redir	*tmp;
-
-	tmp = node->redir_list;
-	if (!node)
-		return ;
-	print_indent(level);
-	if (node->type == NODE_PIPE)
-	{
-		printf("\033[1;35m[PIPE]\033[0m\n"); // Purple
-		debug_ast(node->left, level + 1);
-		debug_ast(node->right, level + 1);
-	}
-	// 2. Handle COMMAND Nodes
-	else if (node->type == NODE_CMND)
-	{
-		printf("\033[1;32m[CMD]\033[0m "); // Green        
-		// Print command arguments (e.g., "cat", "-e")
-		if (node->args)
-		{
-		    int i = 0;
-		    while (node->args[i])
-		    {
-		        printf("[%s] ", node->args[i]);
-		        i++;
-		    }
-		    printf("\n");
-		    print_indent(level + 1);
-		    printf("\033[33m[EXPANDED] Arguments clean and ready.\033[0m");
-		}
-	}
-	   // Print Redirections (The important part for you!)
-	   tmp = node->redir_list;
-	   while (tmp)
-	   {
-	       if (tmp->type == T_REDIR_HEREDOC)
-	       {
-	           // This means it hasn't been processed yet
-	           printf("\n");
-	           print_indent(level + 1);
-	           if (tmp->no_expand)
-	           	printf("\033[1;31m<< [HEREDOC] Delimiter: %s (NO EXPANSION)\033[0m", tmp->file_name);
-	           else
-	           	printf("\033[1;31m<< [HEREDOC] Delimiter: %s (EXPANDS VARS)\033[0m", tmp->file_name);
-	       }
-	       else if (tmp->type == T_REDIR_IN)
-	       {
-	           // It's an input redirection. Check if it's ours or a user file.
-	           printf("\n");
-	           print_indent(level + 1);
-	           if (ft_strncmp(tmp->file_name, "/tmp/.minishell_hd_", 19) == 0)
-	               printf("\033[1;36m<  [TEMP FILE] Path: %s\033[0m", tmp->file_name);
-	           else
-	               printf("\033[1;34m<  [INPUT FILE] Path: %s\033[0m", tmp->file_name);
-	       }
-	       else if (tmp->type == T_REDIR_OUT || tmp->type == T_REDIR_APPEND)
-	       {
-	           printf("\n");
-	           print_indent(level + 1);
-	           if (tmp->type == T_REDIR_APPEND)
-	           	printf("\033[1;34m>  [APPEND] Path: %s\033[0m", tmp->file_name);
-	           else
-	           	printf("\033[1;34m>  [OUTPUT] Path: %s\033[0m", tmp->file_name);
-	       }
-	       tmp = tmp->next;
-	   }
-	   printf("\n");
-}
-// void read_q_input(char *delim, int fd); //for open singl-quotes
-// void read_cmnd_input(char *delim, int fd); //for unfinished cmnd
+// 	tmp = node->redir_list;
+// 	if (!node)
+// 		return ;
+// 	print_indent(level);
+// 	if (node->type == NODE_PIPE)
+// 	{
+// 		printf("\033[1;35m[PIPE]\033[0m\n"); // Purple
+// 		debug_ast(node->left, level + 1);
+// 		debug_ast(node->right, level + 1);
+// 	}
+// 	// 2. Handle COMMAND Nodes
+// 	else if (node->type == NODE_CMND)
+// 	{
+// 		printf("\033[1;32m[CMD]\033[0m "); // Green        
+// 		// Print command arguments (e.g., "cat", "-e")
+// 		if (node->args)
+// 		{
+// 		    int i = 0;
+// 		    while (node->args[i])
+// 		    {
+// 		        printf("[%s] ", node->args[i]);
+// 		        i++;
+// 		    }
+// 		    printf("\n");
+// 		    print_indent(level + 1);
+// 		    printf("\033[33m[EXPANDED] Arguments clean and ready.\033[0m");
+// 		}
+// 	}
+// 	   // Print Redirections (The important part for you!)
+// 	   tmp = node->redir_list;
+// 	   while (tmp)
+// 	   {
+// 	       if (tmp->type == T_REDIR_HEREDOC)
+// 	       {
+// 	           // This means it hasn't been processed yet
+// 	           printf("\n");
+// 	           print_indent(level + 1);
+// 	           if (tmp->no_expand)
+// 	           	printf("\033[1;31m<< [HEREDOC] Delimiter: %s (NO EXPANSION)\033[0m", tmp->file_name);
+// 	           else
+// 	           	printf("\033[1;31m<< [HEREDOC] Delimiter: %s (EXPANDS VARS)\033[0m", tmp->file_name);
+// 	       }
+// 	       else if (tmp->type == T_REDIR_IN)
+// 	       {
+// 	           // It's an input redirection. Check if it's ours or a user file.
+// 	           printf("\n");
+// 	           print_indent(level + 1);
+// 	           if (ft_strncmp(tmp->file_name, "/tmp/.minishell_hd_", 19) == 0)
+// 	               printf("\033[1;36m<  [TEMP FILE] Path: %s\033[0m", tmp->file_name);
+// 	           else
+// 	               printf("\033[1;34m<  [INPUT FILE] Path: %s\033[0m", tmp->file_name);
+// 	       }
+// 	       else if (tmp->type == T_REDIR_OUT || tmp->type == T_REDIR_APPEND)
+// 	       {
+// 	           printf("\n");
+// 	           print_indent(level + 1);
+// 	           if (tmp->type == T_REDIR_APPEND)
+// 	           	printf("\033[1;34m>  [APPEND] Path: %s\033[0m", tmp->file_name);
+// 	           else
+// 	           	printf("\033[1;34m>  [OUTPUT] Path: %s\033[0m", tmp->file_name);
+// 	       }
+// 	       tmp = tmp->next;
+// 	   }
+// 	   printf("\n");
+// }
+// // void read_q_input(char *delim, int fd); //for open singl-quotes
+// // void read_cmnd_input(char *delim, int fd); //for unfinished cmnd

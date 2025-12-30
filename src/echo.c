@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   echo.c                                             :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: joko <joko@student.codam.nl>                 +#+                     */
+/*   By: imutavdz <imutavdz@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2025/12/26 16:25:27 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 16:25:44 by joko          ########   odam.nl         */
+/*   Created: 2025/12/26 16:25:27 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/26 16:25:44 by imutavdz      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_echo(char **args)
 
 	i = 1;
 	print_n = 1;
-	while (args[i] && strcmp(args[i], "-n") == 0)
+	while (args[i] && ft_strcmp(args[i], "-n") == 0)
 	{
 		print_n = 0;
 		i++;

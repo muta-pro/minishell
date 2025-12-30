@@ -73,14 +73,30 @@ void	exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
 	child_cleanup_exit(shell, 127);
 }
 
+static int	wait_and_getstatus(pid_t pid)
+{
+	int	status;
+
+	set_parent_sig_exec();
+	waitpid(pid, &status, 0);
+	install_parent_handler();
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+	{
+		write (1, "\n", 1);
+		return (128 + WTERMSIG(status));
+	}
+	return (1);
+}
+
 int	execute_single_cmd(t_ast_node *cmd, t_shell *shell)
 {
 	pid_t	pid;
-	int		status;
 
 	if (!cmd->args || !cmd->args[0])
 	{
-		if (apply_redir(cmd->redir_list))
+		if (apply_redir_parent(cmd->redir_list))
 			return (1);
 		return (0);
 	}
@@ -93,17 +109,6 @@ int	execute_single_cmd(t_ast_node *cmd, t_shell *shell)
 			return (perror("minishell: fork"), 1);
 		if (pid == 0)
 			exec_cmd_in_child(cmd, shell);
-		else
-		{
-			set_parent_sig_exec();
-			waitpid(pid, &status, 0);
-			install_parent_handler();
-			if (WIFEXITED(status))
-				return (WEXITSTATUS(status)); // ??
-			if (WIFSIGNALED(status))
-				return (128 + WTERMSIG(status));
-			return (1);
-		}
+		return (wait_and_getstatus(pid));
 	}
-	return (1);
 }

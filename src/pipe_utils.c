@@ -63,31 +63,35 @@ void	free_all_pids(t_pids **all_pids)
 	}
 }
 
+static int	decode_wait_stat(int status)
+{
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT)
+			write(1, "\n", 1);
+		return (128 + WTERMSIG(status));
+	}
+	return (1);
+}
+
 int	wait_children(t_pids *pids)
 {
-	t_child_vars	ch;
+	t_pids	*last;
+	int		st;
+	int		last_st;
 
-	ch.last_pid = 0;
-	ch.final_status = 0;
-	ch.status = 0;
-	ch.curr = pids;
-	if (ch.curr)
+	last = pids;
+	while (last && last->next)
+		last = last->next;
+	last_st = 0;
+	while (pids)
 	{
-		while (ch.curr->next)
-			ch.curr = ch.curr->next;
-		ch.last_pid = ch.curr->pid;
+		waitpid(pids->pid, &st, 0);
+		if (last && pids->pid == last->pid)
+			last_st = st;
+		pids = pids->next;
 	}
-	ch.curr = pids;
-	while (ch.curr)
-	{
-		waitpid(ch.curr->pid, &ch.status, 0);
-		if (ch.curr->pid == ch.last_pid)
-			ch.final_status = ch.status;
-		ch.curr = ch.curr->next;
-	}
-	if (WIFEXITED(ch.final_status))
-		return (WEXITSTATUS(ch.final_status));
-	else if (WIFSIGNALED(ch.final_status))
-		return (128 + WTERMSIG(ch.final_status));
-	return (0);
+	return (decode_wait_stat(last_st));
 }

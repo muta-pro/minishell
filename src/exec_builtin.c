@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   exec_builtin.c                                     :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: joko <joko@student.codam.nl>                 +#+                     */
+/*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2025/12/26 21:57:22 by joko          #+#    #+#                 */
-/*   Updated: 2025/12/26 21:59:40 by joko          ########   odam.nl         */
+/*   Created: 2025/12/26 21:57:22 by yneshev       #+#    #+#                 */
+/*   Updated: 2025/12/30 19:01:58 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,37 +16,37 @@ int	execute_builtin(t_ast_node *cmd, t_shell *shell)
 {
 	int	i;
 
-	if (!strcmp(cmd->args[0], "echo"))
+	if (!ft_strcmp(cmd->args[0], "echo"))
 		return (ft_echo(cmd->args));
-	if (!strcmp(cmd->args[0], "pwd"))
+	if (!ft_strcmp(cmd->args[0], "pwd"))
 		return (ft_getcwd());
-	if (!strcmp(cmd->args[0], "cd"))
+	if (!ft_strcmp(cmd->args[0], "cd"))
 		return (ft_cd(cmd, shell));
-	if (!strcmp(cmd->args[0], "env"))
+	if (!ft_strcmp(cmd->args[0], "env"))
 		return (ft_env(shell->env_list), 0);
-	if (!strcmp(cmd->args[0], "export"))
+	if (!ft_strcmp(cmd->args[0], "export"))
 		return (ft_export(&shell->env_list, cmd), 0);
-	if (!strcmp(cmd->args[0], "unset"))
+	if (!ft_strcmp(cmd->args[0], "unset"))
 	{
 		i = 1;
-		while (cmd->args[i]) // Need to pass the whole args array
+		while (cmd->args[i])
 		{
 			ft_unset(&shell->env_list, cmd->args[i]);
 			i++;
 		}
-		return (0); //fix this
+		return (0);
 	}
-	if (!strcmp(cmd->args[0], "exit"))
+	if (!ft_strcmp(cmd->args[0], "exit"))
 		return (ft_exit(cmd, shell));
 	return (127);
 }
 
 int	is_parent_lvl_builtin(const char *cmd)
 {
-	if (strcmp(cmd, "cd") == 0
-		|| strcmp(cmd, "export") == 0
-		|| strcmp(cmd, "unset") == 0
-		||strcmp(cmd, "exit") == 0)
+	if (ft_strcmp(cmd, "cd") == 0
+		|| ft_strcmp(cmd, "export") == 0
+		|| ft_strcmp(cmd, "unset") == 0
+		|| ft_strcmp(cmd, "exit") == 0)
 		return (1);
 	return (0);
 }
@@ -67,7 +67,7 @@ int	exec_builtin_in_parent(t_ast_node *cmd, t_shell *shell)
 		restore_fds(og_stdin, og_stdout);
 		return (0);
 	}
-	if (strcmp(cmd->args[0], "exit") == 0)
+	if (ft_strcmp(cmd->args[0], "exit") == 0)
 	{
 		exit_status = ft_exit(cmd, shell);
 		restore_fds(og_stdin, og_stdout);

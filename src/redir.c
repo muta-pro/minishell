@@ -45,6 +45,26 @@ static int	redir_in(t_redir *node)
 	return (0);
 }
 
+int	apply_redir_parent(t_redir *node)
+{
+	int	in;
+	int	out;
+	int	ret;
+
+	in = dup(STDIN_FILENO);
+	out = dup(STDOUT_FILENO);
+	if (in == -1 || out == -1)
+		return (perror("minishell: dup"), 1);
+	ret = apply_redir(node);
+	dup2(in, STDIN_FILENO);
+	dup2(out, STDOUT_FILENO);
+	close(in);
+	close(out);
+	if (ret == -1)
+		return (1);
+	return (0);
+}
+
 int	apply_redir(t_redir *node)
 {
 	while (node)
