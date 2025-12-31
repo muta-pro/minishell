@@ -17,20 +17,18 @@ void	add_pid(t_pids **pids, int pid)
 	t_pids	*new;
 	t_pids	*current_node;
 
-	current_node = *pids;
-	new = malloc(sizeof(t_pids));
+	new = malloc(sizeof(*new));
 	if (!new)
-		printf("fix"); // fix
+		return (0);
 	new->pid = pid;
 	new->next = NULL;
-	if (*pids == NULL)
-		*pids = new;
-	else
-	{
-		while (current_node->next)
-			current_node = current_node->next;
-		current_node->next = new;
-	}
+	if (!*pids)
+		return (*pids = new, 1);
+	current_node = *pids;
+	while (current_node->next)
+		current_node = current_node->next;
+	current_node->next = new;
+	return (1);
 }
 
 int	is_builtin(t_ast_node *node)
@@ -42,7 +40,7 @@ int	is_builtin(t_ast_node *node)
 	i = 0;
 	while (builtins[i])
 	{
-		if (!strcmp(node->args[0], builtins[i]))
+		if (!ft_strcmp(node->args[0], builtins[i]))
 			return (1);
 		else
 			i++;

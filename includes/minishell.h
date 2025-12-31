@@ -114,6 +114,7 @@ void    print_export(t_env *env);
 void    parse_export_arg(t_ast_node *node, t_xp *xp);
 void	handle_exec_errors(t_shell *shell, t_ast_node *cmd, char *cmnd);
 void	exec_external_print_err(char *cmnd);
+void	cmd_not_found(char *cmnd)
 void	free_all_pids(t_pids **all_pids);
 
 #endif

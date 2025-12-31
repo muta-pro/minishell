@@ -42,7 +42,7 @@ char	*get_path(char **two_d_env, char *cmd)
 	pv.paths = NULL;
 	while (two_d_env && two_d_env[pv.i])
 	{
-		if (!(strncmp("PATH=", two_d_env[pv.i], 5)))
+		if (!(ft_strncmp("PATH=", two_d_env[pv.i], 5)))
 		{
 			pv.paths = ft_strdup(two_d_env[pv.i] + 5);
 			if (!pv.paths)

@@ -20,6 +20,13 @@ void	exec_external_print_err(char *cmnd)
 	perror("");
 }
 
+void	cmd_not_found(char *cmnd)
+{
+	write(2, "minishell: ", 11);
+	write(2, cmnd, ft_strlen(cmnd));
+	write(2, ": command not found\n", 20);
+}
+
 void	handle_exec_errors(t_shell *shell, t_ast_node *cmd, char *cmnd)
 {
 	char	**two_d_env;

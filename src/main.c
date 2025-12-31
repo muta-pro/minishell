@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   main.c                                             :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
+/*   By: imutavdz <imutavdz@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2025/06/02 20:35:10 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 21:36:36 by yneshev       ########   odam.nl         */
+/*   Created: 2025/06/02 20:35:10 by imutavdz      #+#    #+#                 */
+/*   Updated: 2025/12/01 21:36:36 by imutavdz      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 

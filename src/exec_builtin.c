@@ -60,7 +60,9 @@ int	exec_builtin_in_parent(t_ast_node *cmd, t_shell *shell)
 	exit_status = 0;
 	og_stdin = dup(STDIN_FILENO);
 	og_stdout = dup(STDOUT_FILENO);
-	if (apply_redir(cmd->redir_list) != 0)
+	if (og_stdin == -1 || og_stdout == -1)
+		return (perror("minishell: dup"), 1);
+	if (apply_redir_parent(cmd->redir_list) == -1)
 		return (restore_fds(og_stdin, og_stdout), 1);
 	if (cmd->args == NULL || cmd->args[0] == NULL)
 	{

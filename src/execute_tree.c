@@ -36,25 +36,21 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 
 	cmnd = cmd->args[0];
 	path = NULL;
-	if (cmnd == NULL || *cmnd == '\0')
+	if (!cmnd || !*cmnd)
 		child_cleanup_exit(shell, 0);
 	if (ft_strchr(cmnd, '/'))
 		handle_exec_errors(shell, cmd, cmnd);
 	two_d_env = list_to_2d(shell->env_list);
 	path = get_path(two_d_env, cmnd);
-	if (path)
-	{
-		child_sig_handler();
-		execve(path, cmd->args, two_d_env);
-		exec_external_print_err(cmnd);
-		free_arr(two_d_env);
-		child_cleanup_exit(shell, 126);
-	}
-	write(STDERR_FILENO, "minishell: ", 11);
-	write(STDERR_FILENO, cmnd, ft_strlen(cmnd));
-	write(STDERR_FILENO, ": command not found\n", 20);
+	if (!path)
+		return (cmd_not_found(cmnd), free_arr(two_d_env),
+			child_cleanup_exit(shell, 127));
+	child_sig_handler();
+	execve(path, cmd->args, two_d_env);
+	exec_external_print_err(cmnd);
+	free(path);
 	free_arr(two_d_env);
-	child_cleanup_exit(shell, 127);
+	child_cleanup_exit(shell, 126);
 }
 
 void	exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)

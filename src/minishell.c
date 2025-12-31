@@ -54,8 +54,12 @@ int	run_ast(t_ast_node *ast, t_shell *shell)
 
 	h_count = 0;
 	here_docs(ast, &h_count, shell);
-	if (g_got_sigint)
+	if (g_got_sigint == SIGINT)
+	{
+		shell->exit_status = 130;
+		g_got_sigint = 0;
 		return (shell->exit_status);
+	}
 	expand_ast(ast, shell);
 	execute_ast(shell, ast);
 	return (shell->exit_status);

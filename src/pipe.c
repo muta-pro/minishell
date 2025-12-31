@@ -47,7 +47,13 @@ void	run_child_prcs(t_shell *shell, t_pipe *pv)
 
 void	run_parent_prcs(t_pipe *pv)
 {
-	add_pid(&pv->all_pids, pv->pid);
+	if (!add_pid(&pv->all_pids, pv->pid))
+	{
+		perror("minishell: malloc");
+		shell->exit_status = 1;
+		pv->curr = NULL;
+		return ;
+	}
 	if (pv->input_fd != STDIN_FILENO)
 		close(pv->input_fd);
 	if (!pv->last_cmd)
