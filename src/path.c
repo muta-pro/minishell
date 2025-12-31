@@ -6,7 +6,7 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:32:38 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/01 18:48:25 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/26 22:19:00 by joko          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,46 +34,29 @@ char	*find_path(char **split_paths, char *cmd)
 	return (NULL);
 }
 
-char	*get_path(char **twoDenv, char *cmd)
+char	*get_path(char **two_d_env, char *cmd)
 {
-	int		i = 0;
-	char	*paths;
-	char	**split_paths;
-	char	*full_path;
+	t_path_vars	pv;
 
-	paths = NULL;
-	while (twoDenv && twoDenv[i])
+	pv.i = 0;
+	pv.paths = NULL;
+	while (two_d_env && two_d_env[pv.i])
 	{
-		if (!(strncmp("PATH=", twoDenv[i], 5)))
+		if (!(strncmp("PATH=", two_d_env[pv.i], 5)))
 		{
-			paths = ft_strdup(twoDenv[i] + 5);
-			if (!paths)
+			pv.paths = ft_strdup(two_d_env[pv.i] + 5);
+			if (!pv.paths)
 				return (NULL);
 			break ;
 		}
-		i++;
+		pv.i++;
 	}
-	if (!paths)
+	if (!pv.paths)
 		return (NULL);
-	split_paths = ft_split(paths, ':');
-	free(paths);
-	full_path = find_path(split_paths, cmd);
-	if (!full_path)
-		return (free_arr(split_paths), NULL);
-	return (free_arr(split_paths), full_path);
+	pv.split_paths = ft_split(pv.paths, ':');
+	free(pv.paths);
+	pv.full_path = find_path(pv.split_paths, cmd);
+	if (!pv.full_path)
+		return (free_arr(pv.split_paths), NULL);
+	return (free_arr(pv.split_paths), pv.full_path);
 }
-
-// void	free_arr(char **arr)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	if (!arr)
-// 		return ;
-// 	while (arr[i])
-// 	{
-// 		free(arr[i]);
-// 		i++;
-// 	}
-// 	free(arr);
-// }

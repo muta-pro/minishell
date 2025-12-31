@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/29 14:33:29 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/12/02 19:09:43 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/02 19:09:43 by imutavdz      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	is_whitespace(char c)
 
 int	is_operator_char(char c)
 {
-	if (c == '<' || c == '>' || c == '|' || c == '&' || c == '*')
+	if (c == '<' || c == '>' || c == '|' || c == '&') // || c == '*')
 		return (1);
 	return (0);
 }

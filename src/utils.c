@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/10/13 15:05:05 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/12/12 17:30:53 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/21 13:26:02 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	is_tmp_hfile(char *file_name)
 {
-	if (strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
+	if (ft_strncmp(file_name, "/tmp/.minishell_hd_", 19) == 0)
 		return (1);
 	return (0);
 }
@@ -65,16 +65,6 @@ void	print_indent(int level)
 	}
 }
 
-t_env	*add_new_node(void)
-{
-	t_env	*new;
-
-	new = malloc(sizeof(*new));
-	if (!new)
-		return (NULL);
-	new->next = NULL;
-	return (new);
-}
 
 // void	debug_ast(t_ast_node *node, int level)
 // {
@@ -145,5 +135,5 @@ t_env	*add_new_node(void)
 // 	   }
 // 	   printf("\n");
 // }
-// void read_q_input(char *delim, int fd); //for open singl-quotes
-// void read_cmnd_input(char *delim, int fd); //for unfinished cmnd
+// // void read_q_input(char *delim, int fd); //for open singl-quotes
+// // void read_cmnd_input(char *delim, int fd); //for unfinished cmnd

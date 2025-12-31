@@ -52,7 +52,7 @@ typedef struct s_ast_node
 }	t_ast_node;
 
 //main parser entry point
-t_ast_node	*parser(t_token *token);
+t_ast_node	*parser(t_token *token, t_shell *shell);
 t_ast_node	*parse_logic_op(t_token **token_list);
 t_ast_node	*parse_pipeline(t_token **tokens);
 t_ast_node	*parse_cmnd(t_token **tokens);

@@ -6,25 +6,11 @@
 /*   By: yneshev <yneshev@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/11/30 18:33:55 by yneshev       #+#    #+#                 */
-/*   Updated: 2025/12/18 17:32:35 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/29 17:18:33 by yneshev       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shell.h"
-
-int	is_builtin(t_ast_node *node)
-{
-	int	i = 0;
-	const char *builtins[] = {"echo", "cd", "pwd", "exit", "env", "export", "unset", NULL};
-	while (builtins[i])
-	{
-		if (!strcmp(node->args[0], builtins[i]))
-			return 1;
-		else
-			i++;
-	}
-	return 0;
-}
 
 void	run_cmd_no_fork(t_ast_node *cmd, t_shell *shell)
 {
@@ -43,126 +29,83 @@ void	run_cmd_no_fork(t_ast_node *cmd, t_shell *shell)
 		execute_external(shell, cmd);
 }
 
-int	exec_pipe(t_shell *shell, t_ast_node *node)
+void	run_child_prcs(t_shell *shell, t_pipe *pv)
 {
-	int			pipe_fds[2];
-	int			input_fd;
-	int			last_cmd;
-	int			exit_status;
-	t_ast_node	*curr;
-	t_ast_node	*runcmd;
-	pid_t		pid;
-	t_pids		*all_pids;
-
-	all_pids = NULL;
-	input_fd = STDIN_FILENO;
-	curr = node;
-	pid = -1;
-	while (curr)
+	if (pv->input_fd != STDIN_FILENO)
 	{
-		last_cmd = 0;
-		if (curr->type == NODE_PIPE)
-			runcmd = curr->left;
-		else
-		{
-			runcmd = curr;
-			last_cmd = 1;
-		}
-		if (!last_cmd)
-			if (pipe(pipe_fds) == -1)
-				printf("fix this"); // fix this
-		pid = fork();
-		if (pid == -1)
-			printf("fix tihs"); // fix this
-
-		// Child process	
-		if (pid == 0)
-		{
-			if (input_fd != STDIN_FILENO)
-			{
-				dup2(input_fd, STDIN_FILENO);
-				close(input_fd);
-			}
-			if (!last_cmd)
-			{
-				close(pipe_fds[0]);
-				dup2(pipe_fds[1], STDOUT_FILENO);
-				close(pipe_fds[1]);
-			}
-			run_cmd_no_fork(runcmd, shell);
-		}
-		
-		// Parent process
-		add_pid(&all_pids, pid);
-		if (input_fd != STDIN_FILENO)
-			close(input_fd);
-		if (!last_cmd)
-		{
-			close(pipe_fds[1]);
-			input_fd = pipe_fds[0];
-			curr = curr->right;
-		}
-		else
-			curr = NULL;
+		dup2(pv->input_fd, STDIN_FILENO);
+		close(pv->input_fd);
 	}
-
-	// Wait for children
-	exit_status = wait_children(all_pids);
-	// free pids?
-	return (exit_status);
+	if (!pv->last_cmd)
+	{
+		close(pv->pipe_fds[0]);
+		dup2(pv->pipe_fds[1], STDOUT_FILENO);
+		close(pv->pipe_fds[1]);
+	}
+	run_cmd_no_fork(pv->runcmd, shell);
 }
 
-void add_pid(t_pids **pids, int pid)
+void	run_parent_prcs(t_pipe *pv)
 {
-	t_pids	*new;
-	t_pids	*current_node;
+	add_pid(&pv->all_pids, pv->pid);
+	if (pv->input_fd != STDIN_FILENO)
+		close(pv->input_fd);
+	if (!pv->last_cmd)
+	{
+		close(pv->pipe_fds[1]);
+		pv->input_fd = pv->pipe_fds[0];
+		pv->curr = pv->curr->right;
+	}
+	else
+		pv->curr = NULL;
+}
 
-	current_node = *pids;
-
-	new = malloc(sizeof(t_pids));
-	if (!new)
-		printf("fix"); // fix
-	new->pid = pid;
-	new->next = NULL;
-	if (*pids == NULL)
-		*pids = new;
+static int	init_pipe_stage(t_pipe *pv)
+{
+	pv->last_cmd = 0;
+	if (pv->curr->type == NODE_PIPE)
+		pv->runcmd = pv->curr->left;
 	else
 	{
-		while (current_node->next)
-			current_node = current_node->next;
-		current_node->next = new;
+		pv->runcmd = pv->curr;
+		pv->last_cmd = 1;
 	}
-	
+	if (!pv->last_cmd)
+		if (pipe(pv->pipe_fds) == -1)
+			return (perror("minishell: pipe"), 1);
+	pv->pid = fork();
+	if (pv->pid == -1)
+	{
+		perror("minishell: fork");
+		if (!pv->last_cmd)
+		{
+			close(pv->pipe_fds[0]);
+			close(pv->pipe_fds[1]);
+		}
+		return (1);
+	}
+	return (0);
 }
 
-int	wait_children(t_pids *pids)
+int	exec_pipe(t_shell *shell, t_ast_node *node)
 {
-	int		status;
-	int		final_status;
-	t_pids	*curr;
-	pid_t	last_pid;
+	t_pipe	pv;
 
-	last_pid = 0;
-	final_status = 0;
-	status = 0;
-	curr = pids;
-	if (curr)
+	pv.all_pids = NULL;
+	pv.input_fd = STDIN_FILENO;
+	pv.curr = node;
+	pv.pid = -1;
+	set_parent_sig_exec();
+	while (pv.curr)
 	{
-		while (curr->next)
-			curr = curr->next;
-		last_pid = curr->pid;
+		if (init_pipe_stage(&pv) == 1)
+			return (install_parent_handler(), 1);
+		if (pv.pid == 0)
+			run_child_prcs(shell, &pv);
+		run_parent_prcs(&pv);
 	}
-	curr = pids;
-	while (curr)
-	{
-		waitpid(curr->pid, &status, 0);
-		if (curr->pid == last_pid)
-			final_status = status;
-		curr = curr->next;
-	}
-	if (WIFEXITED(final_status))
-		return (WEXITSTATUS(final_status));
-	else if (WIFSIGNALED(final_status))
-		return (128 + WTERMSIG(final_status));
-	return (0);
+	pv.exit_status = wait_children(pv.all_pids);
+	install_parent_handler();
+	free_all_pids(&pv.all_pids);
+	return (pv.exit_status);
 }

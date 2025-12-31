@@ -29,11 +29,13 @@ t_token	*return_string(t_scanner *scanner, t_tok_type type)
 	free(lexeme);
 	return (tok);
 }
+
 //shoul I hanlde here T_STR token and other states??
 t_token	*scan_word(t_scanner *scanner)
 {
 	char			c;
 	t_scan_state	state;
+	t_token			*tok;
 
 	state = IN_DEFAULT;
 	scanner->buff_idx = 0;
@@ -53,7 +55,13 @@ t_token	*scan_word(t_scanner *scanner)
 	}
 	if (state == IN_SNGL_QUOTE || state == IN_DBL_QUOTE)
 		return (create_token(T_ERROR, "Unclosed quote."));
-	return (return_string(scanner, T_WORD));
+	tok = return_string(scanner, T_WORD);
+	if (tok && tok->lexeme && tok->lexeme[0] == '\0')
+	{
+		free_tok(tok);
+		return (NULL);
+	}
+	return (tok);
 }
 
 t_token	*scan_operator(t_scanner *scanner)

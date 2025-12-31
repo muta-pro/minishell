@@ -71,7 +71,7 @@ t_token	*lexer(char *input_text)
 		}
 		if (token->type == T_ERROR)
 		{
-			print_shell_err(SYTX_ERR, token->lexeme);
+			// print_shell_err(SYTX_ERR, token->lexeme);
 			free_tok(scanner.head);
 			free_tok(token);
 			return (NULL);
@@ -81,22 +81,22 @@ t_token	*lexer(char *input_text)
 	return (scanner.head);
 }
 
-t_scan_state	switch_state(t_scan_state curr, char c)
-{
-	if (curr == IN_SNGL_QUOTE && c == '\'')
-		return (IN_DEFAULT);
-	if (curr == IN_DBL_QUOTE && c == '"')
-		return (IN_DEFAULT);
-	if (curr == IN_ESCAPE)
-		return (IN_DEFAULT);
-	if (curr == IN_DEFAULT)
-	{
-		if (c == '\\')
-			return (IN_ESCAPE);
-		if (c == '\'')
-			return (IN_SNGL_QUOTE);
-		if (c == '"')
-			return (IN_DBL_QUOTE);
-	}
-	return (curr);
-}
+// t_scan_state	switch_state(t_scan_state curr, char c)
+// {
+// 	if (curr == IN_SNGL_QUOTE && c == '\'')
+// 		return (IN_DEFAULT);
+// 	if (curr == IN_DBL_QUOTE && c == '"')
+// 		return (IN_DEFAULT);
+// 	if (curr == IN_ESCAPE)
+// 		return (IN_DEFAULT);
+// 	if (curr == IN_DEFAULT)
+// 	{
+// 		if (c == '\\')
+// 			return (IN_ESCAPE);
+// 		if (c == '\'')
+// 			return (IN_SNGL_QUOTE);
+// 		if (c == '"')
+// 			return (IN_DBL_QUOTE);
+// 	}
+// 	return (curr);
+// }

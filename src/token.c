@@ -40,8 +40,8 @@ int	args_redirs_tok(t_token **tokens, char ***args, t_redir **redirs)
 		return (parse_redir(tokens, redirs));
 	else if (peek_tok(*tokens)->type == T_WORD
 		|| peek_tok(*tokens)->type == T_VAR
-		|| peek_tok(*tokens)->type == T_EXIT_STATUS
-		|| peek_tok(*tokens)->type == T_WILDC)
+		|| peek_tok(*tokens)->type == T_EXIT_STATUS)
+		// || peek_tok(*tokens)->type == T_WILDC)
 	{
 		append_args(args, curr->lexeme);
 		consume_tok(tokens, curr->type);
@@ -63,12 +63,12 @@ t_tok_type	get_op_type(char *lexeme)
 		return (T_REDIR_HEREDOC);
 	if (!strcmp(lexeme, ">>"))
 		return (T_REDIR_APPEND);
-	if (!strcmp(lexeme, "||"))
-		return (T_LOGIC_OR);
-	if (!strcmp(lexeme, "&&"))
-		return (T_LOGIC_AND);
-	if (!strcmp(lexeme, "*"))
-		return (T_WILDC);
+	// if (!strcmp(lexeme, "||"))
+	// 	return (T_LOGIC_OR);
+	// if (!strcmp(lexeme, "&&"))
+	// 	return (T_LOGIC_AND);
+	// if (!strcmp(lexeme, "*"))
+	// 	return (T_WILDC);
 	return (T_ERROR);
 }
 

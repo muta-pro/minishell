@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>            +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/10/11 10:42:05 by imutavdz      #+#    #+#                 */
-/*   Updated: 2025/12/02 19:09:32 by yneshev       ########   odam.nl         */
+/*   Updated: 2025/12/02 19:09:32 by imutavdz      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_ast_node	*create_ast_nd(t_node_t type, t_ast_node *l, t_ast_node *r)
 
 	node = malloc(sizeof(t_ast_node));
 	if (!node)
-		return (NULL);
+		return (NULL);//should error handle return null
 	node->type = type;
 	node->left = l;
 	node->right = r;
