@@ -21,11 +21,9 @@ static int	redir_out_append(t_redir *node)
 	else
 		fd = open(node->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
-	{
-		perror(node->file_name);
-		return (-1);
-	}
-	dup2(fd, STDOUT_FILENO);
+		return (perror(node->file_name), -1);
+	if (dup2(fd, STDOUT_FILENO) == -1)
+		return (perror("dup2"), close(fd), -1);
 	close(fd);
 	return (0);
 }
@@ -36,11 +34,9 @@ static int	redir_in(t_redir *node)
 
 	fd = open(node->file_name, O_RDONLY);
 	if (fd == -1)
-	{
-		perror(node->file_name);
-		return (-1);
-	}
-	dup2(fd, STDIN_FILENO);
+		return (perror(node->file_name), -1);
+	if (dup2(fd, STDOUT_FILENO) == -1)
+		return (perror("dup2"), close(fd), -1);
 	close(fd);
 	return (0);
 }

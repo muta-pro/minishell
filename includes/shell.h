@@ -54,7 +54,6 @@ typedef struct s_shell
 # include "parser.h"
 # include "lexer.h"
 # include "sgnl.h"
-# include "color.h"
 # include "minishell.h"
 
 extern volatile	sig_atomic_t g_got_sigint;
