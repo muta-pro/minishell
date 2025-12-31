@@ -12,6 +12,7 @@
 
 #include "shell.h"
 #include <limits.h>
+#include <stdio.h>
 
 int	ft_echo(char **args)
 {
@@ -187,7 +188,7 @@ int	valid_id(const char *str)
 	i++;
 	while (str[i])
 	{
-		if (!isalnum(str[i]) && str[i] != '_')
+		if (!ft_isalnum(str[i]) && str[i] != '_')
 			return (0);
 		i++;
 	}
