@@ -17,16 +17,16 @@ void	run_cmd_no_fork(t_ast_node *cmd, t_shell *shell)
 	int	exit_code;
 
 	if (apply_redir(cmd->redir_list) != 0)
-		exit (1);
-	if (cmd->args == NULL || cmd->args[0] == NULL)
-		exit (0);
+		child_cleanup_exit(shell, 1);
+	if (!cmd->args || !cmd->args[0])
+		child_cleanup_exit(shell, 0);
 	if (is_builtin(cmd))
 	{
 		exit_code = execute_builtin(cmd, shell);
-		exit (exit_code);
+		child_cleanup_exit(shell, exit_code);
 	}
-	else
-		execute_external(shell, cmd);
+	execute_external(shell, cmd);
+	child_cleanup_exit(shell, 127);
 }
 
 void	run_child_prcs(t_shell *shell, t_pipe *pv)
@@ -45,7 +45,7 @@ void	run_child_prcs(t_shell *shell, t_pipe *pv)
 	run_cmd_no_fork(pv->runcmd, shell);
 }
 
-void	run_parent_prcs(t_pipe *pv)
+void	run_parent_prcs(t_shell *shell, t_pipe *pv)
 {
 	if (!add_pid(&pv->all_pids, pv->pid))
 	{
@@ -108,7 +108,7 @@ int	exec_pipe(t_shell *shell, t_ast_node *node)
 			return (install_parent_handler(), 1);
 		if (pv.pid == 0)
 			run_child_prcs(shell, &pv);
-		run_parent_prcs(&pv);
+		run_parent_prcs(shell, &pv);
 	}
 	pv.exit_status = wait_children(pv.all_pids);
 	install_parent_handler();

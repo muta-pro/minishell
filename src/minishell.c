@@ -14,7 +14,6 @@
 
 void	child_cleanup_exit(t_shell *shell, int code)
 {
-	//check if per-cmnd fds are closed
 	cleanup_pack(NULL, shell->curr_tok, shell->curr_ast);
 	shell->curr_tok = NULL;
 	shell->curr_ast = NULL;
@@ -39,7 +38,7 @@ t_ast_node	*build_ast(char *line, t_token **tok, t_shell *shell)
 {
 	t_ast_node	*ast;
 
-	*tok = lexer(line);
+	*tok = lexer(line, shell);
 	if (!*tok)
 		return (NULL);
 	ast = parser(*tok, shell);
@@ -53,8 +52,14 @@ int	run_ast(t_ast_node *ast, t_shell *shell)
 	int	h_count;
 
 	h_count = 0;
+	if (!here_docs(ast, &h_count, shell))
+	{
+		if (shell->exit_status == 0)
+			shell->exit_status = 1;
+		return (shell->exit_status);
+	}
 	here_docs(ast, &h_count, shell);
-	if (g_got_sigint == SIGINT)
+	if (g_got_sigint)
 	{
 		shell->exit_status = 130;
 		g_got_sigint = 0;

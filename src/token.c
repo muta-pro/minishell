@@ -63,10 +63,10 @@ t_tok_type	get_op_type(char *lexeme)
 		return (T_REDIR_HEREDOC);
 	if (!strcmp(lexeme, ">>"))
 		return (T_REDIR_APPEND);
-	// if (!strcmp(lexeme, "||"))
-	// 	return (T_LOGIC_OR);
-	// if (!strcmp(lexeme, "&&"))
-	// 	return (T_LOGIC_AND);
+	if (!strcmp(lexeme, "||"))
+		return (T_LOGIC_OR);
+	if (!strcmp(lexeme, "&&"))
+		return (T_LOGIC_AND);
 	// if (!strcmp(lexeme, "*"))
 	// 	return (T_WILDC);
 	return (T_ERROR);

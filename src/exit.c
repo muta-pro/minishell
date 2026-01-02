@@ -12,6 +12,13 @@
 
 #include "shell.h"
 
+int	parent_request_exit(t_shell *shell, int code)//????
+{
+	shell->save_exit_status = code;
+	shell->should_exit = 1;
+	return (-42);
+}
+
 static int	is_num_str(char *str)
 {
 	int	i;
@@ -42,16 +49,15 @@ int	ft_exit(t_ast_node *cmd, t_shell *shell)
 			write(STDERR_FILENO, "minishell: exit: ", 17);
 			write(STDERR_FILENO, cmd->args[1], ft_strlen(cmd->args[1]));
 			write(STDERR_FILENO, ": numeric argument required\n", 28);
-			shell->exit_status = 2;
-			return (-42);
+			return (parent_request_exit(shell, 2));
 		}
 		if (cmd->args[2])
 		{
 			write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
 			return (1);
 		}
-		shell->exit_status = atoi(cmd->args[1]);
-		return (-42);
+		return (parent_request_exit(shell,
+				(unsigned char)ft_atoi(cmd->args[1])));
 	}
 	else
 		return (-42);

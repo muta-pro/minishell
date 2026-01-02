@@ -31,36 +31,37 @@ t_token	*return_string(t_scanner *scanner, t_tok_type type)
 }
 
 //shoul I hanlde here T_STR token and other states??
+static int	scan_word_loop(t_scanner *scn, t_scan_state *state)
+{
+	char	c;
+
+	c = peek(scn);
+	while (c != '\0')
+	{
+		if (chop_word(*state, c))
+			break ;
+		if (handle_qt_switch(state, scn, c))
+		{
+			c = peek(scn);
+			continue ;
+		}
+		append_char(scn, c);
+		advance(scn);
+		c = peek(scn);
+	}
+	return (*state == IN_SNGL_QUOTE || *state == IN_DBL_QUOTE);
+}
+
 t_token	*scan_word(t_scanner *scanner)
 {
-	char			c;
 	t_scan_state	state;
 	t_token			*tok;
 
 	state = IN_DEFAULT;
 	scanner->buff_idx = 0;
-	c = peek(scanner);
-	while (c != '\0')
-	{
-		if (chop_word(state, c))
-			break ;
-		if (handle_qt_switch(&state, scanner, c))
-		{
-			c = peek(scanner);
-			continue ;
-		}
-		append_char(scanner, c);
-		advance(scanner);
-		c = peek(scanner);
-	}
-	if (state == IN_SNGL_QUOTE || state == IN_DBL_QUOTE)
+	if (scan_word_loop(scanner, &state))
 		return (create_token(T_ERROR, "Unclosed quote."));
 	tok = return_string(scanner, T_WORD);
-	if (tok && tok->lexeme && tok->lexeme[0] == '\0')
-	{
-		free_tok(tok);
-		return (NULL);
-	}
 	return (tok);
 }
 

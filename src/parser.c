@@ -18,14 +18,14 @@ have args arr to hold words
 */
 #include "shell.h"
 
-t_ast_node	*parser(t_token *token, t_shell *shell)
-{
-	(void)shell;
-	if (!token)
-		return (NULL);
-	return (parse_pipeline(&token));
-	// return (parse_logic_op(&token));
-}
+// t_ast_node	*parser(t_token *token, t_shell *shell)
+// {
+// 	(void)shell;
+// 	if (!token)
+// 		return (NULL);
+// 	return (parse_pipeline(&token));
+// 	// return (parse_logic_op(&token));
+// }
 
 // t_ast_node parse_parenthesis(t_token *token);
 
@@ -58,6 +58,31 @@ t_ast_node	*parser(t_token *token, t_shell *shell)
 // 	return (left);
 // }
 
+static void	sntxerr_tok(t_token *tok)
+{
+	ft_putstr_fd("minishell: syntax error near unexpected token '", 2);
+	if (!tok || tok->type == T_EOF)
+		ft_putstr_fd("newline", 2);
+	else
+		ft_putstr_fd(tok->lexeme, 2);
+	ft_putstr_fd("'\n", 2);
+}
+
+t_ast_node	*parser(t_token *token, t_shell *shell)
+{
+	t_ast_node	*ast;
+
+	(void)shell;
+	ast = parse_pipeline(&token);
+	if (ast && token && token->type != T_EOF)
+	{
+		sntxerr_tok(token);
+		free_ast(ast);
+		return (NULL);
+	}
+	return (ast);
+}
+
 t_ast_node	*parse_pipeline(t_token **tokens)
 {
 	t_ast_node	*left;
@@ -66,7 +91,8 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 	left = parse_cmnd(tokens);
 	if (!left)
 	{
-		free_ast(left);
+		if (peek_tok(*tokens) && peek_tok(*tokens)->type != T_EOF)
+			sntxerr_tok(peek_tok(*tokens));
 		return (NULL);
 	}
 	while (peek_tok(*tokens) && peek_tok(*tokens)->type == T_PIPE)
@@ -74,14 +100,11 @@ t_ast_node	*parse_pipeline(t_token **tokens)
 		consume_tok(tokens, T_PIPE);
 		pipe_nd = create_ast_nd(NODE_PIPE, NULL, NULL);
 		if (!pipe_nd)
-			free_ast(left);
+			return (free_ast(left), NULL);
 		pipe_nd->left = left;
 		pipe_nd->right = parse_pipeline(tokens);
 		if (!pipe_nd->right && left)
-		{
-			print_shell_err(SYTX_ERR, "No command.");
-			return (free_ast(pipe_nd), NULL);
-		}
+			return (sntxerr_tok(peek_tok(*tokens)), free_ast(pipe_nd), NULL);
 		left = pipe_nd;
 	}
 	return (left);
@@ -102,7 +125,6 @@ t_ast_node	*parse_cmnd(t_token **tokens)
 		flag = args_redirs_tok(tokens, &args, &redirs);
 		if (flag != 0)
 		{
-			// print_shell_err(SYTX_ERR, "near unexpected token.");
 			free_arr(args);
 			return (free_redirs(redirs), NULL);
 		}

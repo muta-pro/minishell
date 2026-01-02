@@ -30,7 +30,8 @@ void	clean_tmp(t_ast_node *node)
 		tmp = node->redir_list;
 		while (tmp)
 		{
-			if (tmp->type == T_REDIR_IN && is_tmp_hfile(tmp->file_name))
+			if (tmp->file_name
+				&& tmp->type == T_REDIR_IN && is_tmp_hfile(tmp->file_name))
 				unlink(tmp->file_name);
 			tmp = tmp->next;
 		}

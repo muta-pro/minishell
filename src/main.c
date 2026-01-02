@@ -18,35 +18,33 @@ int	run_line(char *line, t_shell *shell)
 {
 	t_token		*tokens;
 	t_ast_node	*ast;
-	t_token		*curr_tok;
-	t_ast_node	*curr_ast;
 	int			status;
 
 	tokens = NULL;
 	ast = NULL;
 	ast = build_ast(line, &tokens, shell);
-	curr_tok = tokens;
-	curr_ast = ast;
+	shell->curr_tok = tokens;
+	shell->curr_ast = ast;
 	if (!ast)
 	{
 		cleanup_pack(NULL, tokens, NULL);
+		shell->curr_tok = NULL;
 		return (shell->exit_status);
 	}
 	status = run_ast(ast, shell);
 	cleanup_pack(NULL, tokens, ast);
-	curr_tok = NULL;
-	curr_ast = NULL;
+	shell->curr_tok = NULL;
+	shell->curr_ast = NULL;
 	return (status);
 }
 
 static int	handle_sigint_prompt(t_shell *shell, char *line)
 {
-	if (g_got_sigint != SIGINT)
+	if (!g_got_sigint)
 		return (0);
 	shell->exit_status = 130;
 	g_got_sigint = 0;
-	if (line)
-		free(line);
+	free(line);
 	return (1);
 }
 
@@ -72,7 +70,7 @@ int	shell_loop(t_shell *shell)
 			add_history(line);
 		shell->exit_status = run_line(line, shell);
 		free(line);
-		if (shell->exit_status == -42)
+		if (shell->exit_status == -42 || shell->should_exit)
 			return (shell->save_exit_status);
 	}
 	return (shell->exit_status);

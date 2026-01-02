@@ -16,10 +16,7 @@ void	print_shell_err(char *src, const char *msg)
 {
 	write(STDERR_FILENO, SHELL_NAME, ft_strlen(SHELL_NAME));
 	if (src && ft_strlen(src) > 0)
-	{
 		write(STDERR_FILENO, src, ft_strlen(src));
-		// write(STDERR_FILENO, ": ", 2);
-	}
 	write(STDERR_FILENO, msg, ft_strlen(msg));
 	write(STDERR_FILENO, "\n", 1);
 }

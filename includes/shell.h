@@ -47,6 +47,7 @@ typedef struct s_shell
 	int			save_exit_status;
 	t_token		*curr_tok;
 	t_ast_node	*curr_ast;
+	int			should_exit;
 }				t_shell;
 
 # include "token.h"
@@ -78,7 +79,7 @@ void		handle_sngl_qt(char *arg, int *i, char **res);
 void		handle_dollar(char *arg, int *i, char **res, t_shell *shell);
 
 
-void		here_docs(t_ast_node *node, int *h_count, t_shell *shell);
+int			here_docs(t_ast_node *node, int *h_count, t_shell *shell);
 void		expand_h_line(char **line, int no_expand, t_shell *shell);
 void		clean_tmp(t_ast_node *node);
 int			is_tmp_hfile(char *file_name);

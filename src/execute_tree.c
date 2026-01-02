@@ -12,7 +12,7 @@
 
 #include "shell.h"
 
-void	execute_ast(t_shell *shell, t_ast_node *node)
+void	execute_ast(t_shell *shell, t_ast_node *node)//???
 {
 	int	status;
 
@@ -36,8 +36,11 @@ void	execute_external(t_shell *shell, t_ast_node *cmd)
 
 	cmnd = cmd->args[0];
 	path = NULL;
-	if (!cmnd || !*cmnd)
-		child_cleanup_exit(shell, 0);
+	if (!cmnd || *cmnd == '\0')
+	{
+		cmd_not_found("");
+		child_cleanup_exit(shell, 127);
+	}
 	if (ft_strchr(cmnd, '/'))
 		handle_exec_errors(shell, cmd, cmnd);
 	two_d_env = list_to_2d(shell->env_list);

@@ -29,9 +29,9 @@ char	*get_var_value(char *str, int *i, t_shell *shell)
 		(*i)++;
 	var = ft_substr(str, start, *i - start);
 	value = get_env_val(shell->env_list, var);
+	free(var);
 	if (!value)
 		return (ft_strdup(""));
-	free(var);
 	return (value);
 }
 
@@ -83,29 +83,56 @@ char	*substitute_and_clean(char *arg, t_shell *shell)
 	return (result);
 }
 
-void	expand_ast(t_ast_node *node, t_shell *shell)
+static void	shif_arg(char **args, int i)
+{
+	while (args[i])
+	{
+		args[i] = args[i + 1];
+		i++;
+	}
+}
+
+static void	exp_cmd_arg(t_ast_node *node, t_shell *shell)
 {
 	int		i;
-	t_redir	*tmp;
+	int		keep_empty;
+	char	*new;
 
+	i = 0;
+	while (node->args && node->args[i])
+	{
+		keep_empty = delim_has_qt(node->args[i]);
+		new = substitute_and_clean(node->args[i], shell);
+		if (!new)
+			return ;
+		if (!keep_empty && new[0] == '\0')
+		{
+			free(new);
+			shif_arg(node->args, i);
+			continue ;
+		}
+		node->args[i++] = new;
+	}
+}
+
+static void	exp_redir(t_redir *tmp, t_shell *shell)
+{
+	while (tmp)
+	{
+		if (tmp->file_name && !tmp->no_expand)
+			tmp->file_name = substitute_and_clean(tmp->file_name, shell);
+		tmp = tmp->next;
+	}
+}
+
+void	expand_ast(t_ast_node *node, t_shell *shell)
+{
 	if (!node)
 		return ;
 	expand_ast(node->left, shell);
 	expand_ast(node->right, shell);
-	if (node->type == NODE_CMND)
-	{
-		i = 0;
-		while (node->args && node->args[i])
-		{
-			node->args[i] = substitute_and_clean(node->args[i], shell);
-			i++;
-		}
-		tmp = node->redir_list;
-		while (tmp)
-		{
-			if (tmp->file_name && !tmp->no_expand)
-				tmp->file_name = substitute_and_clean(tmp->file_name, shell);
-			tmp = tmp->next;
-		}
-	}
+	if (node->type != NODE_CMND)
+		return ;
+	exp_cmd_arg(node, shell);
+	exp_redir(node->redir_list, shell);
 }

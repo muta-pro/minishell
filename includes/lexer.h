@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 18:50:31 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/16 20:02:53 by imutavdz         ###   ########.fr       */
+/*   Updated: 2026/01/02 16:43:01 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LEXER_H
@@ -29,7 +29,7 @@ typedef struct s_scanner
 
 
 void			init_scanner(t_scanner *scanner, char *input_text);
-t_token			*lexer(char *input_text);
+t_token			*lexer(char *input_text, t_shell *shell);
 t_token			*scan_next_tok(t_scanner *scanner);
 t_token			*scan_word(t_scanner *scanner);
 t_token 		*scan_var(t_scanner *scanner);

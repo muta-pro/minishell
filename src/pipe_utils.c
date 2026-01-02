@@ -12,7 +12,7 @@
 
 #include "shell.h"
 
-void	add_pid(t_pids **pids, int pid)
+int	add_pid(t_pids **pids, int pid)
 {
 	t_pids	*new;
 	t_pids	*current_node;

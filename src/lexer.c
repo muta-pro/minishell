@@ -53,7 +53,7 @@ t_token	*scan_next_tok(t_scanner *scanner)
 		return (scan_word(scanner));
 }
 
-t_token	*lexer(char *input_text)
+t_token	*lexer(char *input_text, t_shell *shell)
 {
 	t_scanner	scanner;
 	t_token		*token;
@@ -71,7 +71,8 @@ t_token	*lexer(char *input_text)
 		}
 		if (token->type == T_ERROR)
 		{
-			// print_shell_err(SYTX_ERR, token->lexeme);
+			shell->exit_status = 258;
+			print_shell_err(SYTX_ERR, token->lexeme);
 			free_tok(scanner.head);
 			free_tok(token);
 			return (NULL);

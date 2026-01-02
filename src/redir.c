@@ -35,7 +35,7 @@ static int	redir_in(t_redir *node)
 	fd = open(node->file_name, O_RDONLY);
 	if (fd == -1)
 		return (perror(node->file_name), -1);
-	if (dup2(fd, STDOUT_FILENO) == -1)
+	if (dup2(fd, STDIN_FILENO) == -1)
 		return (perror("dup2"), close(fd), -1);
 	close(fd);
 	return (0);

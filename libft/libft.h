@@ -53,6 +53,7 @@ char	*ft_strcat(char *dest, const char *src);
 int		ft_strcmp(const char *s1, const char *s2);
 char	*ft_strcpy(char *dst, const char *src);
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strndup(const char *s, size_t n);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 char	*ft_strrchr(const char *s, int c);
 char	*ft_itoa(int n);

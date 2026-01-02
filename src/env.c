@@ -90,7 +90,7 @@ void	build_env(char **envp, t_env **env)
 		be.j = 0;
 		while (envp[be.i][be.j] != '=')
 			be.j++;
-		be.node->key = strndup(envp[be.i], be.j);
+		be.node->key = ft_strndup(envp[be.i], be.j);
 		be.node->value = ft_strdup(envp[be.i] + be.j + 1);
 		if (*env == NULL)
 			*env = be.node;
