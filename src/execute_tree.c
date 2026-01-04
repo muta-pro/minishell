@@ -23,6 +23,8 @@ void	execute_ast(t_shell *shell, t_ast_node *node)//???
 	else
 		status = execute_single_cmd(node, shell);
 	shell->exit_status = status;
+	if (status == -42)
+		shell->exit_status = -42;
 }
 
 void	execute_external(t_shell *shell, t_ast_node *cmd)

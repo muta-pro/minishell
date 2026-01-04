@@ -38,14 +38,13 @@ int	run_line(char *line, t_shell *shell)
 	return (status);
 }
 
-static int	handle_sigint_prompt(t_shell *shell, char *line)
+static void	handle_sigint_status(t_shell *shell)
 {
-	if (!g_got_sigint)
-		return (0);
-	shell->exit_status = 130;
-	g_got_sigint = 0;
-	free(line);
-	return (1);
+	if (g_got_sigint)
+	{
+		shell->exit_status = 130;
+		g_got_sigint = 0;
+	}
 }
 
 char	*read_input(t_shell *shell)
@@ -64,8 +63,7 @@ int	shell_loop(t_shell *shell)
 		line = read_input(shell);
 		if (!line)
 			break ;
-		if (handle_sigint_prompt(shell, line))
-			continue ;
+		handle_sigint_status(shell);
 		if (*line)
 			add_history(line);
 		shell->exit_status = run_line(line, shell);

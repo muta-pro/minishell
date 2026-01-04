@@ -25,6 +25,8 @@ no_expand - 1 for quotes 0 for literal
 # include "libft.h"
 # include "token.h"
 
+typedef struct s_shell		t_shell;
+
 typedef enum e_node_type
 {
 	NODE_CMND,
