@@ -62,10 +62,10 @@ int	shell_loop(t_shell *shell)
 	while (1)
 	{
 		line = read_input(shell);
-		if (handle_sigint_prompt(shell, line))
-			continue ;
 		if (!line)
 			break ;
+		if (handle_sigint_prompt(shell, line))
+			continue ;
 		if (*line)
 			add_history(line);
 		shell->exit_status = run_line(line, shell);
