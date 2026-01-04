@@ -3,7 +3,7 @@ Minishell is a fully functional shell implementation written in C, built to unde
 
 This project goes beyond simple command execution, featuring a recursive Abstract Syntax Tree (AST) parser and a dedicated pre-processing phase for complex redirections like Heredocs.
 
->> Key Features
+##Key Features
 Pipeline Management: Handles infinite pipes (|) with correct fd duplication.
 
 Robust Signal Handling: Mimics Bash behavior for Ctrl+C, Ctrl+D, and Ctrl+\ across interactive, blocking, and heredoc states.
@@ -14,7 +14,7 @@ AST Architecture: Uses a tree-based structure rather than a linear list, enablin
 
 Environment Management: Custom implementation of environment variable expansion and storage.
 
->> Architecture Deep Dive
+##Architecture Deep Dive
 The core strength of this shell lies in its Recursive AST Traversal and Multi-State Signal Handling.
 
 1. The Heredoc "Pre-Processing" Phase
@@ -47,25 +47,26 @@ graph TD;
     CMD_1-->|Redir| HD[<< EOF];
     PIPE-->|Right| CMD_2[grep];
     CMD_2-->|Arg| ARG[pattern];
->> Technical Challenges & Studies
+##Technical Challenges & Studies
 The "Zombie File" Problem
 Challenge: If a user interrupts a heredoc (Ctrl+C), a temporary file remains on the disk. Solution: A "cleanup" routine traverses the AST post-execution. Additionally, an emergency unlink is triggered immediately inside the signal handler to prevent garbage accumulation during interrupted sessions.
 
 Readline vs. Signals
 Challenge: The readline library blocks the main thread. When a signal handler runs, it doesn't automatically unblock readline, causing the shell to ignore the first Ctrl+C or print double prompts. Solution: We utilized ioctl to simulate a newline injection, forcing readline to return control to the main loop immediately for a clean state reset.
 
-💻 Installation & Usage
+##Installation & Usage
 Build
 Bash
 
-git clone https://github.com/yourusername/minishell.git
+git clone repo
 cd minishell
 make
-Run
+Run ./minishell
 Bash
 
 ./minishell
-Examples
+ls -l
+echo exit 123
 Multi-Heredoc Piping:
 
 Bash
@@ -83,12 +84,14 @@ minishell$ cat
 ^C
 minishell$ 
 >> Resources & References
+AI: for deep-level reasearch and shell understatnig.
+
 Bash Reference Manual: For behavior replication.
 
 The Linux Programming Interface: For deep dives into fork(), execve(), and file descriptors.
 
 GNU Readline Library: For input management.
 
-Built by muta-pro & joko as part of the 42 Curriculum.
+Built by muta-pro & jokoN3 as part of the 42 Curriculum.
 
 Rice-cooker team collab
