@@ -16,15 +16,12 @@ void	execute_ast(t_shell *shell, t_ast_node *node)//???
 {
 	int	status;
 
-	status = shell->exit_status;
-	if (node == NULL)
+	if (!node)
 		return ;
 	if (node->type == NODE_PIPE)
 		status = exec_pipe(shell, node);
-	else if (node->type == NODE_CMND)
+	else
 		status = execute_single_cmd(node, shell);
-	if (status == -42)
-		shell->save_exit_status = shell->exit_status;
 	shell->exit_status = status;
 }
 
@@ -65,11 +62,11 @@ void	exec_cmd_in_child(t_ast_node *cmd, t_shell *shell)
 	if (is_builtin(cmd))
 	{
 		exit_code = execute_builtin(cmd, shell);
+		if (exit_code == -42)
+			exit_code = shell->save_exit_status;
 		child_cleanup_exit(shell, exit_code);
 	}
-	else
-		execute_external(shell, cmd);
-	child_cleanup_exit(shell, 127);
+	execute_external(shell, cmd);
 }
 
 static int	wait_and_getstatus(pid_t pid)

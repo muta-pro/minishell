@@ -60,5 +60,5 @@ int	ft_exit(t_ast_node *cmd, t_shell *shell)
 				(unsigned char)ft_atoi(cmd->args[1])));
 	}
 	else
-		return (-42);
+		return (parent_request_exit(shell, shell->exit_status));
 }

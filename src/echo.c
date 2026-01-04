@@ -12,26 +12,38 @@
 
 #include "shell.h"
 
+static	int	is_n(const char *s)
+{
+	int	i;
+
+	if (!s || s[0] != '-' || s[1] != 'n')
+		return (0);
+	i = 1;
+	while (s[i] == 'n')
+		i++;
+	return (s[i] == '\0');
+}
+
 int	ft_echo(char **args)
 {
 	int	i;
-	int	print_n;
+	int	newline;
 
 	i = 1;
-	print_n = 1;
-	while (args[i] && ft_strcmp(args[i], "-n") == 0)
+	newline = 1;
+	while (args[i] && is_n(args[i]))
 	{
-		print_n = 0;
+		newline = 0;
 		i++;
 	}
 	while (args[i])
 	{
-		printf("%s", args[i]);
+		write(1, args[i], ft_strlen(args[i]));
 		if (args[i + 1])
-			printf(" ");
+			write(1, " ", 1);
 		i++;
 	}
-	if (print_n)
-		printf("\n");
+	if (newline)
+		write(1, "\n", 1);
 	return (0);
 }
