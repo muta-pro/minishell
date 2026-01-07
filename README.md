@@ -100,13 +100,13 @@ Redirections and why “parent wrappers” exist
 
 Redirections are not “string operations”. They are file descriptor operations:
 
-> open file → dup2(fd, STDOUT_FILENO)
+/ > open file → dup2(fd, STDOUT_FILENO)
 
-< open file → dup2(fd, STDIN_FILENO)
+/ < open file → dup2(fd, STDIN_FILENO)
 
->> open append
+/ >> open append
 
-<< heredoc: read lines until delimiter, write to temp file, then treat as < temp
+/ << heredoc: read lines until delimiter, write to temp file, then treat as < temp
 
 Important practical rule:
 
