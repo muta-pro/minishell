@@ -20,11 +20,11 @@ Redirections: <, >, >>, << (heredoc)
 
 Pipes: |
 
-Environment variables: $VAR and $?
+Environment variables: $ VAR / $?
 
 Signals in interactive mode: ctrl-C, ctrl-D, ctrl-\ like bash
 
-Proper exit status rules ($?)
+Proper exit status rules ($ ?)
 
 Bonus support can be added on top (&&, ||, parentheses, wildcard *) but the core architecture was built to stay clean even if bonus is added later.
 
@@ -37,7 +37,7 @@ readline() prints the prompt, returns a heap-allocated line without the trailing
 ctrl-C does not “return a special string”: it triggers SIGINT and we must decide how to make readline() stop and redraw cleanly.
 
 Lexing / Tokenizing layer
-The line becomes a linked list of tokens: words, quotes, operators (|, >, >>, <, <<), variables ($HOME, $?).
+The line becomes a linked list of tokens: words, quotes, operators (|, >, >>, <, <<), variables ($ HOME, $ ?).
 This stage is about reading characters and producing structured pieces.
 
 Parsing layer
@@ -50,8 +50,8 @@ a pipeline node connects commands
 Parsing is also where syntax errors should be decided (like cat << missing delimiter). Bash-like shells use exit status 258 for syntax errors. In my project I keep that decision inside parsing so execution doesn’t guess.
 
 Expansion layer
-Expansion is where $VAR and $? turn into strings.
-$? expands from the shell’s exit_status (the status of the most recent foreground pipeline).
+Expansion is where $ VAR and $ ? turn into strings.
+$ ? expands from the shell’s exit_status (the status of the most recent foreground pipeline).
 
 Execution layer
 This is the most “UNIX” part:
@@ -74,7 +74,7 @@ Why signals were harder than they look
 
 Signals are where “it runs” is not enough. It must behave like bash:
 
-ctrl-C at prompt: show a fresh prompt, set $? = 130, do not exit
+ctrl-C at prompt: show a fresh prompt, set $ ? = 130, do not exit
 
 ctrl-D: exit minishell
 
@@ -82,10 +82,11 @@ ctrl-\ at prompt: do nothing
 
 ctrl-C during a running child: stop the child, return to prompt, $? = 130
 
-ctrl-\ during a running child: quit child, $? = 131
+ctrl-\ during a running child: quit child, $ ? = 131
 
 The strict requirement is: only one global variable to communicate signal reception, and it must store only the signal number.
 So my handler sets a volatile sig_atomic_t g_got_sigint = SIGINT and the main loop / executor reacts to it.
+In minishell, signal handlers are implemented using a global volatile sig_atomic_t flag. This is necessary because a signal handler executes asynchronously and may interrupt the program while libc or heap operations are in an inconsistent state. For this reason, handlers are restricted to async-signal-safe operations and cannot safely access the shell structure, perform memory allocation, or call most library functions. The global atomic flag acts as a minimal, safe communication channel between the handler and the main execution flow. The handler only records that a signal occurred, while the shell loop later interprets that state according to the current execution context (prompt, heredoc, child process), ensuring POSIX-correct and race-free behavior.
 
 A key design decision I adopted:
 
@@ -137,7 +138,7 @@ Command not found: 127
 
 Exec permission problems: usually 126
 
-$? is always the last foreground pipeline’s exit status.
+$ ? is always the last foreground pipeline’s exit status.
 
 How to test quickly (the core checks)
 
@@ -195,7 +196,7 @@ lexer/ token scanning, quote logic, operators
 
 parser/ AST construction, syntax validation
 
-expand/ $VAR and $?
+expand/ $ VAR and $ ?
 
 exec/ pipes, redirections, builtins, execve
 
