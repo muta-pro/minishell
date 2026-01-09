@@ -1,6 +1,6 @@
-Minishell — my tiny UNIX time machine
+Minishell —  UNIX time machine
 
-This project is my attempt to recreate the feeling of early UNIX development: no GUI, no shortcuts, just a prompt and the rules of the operating system. Minishell isn’t “just parsing strings”. It’s a pipeline of small, strict systems: terminal input, tokenization, syntax building, file descriptors, processes, signals, environment state. It forced me to stop thinking like an app developer and start thinking like the OS.
+This project is attempt to recreate the feeling of early UNIX development: no GUI, no shortcuts, just a prompt and the rules of the operating system. Minishell isn’t “just parsing strings”. It’s a pipeline of small, strict systems: terminal input, tokenization, syntax building, file descriptors, processes, signals, environment state. It forced me to stop thinking like an app developer and start thinking like the OS.
 
 I built this project incrementally: first getting something that reads commands and runs them, then making it correct and maintainable layer by layer (memory, errors, signals, redirections, pipelines). The final result is a minimal interactive shell that behaves like bash for the features required by the subject.
 
