@@ -33,6 +33,7 @@ Proper exit status rules ($ ?)
 A shell is not one big function. It’s a loop that repeatedly transforms input into behavior:
 
 **Input layer**
+
 readline() prints the prompt, returns a heap-allocated line without the trailing newline, or NULL on ctrl-D (EOF).
 ctrl-C does not “return a special string”: it triggers SIGINT and we must decide how to make readline() stop and redraw cleanly.
 
@@ -41,6 +42,7 @@ The line becomes a linked list of tokens: words, quotes, operators (|, >, >>, <,
 This stage is about reading characters and producing structured pieces.
 
 **Parsing layer**
+
 Tokens become an AST (Abstract Syntax Tree). This is where “syntax meaning” happens:
 
 a command node has args and a redirection list
@@ -50,10 +52,12 @@ a pipeline node connects commands
 Parsing is also where syntax errors should be decided (like cat << missing delimiter). Bash-like shells use exit status 258 for syntax errors. In my project I keep that decision inside parsing so execution doesn’t guess.
 
 **Expansion layer**
+
 Expansion is where $ VAR and $ ? turn into strings.
 $ ? expands from the shell’s exit_status (the status of the most recent foreground pipeline).
 
 **Execution layer**
+
 This is the most “UNIX” part:
 
 redirections call open() + dup2() to replace stdin/stdout
@@ -65,6 +69,7 @@ external commands use execve()
 builtins may run in the parent (to modify shell state like cd, export)
 
 **Cleanup layer**
+
 Tokens, AST, heredoc temp files, and temporary arrays must be freed deterministically.
 Shell programs are long-running, so leaks and dangling FDs accumulate fast.
 
@@ -85,6 +90,7 @@ ctrl-C during a running child: stop the child, return to prompt, $? = 130
 ctrl-\ during a running child: quit child, $ ? = 131
 
 **The strict requirement is: only one global variable to communicate signal reception, and it must store only the signal number.**
+
 So my handler sets a volatile sig_atomic_t g_got_sigint = SIGINT and the main loop / executor reacts to it.
 In minishell, signal handlers are implemented using a global volatile sig_atomic_t flag. This is necessary because a signal handler executes asynchronously and may interrupt the program while libc or heap operations are in an inconsistent state. For this reason, handlers are restricted to async-signal-safe operations and cannot safely access the shell structure, perform memory allocation, or call most library functions. The global atomic flag acts as a minimal, safe communication channel between the handler and the main execution flow. The handler only records that a signal occurred, while the shell loop later interprets that state according to the current execution context (prompt, heredoc, child process), ensuring POSIX-correct and race-free behavior.
 
@@ -208,7 +214,8 @@ free/ centralized cleanup
 
 **The rule I followed: each layer owns its responsibilities and returns a clear result to the next layer. When things were messy, I fixed structure first, then behavior.**
 
-What I learned (the “why” of this project)
+
+# What I learned (the “why” of this project)
 
 Minishell taught me that a shell is basically a controlled conversation between:
 
@@ -236,9 +243,11 @@ I didn’t just code features; I had to make them consistent with UNIX rules.
 
 ## Build & run
 make
+
 ./minishell
 
 *Resources & References*
+
 AI: for deep-level reasearch and shell understatnig.
 
 Bash Reference Manual: For behavior replication.
