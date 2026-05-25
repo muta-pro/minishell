@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:54:35 by imutavdz          #+#    #+#             */
-/*   Updated: 2026/01/04 19:18:10 by imutavdz         ###   ########.fr       */
+/*   Updated: 2026/05/25 10:12:44 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define DEFINES_H
 
 # define SHELL_NAME "minishell: "
-# define NUM_ERR "missing numeric aguments" //same (e.g., print_shell_err("exit", NUM_ERR, 255)).
+# define NUM_ERR "missing numeric arguments" //same (e.g., print_shell_err("exit", NUM_ERR, 255)).
 # define PERM_DEN "permission denied" //cd
 # define IS_DIR "is a directory"
 # define NOT_DIR "is not a directory"

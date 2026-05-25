@@ -74,7 +74,6 @@ void	read_h_input(char *delim, int fd, int no_expand, t_shell *shell)
 	signal(SIGINT, handle_sigint);
 }
 
-
 int	process_h_node(t_redir *tmp, int *h_count, t_shell *shell)
 {
 	char	file[50];

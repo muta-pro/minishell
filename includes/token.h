@@ -6,7 +6,7 @@
 /*   By: imutavdz <imutavdz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 16:38:12 by imutavdz          #+#    #+#             */
-/*   Updated: 2025/12/22 06:41:09 by imutavdz         ###   ########.fr       */
+/*   Updated: 2026/05/25 10:27:40 by imutavdz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef TOKEN_H
@@ -48,17 +48,17 @@ typedef enum e_scan_state //state management for the lexer
 typedef struct s_token
 {
 	t_tok_type		type;
-	char			*lexeme;
+	char				*lexeme;
 	t_scan_state	state;
 	struct	s_token	*next;
 }					t_token;
 
 
 //token list management
-t_token			*create_token(t_tok_type type, const char *lexeme);
+t_token		create_token(t_tok_type type, const char *lexeme);
 void			insert_token(t_token **head, t_token *new_token);
 void			free_tok(t_token *tok);
-t_tok_type		get_op_type(char *lexeme);
+t_tok_type	get_op_type(char *lexeme);
 // void			remove_nxt_tok(t_token *token);
 // int 			add_tok_to_list(t_token **list, t_scan_state state, char *buf);
 //it can directly use the t_scan_state to determine the token type to create
